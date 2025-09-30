@@ -1068,6 +1068,7 @@
                             <option value="retail-sale-invoice">Retail Sale Invoice</option>
                             <option value="wholesale-invoice">Wholesale Invoice</option>
                             <option value="special-sale-invoice">Special Sale Invoice</option>
+                            <option value="prepaid-sale">Prepaid Sale</option>
                             <option value="customer-screen">Customer Screen (POS)</option>
                         </select>
                         <button class="btn btn-primary" onclick="newSaleTransaction()">
@@ -1907,6 +1908,10 @@
         let salesData = [];
         let currentCart = [];
         let receiptCounter = 1000;
+        let customerDeposits = [];
+        let goodsServicesItems = [];
+        let priceHistory = [];
+        let lastReceipt = null;
 
         // Accounting books structure
         let accountingBooks = {
@@ -2081,6 +2086,9 @@
                 posContainer.style.display = 'block';
                 moduleContainer.innerHTML = '';
                 loadPOSItems();
+            } else if (salesType === 'prepaid-sale') {
+                posContainer.style.display = 'none';
+                moduleContainer.innerHTML = generatePrepaidSaleInterface();
             } else {
                 posContainer.style.display = 'none';
                 let moduleContent = generateSalesInterface(salesType);
@@ -2566,6 +2574,9 @@
                         </div>
                     </div>
                 `;
+            } else if (transactionType === 'cash-receipts') {
+                moduleContainer.innerHTML = generateCashReceiptsInterface();
+                purchaseControls.classList.remove('active');
             } else {
                 purchaseControls.classList.remove('active');
                 let moduleContent = generateGenericTransactionInterface(transactionType);
@@ -2918,63 +2929,233 @@
         function generateGoodsServicesInterface() {
             return `
                 <div class="card">
-                    <h3><i class="fas fa-truck"></i> Goods and Services</h3>
+                    <h3><i class="fas fa-truck"></i> GOODS AND SERVICE - Purchase Invoice (For Sale)</h3>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Reference Number</label>
-                            <input type="text" value="GS-${Date.now()}" readonly>
+                            <label>From</label>
+                            <input type="text" value="KITINTALE" placeholder="Enter location">
                         </div>
                         <div class="form-group">
-                            <label>Date</label>
-                            <input type="date" value="${new Date().toISOString().split('T')[0]}">
-                        </div>
-                        <div class="form-group">
-                            <label>Type</label>
-                            <select id="goodsServiceType">
-                                <option value="goods">Goods Purchase</option>
-                                <option value="services">Service Purchase</option>
-                                <option value="both">Goods & Services</option>
+                            <label>Currency</label>
+                            <select id="gsCurrency">
+                                <option value="UGX">UGX</option>
+                                <option value="USD">USD</option>
+                                <option value="EUR">EUR</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Supplier/Service Provider</label>
-                            <select>
-                                <option>Select Supplier...</option>
+                            <label>Invoice Date</label>
+                            <input type="date" value="${new Date().toISOString().split('T')[0]}">
+                        </div>
+                        <div class="form-group">
+                            <label>Purchase Invoice No</label>
+                            <input type="text" value="PI-${Date.now()}" readonly>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Purchase Order Ref</label>
+                            <input type="text" placeholder="Reference number">
+                        </div>
+                        <div class="form-group">
+                            <label>Supplier</label>
+                            <select id="gsSupplier" onchange="loadSupplierDetails()">
+                                <option value="">Select Supplier...</option>
                                 ${partners.filter(p => p.type === 'supplier' || p.type === 'both')
                                   .map(p => `<option value="${p.id}">${p.name}</option>`).join('')}
                             </select>
                         </div>
-                    </div>
-                    <div class="form-row">
                         <div class="form-group">
-                            <label>Description</label>
-                            <textarea rows="3" placeholder="Describe the goods or services purchased"></textarea>
+                            <label>Supplier Invoice No.</label>
+                            <input type="text" placeholder="Supplier's invoice number">
+                        </div>
+                        <div class="form-group">
+                            <label>Payable (UGX)</label>
+                            <input type="number" id="gsPayable" value="0" step="0.01">
                         </div>
                     </div>
+                    
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Quantity</label>
-                            <input type="number" min="1" value="1">
-                        </div>
-                        <div class="form-group">
-                            <label>Unit Cost</label>
-                            <input type="number" step="0.01" placeholder="0.00">
-                        </div>
-                        <div class="form-group">
-                            <label>Total Cost</label>
-                            <input type="number" step="0.01" readonly>
+                            <label>Prepaid (UGX)</label>
+                            <input type="number" id="gsPrepaid" value="0" step="0.01">
                         </div>
                     </div>
+                    
+                    <h4 style="color: #1a237e; margin: 20px 0;"><i class="fas fa-box"></i> Item Details</h4>
+                    
                     <div class="form-row">
-                        <button class="btn btn-success" onclick="saveTransaction('goods-services')">
-                            <i class="fas fa-save"></i> Save Record
+                        <div class="form-group">
+                            <label>Item Description</label>
+                            <input type="text" id="gsItemDesc" placeholder="Enter item description" list="itemSuggestions">
+                            <datalist id="itemSuggestions">
+                                ${items.map(item => `<option value="${item.name}">`).join('')}
+                            </datalist>
+                        </div>
+                        <div class="form-group">
+                            <label>Unit</label>
+                            <select id="gsUnit">
+                                <option value="PCS">PCS</option>
+                                <option value="KG">KG</option>
+                                <option value="L">L</option>
+                                <option value="M">M</option>
+                                <option value="BOX">BOX</option>
+                                <option value="SET">SET</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Qty</label>
+                            <input type="number" id="gsQty" value="1" min="0" onchange="calculateGSAmount()">
+                        </div>
+                        <div class="form-group">
+                            <label>Unit Price</label>
+                            <input type="number" id="gsUnitPrice" value="0" step="0.01" onchange="calculateGSAmount()">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Unit VAT</label>
+                            <input type="number" id="gsUnitVAT" value="0" step="0.01" onchange="calculateGSAmount()">
+                        </div>
+                        <div class="form-group">
+                            <label>Unit Discount</label>
+                            <input type="number" id="gsUnitDiscount" value="0" step="0.01" onchange="calculateGSAmount()">
+                        </div>
+                        <div class="form-group">
+                            <label>Amount</label>
+                            <input type="number" id="gsAmount" value="0" step="0.01" readonly>
+                        </div>
+                    </div>
+                    
+                    <h4 style="color: #1a237e; margin: 20px 0;"><i class="fas fa-tags"></i> Batch Information</h4>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Batch</label>
+                            <input type="text" id="gsBatch" placeholder="Batch number">
+                        </div>
+                        <div class="form-group">
+                            <label>Manuf Date</label>
+                            <input type="date" id="gsManufDate">
+                        </div>
+                        <div class="form-group">
+                            <label>Expiry Date</label>
+                            <input type="date" id="gsExpiryDate">
+                        </div>
+                        <div class="form-group">
+                            <label>Excise Duty</label>
+                            <input type="number" id="gsExciseDuty" value="0" step="0.01">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <button class="btn btn-success" onclick="addGSItem()">
+                            <i class="fas fa-plus"></i> Add Item
                         </button>
-                        <button class="btn btn-primary" onclick="generateStockEntry()">
-                            <i class="fas fa-boxes"></i> Generate Stock Entry
+                        <button class="btn btn-primary" onclick="clearGSItemForm()">
+                            <i class="fas fa-broom"></i> Clear Item
+                        </button>
+                    </div>
+                    
+                    <div class="table-container" style="margin: 20px 0;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Item Description</th>
+                                    <th>Unit</th>
+                                    <th>Batch No.</th>
+                                    <th>Inventory/Cost Account</th>
+                                    <th>Qty</th>
+                                    <th>Unit Price</th>
+                                    <th>Unit VAT</th>
+                                    <th>Unit Item Discount</th>
+                                    <th>Amount</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="gsItemsTable">
+                                <tr class="no-records">
+                                    <td colspan="11">No records found.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Excise Duty</label>
+                            <input type="number" id="gsTotalExcise" value="0" step="0.01" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Subtotal</label>
+                            <input type="number" id="gsSubtotal" value="0" step="0.01" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Discount</label>
+                            <input type="number" id="gsTotalDiscount" value="0" step="0.01" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>VAT</label>
+                            <input type="number" id="gsTotalVAT" value="0" step="0.01" readonly>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Cash Discount</label>
+                            <input type="number" id="gsCashDiscount" value="0" step="0.01" onchange="calculateGSTotals()">
+                        </div>
+                        <div class="form-group">
+                            <label style="font-weight: bold; font-size: 16px;">TOTAL</label>
+                            <input type="number" id="gsGrandTotal" value="0" step="0.01" readonly style="font-weight: bold; font-size: 16px;">
+                        </div>
+                    </div>
+                    
+                    <h4 style="color: #1a237e; margin: 20px 0;"><i class="fas fa-money-bill"></i> Payment Information</h4>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Paid Amount</label>
+                            <input type="number" id="gsPaidAmount" value="0" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label>Payment Method</label>
+                            <select id="gsPaymentMethod">
+                                <option value="CASH">CASH</option>
+                                <option value="BANK">BANK</option>
+                                <option value="MOBILE">MOBILE MONEY</option>
+                                <option value="CARD">CARD</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Paid From Account</label>
+                            <input type="text" value="COH (ROSCOE COH)" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Paid By</label>
+                            <input type="text" id="gsPaidBy" placeholder="Payment processed by">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <button class="btn btn-success" onclick="saveGoodsServices()">
+                            <i class="fas fa-save"></i> SAVE
+                        </button>
+                        <button class="btn btn-warning" onclick="clearGSForm()">
+                            <i class="fas fa-broom"></i> CLEAR
+                        </button>
+                        <button class="btn btn-primary" onclick="newGSDraft()">
+                            <i class="fas fa-file"></i> NEW DRAFT
                         </button>
                         <button class="btn btn-info" onclick="printPage()">
                             <i class="fas fa-print"></i> Print
                         </button>
+                        <button class="btn btn-secondary" onclick="printLastReceipt()">
+                            <i class="fas fa-receipt"></i> Print Receipt
+                        </button
                     </div>
                 </div>
             `;
@@ -4578,11 +4759,1104 @@
             }
         }
 
+        // Enhanced Goods & Services Functions
+        function calculateGSAmount() {
+            const qty = parseFloat(document.getElementById('gsQty').value) || 0;
+            const unitPrice = parseFloat(document.getElementById('gsUnitPrice').value) || 0;
+            const unitVAT = parseFloat(document.getElementById('gsUnitVAT').value) || 0;
+            const unitDiscount = parseFloat(document.getElementById('gsUnitDiscount').value) || 0;
+            
+            const subtotal = qty * unitPrice;
+            const discountAmount = qty * unitDiscount;
+            const vatAmount = qty * unitVAT;
+            const total = subtotal - discountAmount + vatAmount;
+            
+            document.getElementById('gsAmount').value = total.toFixed(2);
+        }
+        
+        function addGSItem() {
+            const itemDesc = document.getElementById('gsItemDesc').value.trim();
+            const unit = document.getElementById('gsUnit').value;
+            const qty = parseFloat(document.getElementById('gsQty').value) || 0;
+            const unitPrice = parseFloat(document.getElementById('gsUnitPrice').value) || 0;
+            const unitVAT = parseFloat(document.getElementById('gsUnitVAT').value) || 0;
+            const unitDiscount = parseFloat(document.getElementById('gsUnitDiscount').value) || 0;
+            const amount = parseFloat(document.getElementById('gsAmount').value) || 0;
+            const batch = document.getElementById('gsBatch').value.trim();
+            const manufDate = document.getElementById('gsManufDate').value;
+            const expiryDate = document.getElementById('gsExpiryDate').value;
+            const exciseDuty = parseFloat(document.getElementById('gsExciseDuty').value) || 0;
+            
+            if (!itemDesc || qty <= 0 || unitPrice <= 0) {
+                showNotification('Please fill in all required item fields', 'error');
+                return;
+            }
+            
+            const gsItem = {
+                id: 'GSI-' + Date.now(),
+                description: itemDesc,
+                unit: unit,
+                quantity: qty,
+                unitPrice: unitPrice,
+                unitVAT: unitVAT,
+                unitDiscount: unitDiscount,
+                amount: amount,
+                batch: batch,
+                manufDate: manufDate,
+                expiryDate: expiryDate,
+                exciseDuty: exciseDuty,
+                inventoryAccount: 'Inventory'
+            };
+            
+            goodsServicesItems.push(gsItem);
+            refreshGSItemsTable();
+            clearGSItemForm();
+            calculateGSTotals();
+            
+            // Add to inventory if new item
+            const existingItem = items.find(item => item.name.toLowerCase() === itemDesc.toLowerCase());
+            if (!existingItem) {
+                const newItem = {
+                    id: 'ITM-' + Date.now(),
+                    code: 'GS-' + Date.now().toString().slice(-6),
+                    name: itemDesc,
+                    category: 'goods-services',
+                    retailPrice: unitPrice * 1.2, // Add 20% markup
+                    factoryPrice: unitPrice,
+                    stock: qty,
+                    unit: unit,
+                    minStock: 5,
+                    status: qty > 5 ? 'In Stock' : 'Low Stock',
+                    dateAdded: new Date().toISOString().split('T')[0],
+                    batch: batch,
+                    manufDate: manufDate,
+                    expiryDate: expiryDate
+                };
+                items.push(newItem);
+                
+                // Record stock movement
+                const stockMovement = {
+                    id: 'STK-' + Date.now(),
+                    itemId: newItem.id,
+                    itemName: newItem.name,
+                    type: 'Goods & Services Purchase',
+                    quantity: qty,
+                    date: new Date().toISOString().split('T')[0],
+                    user: currentUser.fullName,
+                    notes: `Added via Goods & Services: Batch ${batch}`
+                };
+                stockMovements.push(stockMovement);
+            } else {
+                existingItem.stock += qty;
+                existingItem.status = existingItem.stock <= existingItem.minStock ? 'Low Stock' : 'In Stock';
+            }
+            
+            refreshItemsTable();
+            updateNotificationCount();
+            showNotification('Item added to Goods & Services and inventory updated', 'success');
+        }
+        
+        function refreshGSItemsTable() {
+            const tbody = document.getElementById('gsItemsTable');
+            if (!tbody) return;
+            
+            if (goodsServicesItems.length === 0) {
+                tbody.innerHTML = '<tr class="no-records"><td colspan="11">No records found.</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = goodsServicesItems.map((item, index) => `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${item.description}</td>
+                    <td>${item.unit}</td>
+                    <td>${item.batch || 'N/A'}</td>
+                    <td>${item.inventoryAccount}</td>
+                    <td>${item.quantity}</td>
+                    <td>${formatCurrency(item.unitPrice)}</td>
+                    <td>${formatCurrency(item.unitVAT)}</td>
+                    <td>${formatCurrency(item.unitDiscount)}</td>
+                    <td class="font-bold">${formatCurrency(item.amount)}</td>
+                    <td>
+                        <button class="btn btn-danger" onclick="removeGSItem('${item.id}')" style="padding: 5px;">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        function removeGSItem(itemId) {
+            goodsServicesItems = goodsServicesItems.filter(item => item.id !== itemId);
+            refreshGSItemsTable();
+            calculateGSTotals();
+        }
+        
+        function calculateGSTotals() {
+            let subtotal = 0;
+            let totalVAT = 0;
+            let totalDiscount = 0;
+            let totalExcise = 0;
+            
+            goodsServicesItems.forEach(item => {
+                subtotal += item.quantity * item.unitPrice;
+                totalVAT += item.quantity * item.unitVAT;
+                totalDiscount += item.quantity * item.unitDiscount;
+                totalExcise += item.exciseDuty;
+            });
+            
+            const cashDiscount = parseFloat(document.getElementById('gsCashDiscount').value) || 0;
+            const grandTotal = subtotal + totalVAT - totalDiscount - cashDiscount + totalExcise;
+            
+            document.getElementById('gsSubtotal').value = subtotal.toFixed(2);
+            document.getElementById('gsTotalVAT').value = totalVAT.toFixed(2);
+            document.getElementById('gsTotalDiscount').value = totalDiscount.toFixed(2);
+            document.getElementById('gsTotalExcise').value = totalExcise.toFixed(2);
+            document.getElementById('gsGrandTotal').value = grandTotal.toFixed(2);
+        }
+        
+        function clearGSItemForm() {
+            document.getElementById('gsItemDesc').value = '';
+            document.getElementById('gsQty').value = '1';
+            document.getElementById('gsUnitPrice').value = '0';
+            document.getElementById('gsUnitVAT').value = '0';
+            document.getElementById('gsUnitDiscount').value = '0';
+            document.getElementById('gsAmount').value = '0';
+            document.getElementById('gsBatch').value = '';
+            document.getElementById('gsManufDate').value = '';
+            document.getElementById('gsExpiryDate').value = '';
+            document.getElementById('gsExciseDuty').value = '0';
+        }
+        
+        function clearGSForm() {
+            goodsServicesItems = [];
+            refreshGSItemsTable();
+            calculateGSTotals();
+            clearGSItemForm();
+        }
+        
+        function saveGoodsServices() {
+            if (goodsServicesItems.length === 0) {
+                showNotification('Please add at least one item before saving', 'warning');
+                return;
+            }
+            
+            const transaction = {
+                id: 'GS-' + Date.now(),
+                type: 'goods-services',
+                date: new Date().toISOString().split('T')[0],
+                supplier: document.getElementById('gsSupplier').value,
+                items: [...goodsServicesItems],
+                subtotal: parseFloat(document.getElementById('gsSubtotal').value) || 0,
+                totalVAT: parseFloat(document.getElementById('gsTotalVAT').value) || 0,
+                totalDiscount: parseFloat(document.getElementById('gsTotalDiscount').value) || 0,
+                grandTotal: parseFloat(document.getElementById('gsGrandTotal').value) || 0,
+                paidAmount: parseFloat(document.getElementById('gsPaidAmount').value) || 0,
+                paymentMethod: document.getElementById('gsPaymentMethod').value,
+                status: 'completed',
+                createdBy: currentUser.fullName
+            };
+            
+            transactions.push(transaction);
+            
+            // Add to accounting books
+            addAccountingEntry({
+                account: 'Inventory',
+                type: 'Debit',
+                amount: transaction.grandTotal,
+                reference: transaction.id,
+                description: 'Goods & Services Purchase'
+            });
+            
+            addAccountingEntry({
+                account: 'Accounts Payable',
+                type: 'Credit',
+                amount: transaction.grandTotal - transaction.paidAmount,
+                reference: transaction.id,
+                description: 'Goods & Services Purchase'
+            });
+            
+            if (transaction.paidAmount > 0) {
+                addAccountingEntry({
+                    account: 'Cash',
+                    type: 'Credit',
+                    amount: transaction.paidAmount,
+                    reference: transaction.id,
+                    description: 'Goods & Services Payment'
+                });
+            }
+            
+            // Prepare last receipt for printing
+            setLastReceipt({
+                type: 'goods-services',
+                headerTitle: 'Goods & Services Purchase Invoice',
+                reference: transaction.id,
+                date: transaction.date,
+                partyLabel: 'Supplier',
+                partyName: (partners.find(p => p.id === transaction.supplier)?.name) || 'N/A',
+                items: transaction.items.map(it => ({ name: it.description, quantity: it.quantity, price: it.unitPrice, discount: it.unitDiscount, tax: it.unitVAT, total: it.amount })),
+                totals: {
+                    subtotal: transaction.subtotal,
+                    discount: transaction.totalDiscount,
+                    tax: transaction.totalVAT,
+                    grandTotal: transaction.grandTotal,
+                    paid: transaction.paidAmount,
+                    balance: Math.max(0, transaction.grandTotal - transaction.paidAmount)
+                },
+                preparedBy: currentUser.fullName,
+                paymentMethod: transaction.paymentMethod
+            });
+            
+            clearGSForm();
+            showNotification('Goods & Services transaction saved successfully! Receipt ready to print.', 'success');
+        }
+        
+        // Cash Receipts Functions
+        function generateCashReceiptsInterface() {
+            return `
+                <div class="card">
+                    <h3><i class="fas fa-money-bill-wave"></i> Cash Receipts</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Receipt Type</label>
+                            <select id="receiptType" onchange="loadReceiptType()">
+                                <option value="">Select Receipt Type...</option>
+                                <option value="credit-sale">From Credit Sale</option>
+                                <option value="shareholder">From Shareholder</option>
+                                <option value="loan">Receive Loan</option>
+                                <option value="customer-deposit">Receive Customer Deposit</option>
+                                <option value="other-revenue">Receive Other Revenue</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div id="receiptTypeContent">
+                        <div style="text-align: center; padding: 40px;">
+                            <i class="fas fa-hand-holding-usd" style="font-size: 48px; color: #1a237e; margin-bottom: 20px;"></i>
+                            <h4 style="color: #1a237e; margin-bottom: 10px;">Select Receipt Type</h4>
+                            <p style="color: #666;">Choose a receipt type from the dropdown above to proceed.</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function loadReceiptType() {
+            const receiptType = document.getElementById('receiptType').value;
+            const contentDiv = document.getElementById('receiptTypeContent');
+            
+            if (!receiptType) {
+                contentDiv.innerHTML = `
+                    <div style="text-align: center; padding: 40px;">
+                        <i class="fas fa-hand-holding-usd" style="font-size: 48px; color: #1a237e; margin-bottom: 20px;"></i>
+                        <h4 style="color: #1a237e; margin-bottom: 10px;">Select Receipt Type</h4>
+                        <p style="color: #666;">Choose a receipt type from the dropdown above to proceed.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            if (receiptType === 'customer-deposit') {
+                contentDiv.innerHTML = generateCustomerDepositInterface();
+            } else {
+                contentDiv.innerHTML = generateGenericReceiptInterface(receiptType);
+            }
+        }
+        
+        function generateCustomerDepositInterface() {
+            return `
+                <div style="border: 2px solid #1a237e; padding: 20px; border-radius: 8px; margin-top: 20px;">
+                    <h4 style="color: #1a237e;"><i class="fas fa-piggy-bank"></i> Cash Receipt - Customer Deposit (Prepaid Income)</h4>
+                    <p style="color: #666; margin-bottom: 20px;"><strong>Ledger:</strong> Cash↑ Customer Deposit(Prepaid Income)↑</p>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Currency:</label>
+                            <select id="depositCurrency">
+                                <option value="UGX">UGX</option>
+                                <option value="USD">USD</option>
+                                <option value="EUR">EUR</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Received from Customer:</label>
+                            <input type="text" id="depositCustomer" placeholder="Enter or search customer name" list="customerList" onchange="loadCustomerDeposits()">
+                            <datalist id="customerList">
+                                ${partners.filter(p => p.type === 'customer' || p.type === 'both')
+                                  .map(p => `<option value="${p.name}">`).join('')}
+                            </datalist>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Deposit(UGX):</label>
+                            <input type="number" id="depositAmount" value="0" step="0.01" onchange="updateDepositAmount()">
+                        </div>
+                        <div class="form-group">
+                            <label>Amount Received:</label>
+                            <input type="number" id="amountReceived" value="0" step="0.01" readonly>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Receipt Date:</label>
+                            <input type="date" id="depositDate" value="${new Date().toISOString().split('T')[0]}">
+                        </div>
+                        <div class="form-group">
+                            <label>Payment Method:</label>
+                            <select id="depositPaymentMethod">
+                                <option value="CASH">Cash</option>
+                                <option value="BANK">Bank Transfer</option>
+                                <option value="MOBILE">Mobile Money</option>
+                                <option value="CARD">Card Payment</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Received on Account:</label>
+                            <input type="text" id="receivedAccount" placeholder="Account details">
+                        </div>
+                        <div class="form-group">
+                            <label>Reference No.:</label>
+                            <input type="text" id="depositReference" placeholder="Reference number">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Status:</label>
+                            <select id="depositStatus">
+                                <option value="Cleared">Cleared</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Processing">Processing</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Status Description:</label>
+                            <textarea id="depositStatusDesc" rows="2" placeholder="Status description"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Items Deposited On</label>
+                            <button class="btn btn-primary" onclick="openItemDepositModal()">
+                                <i class="fas fa-plus"></i> Add Items
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="table-container" style="margin: 20px 0;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Quantity</th>
+                                    <th>Unit Price</th>
+                                    <th>Total</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="depositItemsTable">
+                                <tr class="no-records">
+                                    <td colspan="5">No items selected for deposit.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="form-row">
+                        <button class="btn btn-success" onclick="saveCustomerDeposit()">
+                            <i class="fas fa-save"></i> SAVE
+                        </button>
+                        <button class="btn btn-warning" onclick="clearDepositForm()">
+                            <i class="fas fa-broom"></i> CLEAR
+                        </button>
+                        <button class="btn btn-secondary" onclick="printLastReceipt()">
+                            <i class="fas fa-receipt"></i> Print Receipt
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function generateGenericReceiptInterface(receiptType) {
+            const title = receiptType.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            
+            return `
+                <div style="border: 2px solid #1a237e; padding: 20px; border-radius: 8px; margin-top: 20px;">
+                    <h4 style="color: #1a237e;"><i class="fas fa-receipt"></i> Cash Receipt - ${title}</h4>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Receipt Date:</label>
+                            <input type="date" value="${new Date().toISOString().split('T')[0]}">
+                        </div>
+                        <div class="form-group">
+                            <label>Amount Received:</label>
+                            <input type="number" step="0.01" placeholder="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label>Currency:</label>
+                            <select>
+                                <option value="UGX">UGX</option>
+                                <option value="USD">USD</option>
+                                <option value="EUR">EUR</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Payment Method:</label>
+                            <select>
+                                <option value="CASH">Cash</option>
+                                <option value="BANK">Bank Transfer</option>
+                                <option value="MOBILE">Mobile Money</option>
+                                <option value="CARD">Card Payment</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Received From:</label>
+                            <input type="text" placeholder="Source of receipt">
+                        </div>
+                        <div class="form-group">
+                            <label>Reference No.:</label>
+                            <input type="text" placeholder="Reference number">
+                        </div>
+                        <div class="form-group">
+                            <label>Description:</label>
+                            <textarea rows="2" placeholder="Receipt description"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <button class="btn btn-success" onclick="saveGenericReceipt('${receiptType}')">
+                            <i class="fas fa-save"></i> SAVE
+                        </button>
+                        <button class="btn btn-warning" onclick="clearReceiptForm()">
+                            <i class="fas fa-broom"></i> CLEAR
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Customer Deposit Functions
+        let selectedDepositItems = [];
+        
+        function updateDepositAmount() {
+            const amount = parseFloat(document.getElementById('depositAmount').value) || 0;
+            document.getElementById('amountReceived').value = amount.toFixed(2);
+        }
+        
+        function openItemDepositModal() {
+            // Create modal for item selection
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.display = 'flex';
+            modal.innerHTML = `
+                <div class="modal-content" style="width: 600px;">
+                    <h3><i class="fas fa-box"></i> Select Items for Deposit</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Item:</label>
+                            <select id="modalItemSelect">
+                                <option value="">Select Item...</option>
+                                ${items.filter(item => item.stock > 0)
+                                  .map(item => `<option value="${item.id}">${item.name} - Stock: ${item.stock}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Quantity:</label>
+                            <input type="number" id="modalItemQty" min="1" value="1">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Unit Price:</label>
+                            <input type="number" id="modalItemPrice" step="0.01" value="0">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <button class="btn btn-success" onclick="addDepositItem()">
+                            <i class="fas fa-plus"></i> Add Item
+                        </button>
+                        <button class="btn btn-warning" onclick="closeDepositModal()">
+                            <i class="fas fa-times"></i> Close
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            modal.id = 'depositItemModal';
+        }
+        
+        function addDepositItem() {
+            const itemId = document.getElementById('modalItemSelect').value;
+            const qty = parseFloat(document.getElementById('modalItemQty').value) || 0;
+            const price = parseFloat(document.getElementById('modalItemPrice').value) || 0;
+            
+            if (!itemId || qty <= 0 || price <= 0) {
+                showNotification('Please fill in all item details', 'error');
+                return;
+            }
+            
+            const item = items.find(i => i.id === itemId);
+            if (!item) return;
+            
+            if (qty > item.stock) {
+                showNotification(`Insufficient stock. Available: ${item.stock}`, 'error');
+                return;
+            }
+            
+            const depositItem = {
+                id: itemId,
+                name: item.name,
+                quantity: qty,
+                unitPrice: price,
+                total: qty * price
+            };
+            
+            selectedDepositItems.push(depositItem);
+            refreshDepositItemsTable();
+            closeDepositModal();
+        }
+        
+        function closeDepositModal() {
+            const modal = document.getElementById('depositItemModal');
+            if (modal) {
+                document.body.removeChild(modal);
+            }
+        }
+        
+        function refreshDepositItemsTable() {
+            const tbody = document.getElementById('depositItemsTable');
+            if (!tbody) return;
+            
+            if (selectedDepositItems.length === 0) {
+                tbody.innerHTML = '<tr class="no-records"><td colspan="5">No items selected for deposit.</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = selectedDepositItems.map((item, index) => `
+                <tr>
+                    <td>${item.name}</td>
+                    <td>${item.quantity}</td>
+                    <td>${formatCurrency(item.unitPrice)}</td>
+                    <td class="font-bold">${formatCurrency(item.total)}</td>
+                    <td>
+                        <button class="btn btn-danger" onclick="removeDepositItem(${index})" style="padding: 5px;">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        function removeDepositItem(index) {
+            selectedDepositItems.splice(index, 1);
+            refreshDepositItemsTable();
+        }
+        
+        function saveCustomerDeposit() {
+            const customer = document.getElementById('depositCustomer').value.trim();
+            const amount = parseFloat(document.getElementById('depositAmount').value) || 0;
+            
+            if (!customer || amount <= 0) {
+                showNotification('Please enter customer name and deposit amount', 'error');
+                return;
+            }
+            
+            const deposit = {
+                id: 'DEP-' + Date.now(),
+                customer: customer,
+                amount: amount,
+                currency: document.getElementById('depositCurrency').value,
+                date: document.getElementById('depositDate').value,
+                paymentMethod: document.getElementById('depositPaymentMethod').value,
+                reference: document.getElementById('depositReference').value,
+                status: document.getElementById('depositStatus').value,
+                items: [...selectedDepositItems],
+                createdBy: currentUser.fullName,
+                type: 'customer-deposit'
+            };
+            
+            customerDeposits.push(deposit);
+            
+            // Add to accounting
+            addAccountingEntry({
+                account: 'Cash',
+                type: 'Debit',
+                amount: amount,
+                reference: deposit.id,
+                description: `Customer Deposit: ${customer}`
+            });
+            
+            addAccountingEntry({
+                account: 'Customer Deposit',
+                type: 'Credit',
+                amount: amount,
+                reference: deposit.id,
+                description: `Customer Deposit: ${customer}`
+            });
+            
+            // Reserve items in stock
+            selectedDepositItems.forEach(depositItem => {
+                const item = items.find(i => i.id === depositItem.id);
+                if (item) {
+                    item.stock -= depositItem.quantity;
+                    item.reserved = (item.reserved || 0) + depositItem.quantity;
+                    item.status = item.stock <= item.minStock ? 'Low Stock' : 'In Stock';
+                }
+            });
+            
+            // Prepare last receipt for printing
+            setLastReceipt({
+                type: 'customer-deposit',
+                headerTitle: 'Cash Receipt - Customer Deposit',
+                reference: deposit.id,
+                date: deposit.date,
+                partyLabel: 'Customer',
+                partyName: deposit.customer,
+                items: deposit.items.map(it => ({ name: it.name, quantity: it.quantity, price: it.unitPrice, discount: 0, tax: 0, total: it.total })),
+                totals: {
+                    subtotal: deposit.items.reduce((s,i)=>s+i.total,0),
+                    discount: 0,
+                    tax: 0,
+                    grandTotal: amount,
+                    paid: amount,
+                    balance: 0
+                },
+                preparedBy: currentUser.fullName,
+                paymentMethod: deposit.paymentMethod
+            });
+            
+            refreshItemsTable();
+            updateNotificationCount();
+            clearDepositForm();
+            showNotification('Customer deposit recorded successfully! Receipt ready to print.', 'success');
+        }
+        
+        function clearDepositForm() {
+            selectedDepositItems = [];
+            refreshDepositItemsTable();
+            document.getElementById('depositCustomer').value = '';
+            document.getElementById('depositAmount').value = '0';
+            document.getElementById('amountReceived').value = '0';
+        }
+        
+        // Prepaid Sale Functions
+        function generatePrepaidSaleInterface() {
+            return `
+                <div class="card">
+                    <h3><i class="fas fa-hand-holding-usd"></i> Prepaid Sale - Complete Customer Deposit</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Customer Name:</label>
+                            <input type="text" id="prepaidCustomer" placeholder="Enter customer name" list="depositCustomerList" onchange="loadCustomerDeposit()">
+                            <datalist id="depositCustomerList">
+                                ${customerDeposits.map(d => `<option value="${d.customer}">`).join('')}
+                            </datalist>
+                        </div>
+                        <div class="form-group">
+                            <label>Deposit Status:</label>
+                            <select id="prepaidStatus" disabled>
+                                <option value="pending">Pending Completion</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div id="customerDepositDetails">
+                        <div style="text-align: center; padding: 40px;">
+                            <i class="fas fa-search" style="font-size: 48px; color: #1a237e; margin-bottom: 20px;"></i>
+                            <h4 style="color: #1a237e; margin-bottom: 10px;">Enter Customer Name</h4>
+                            <p style="color: #666;">Type the customer name to load their deposit details.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row" style="margin-top: 20px;">
+                        <button class="btn btn-success" onclick="completePrepaidSale()" id="completeSaleBtn" disabled>
+                            <i class="fas fa-check-circle"></i> Complete Sale
+                        </button>
+                        <button class="btn btn-warning" onclick="clearPrepaidForm()">
+                            <i class="fas fa-broom"></i> Clear
+                        </button>
+                        <button class="btn btn-info" onclick="printPage()">
+                            <i class="fas fa-print"></i> Print
+                        </button>
+                        <button class="btn btn-secondary" onclick="printLastReceipt()">
+                            <i class="fas fa-receipt"></i> Print Receipt
+                        </button
+                    </div>
+                </div>
+            `;
+        }
+        
+        function loadCustomerDeposit() {
+            const customerName = document.getElementById('prepaidCustomer').value.trim();
+            const detailsDiv = document.getElementById('customerDepositDetails');
+            const completeBtn = document.getElementById('completeSaleBtn');
+            
+            if (!customerName) {
+                detailsDiv.innerHTML = `
+                    <div style="text-align: center; padding: 40px;">
+                        <i class="fas fa-search" style="font-size: 48px; color: #1a237e; margin-bottom: 20px;"></i>
+                        <h4 style="color: #1a237e; margin-bottom: 10px;">Enter Customer Name</h4>
+                        <p style="color: #666;">Type the customer name to load their deposit details.</p>
+                    </div>
+                `;
+                completeBtn.disabled = true;
+                return;
+            }
+            
+            const deposit = customerDeposits.find(d => d.customer.toLowerCase() === customerName.toLowerCase() && d.status !== 'completed');
+            
+            if (!deposit) {
+                detailsDiv.innerHTML = `
+                    <div style="text-align: center; padding: 40px;">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 48px; color: #dc3545; margin-bottom: 20px;"></i>
+                        <h4 style="color: #dc3545; margin-bottom: 10px;">No Active Deposit Found</h4>
+                        <p style="color: #666;">No pending deposit found for customer "${customerName}".</p>
+                    </div>
+                `;
+                completeBtn.disabled = true;
+                return;
+            }
+            
+            detailsDiv.innerHTML = `
+                <div style="border: 2px solid #28a745; padding: 20px; border-radius: 8px; background: #f8fff8;">
+                    <h4 style="color: #28a745; margin-bottom: 15px;"><i class="fas fa-check-circle"></i> Customer Deposit Found</h4>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Customer:</label>
+                            <input type="text" value="${deposit.customer}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Deposit Amount:</label>
+                            <input type="text" value="${formatCurrency(deposit.amount)}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Deposit Date:</label>
+                            <input type="text" value="${deposit.date}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Payment Method:</label>
+                            <input type="text" value="${deposit.paymentMethod}" readonly>
+                        </div>
+                    </div>
+                    
+                    <h5 style="color: #1a237e; margin: 15px 0;">Items on Deposit:</h5>
+                    
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Quantity</th>
+                                    <th>Unit Price</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${deposit.items.map(item => `
+                                    <tr>
+                                        <td>${item.name}</td>
+                                        <td>${item.quantity}</td>
+                                        <td>${formatCurrency(item.unitPrice)}</td>
+                                        <td class="font-bold">${formatCurrency(item.total)}</td>
+                                    </tr>
+                                `).join('')}
+                                <tr style="background: #f0f0f0; font-weight: bold;">
+                                    <td colspan="3">Total Deposit Value:</td>
+                                    <td>${formatCurrency(deposit.items.reduce((sum, item) => sum + item.total, 0))}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="form-row" style="margin-top: 15px;">
+                        <div class="form-group">
+                            <label>Balance Due:</label>
+                            <input type="number" id="balanceDue" value="${Math.max(0, deposit.items.reduce((sum, item) => sum + item.total, 0) - deposit.amount).toFixed(2)}" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label>Payment Method for Balance:</label>
+                            <select id="balancePaymentMethod">
+                                <option value="CASH">Cash</option>
+                                <option value="CARD">Card</option>
+                                <option value="MOBILE">Mobile Money</option>
+                                <option value="BANK">Bank Transfer</option>
+                                <option value="NO_BALANCE">No Balance Due</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            completeBtn.disabled = false;
+        }
+        
+        function completePrepaidSale() {
+            const customerName = document.getElementById('prepaidCustomer').value.trim();
+            const deposit = customerDeposits.find(d => d.customer.toLowerCase() === customerName.toLowerCase() && d.status !== 'completed');
+            
+            if (!deposit) {
+                showNotification('No active deposit found for this customer', 'error');
+                return;
+            }
+            
+            const balanceDue = parseFloat(document.getElementById('balanceDue').value) || 0;
+            const balancePaymentMethod = document.getElementById('balancePaymentMethod').value;
+            
+            // Create sale transaction
+            const saleTransaction = {
+                id: 'PS-' + Date.now(),
+                type: 'prepaid-sale',
+                customer: deposit.customer,
+                depositId: deposit.id,
+                items: deposit.items,
+                depositAmount: deposit.amount,
+                balanceDue: balanceDue,
+                totalAmount: deposit.amount + balanceDue,
+                balancePaymentMethod: balancePaymentMethod,
+                date: new Date().toISOString().split('T')[0],
+                status: 'completed',
+                createdBy: currentUser.fullName
+            };
+            
+            transactions.push(saleTransaction);
+            salesData.push(saleTransaction);
+            
+            // Update deposit status
+            deposit.status = 'completed';
+            deposit.completedDate = new Date().toISOString().split('T')[0];
+            deposit.saleId = saleTransaction.id;
+            
+            // Update inventory - remove reserved stock
+            deposit.items.forEach(item => {
+                const inventoryItem = items.find(i => i.id === item.id);
+                if (inventoryItem) {
+                    inventoryItem.reserved = Math.max(0, (inventoryItem.reserved || 0) - item.quantity);
+                    inventoryItem.status = inventoryItem.stock <= inventoryItem.minStock ? 'Low Stock' : 'In Stock';
+                    
+                    // Record stock movement
+                    const stockMovement = {
+                        id: 'STK-' + Date.now(),
+                        itemId: inventoryItem.id,
+                        itemName: inventoryItem.name,
+                        type: 'Prepaid Sale',
+                        quantity: -item.quantity,
+                        date: new Date().toISOString().split('T')[0],
+                        user: currentUser.fullName,
+                        notes: `Prepaid sale completion: ${saleTransaction.id}`
+                    };
+                    stockMovements.push(stockMovement);
+                }
+            });
+            
+            // Accounting entries
+            if (balanceDue > 0) {
+                addAccountingEntry({
+                    account: 'Cash',
+                    type: 'Debit',
+                    amount: balanceDue,
+                    reference: saleTransaction.id,
+                    description: `Prepaid Sale Balance: ${deposit.customer}`
+                });
+            }
+            
+            addAccountingEntry({
+                account: 'Customer Deposit',
+                type: 'Debit',
+                amount: deposit.amount,
+                reference: saleTransaction.id,
+                description: `Prepaid Sale Deposit: ${deposit.customer}`
+            });
+            
+            addAccountingEntry({
+                account: 'Sales Revenue',
+                type: 'Credit',
+                amount: saleTransaction.totalAmount,
+                reference: saleTransaction.id,
+                description: `Prepaid Sale: ${deposit.customer}`
+            });
+            
+            // Prepare last receipt for printing
+            setLastReceipt({
+                type: 'prepaid-sale',
+                headerTitle: 'Prepaid Sale Receipt',
+                reference: saleTransaction.id,
+                date: saleTransaction.date,
+                partyLabel: 'Customer',
+                partyName: saleTransaction.customer,
+                items: saleTransaction.items.map(it => ({ name: it.name, quantity: it.quantity, price: it.unitPrice, discount: 0, tax: 0, total: it.total })),
+                totals: {
+                    subtotal: saleTransaction.items.reduce((s,i)=>s+i.total,0),
+                    discount: 0,
+                    tax: 0,
+                    grandTotal: saleTransaction.totalAmount,
+                    paid: saleTransaction.depositAmount + (saleTransaction.balanceDue || 0),
+                    balance: 0
+                },
+                preparedBy: currentUser.fullName,
+                paymentMethod: balancePaymentMethod
+            });
+            
+            refreshItemsTable();
+            updateNotificationCount();
+            clearPrepaidForm();
+            showNotification('Prepaid sale completed successfully! Receipt ready to print.', 'success');
+        }
+        
+        function clearPrepaidForm() {
+            document.getElementById('prepaidCustomer').value = '';
+            document.getElementById('customerDepositDetails').innerHTML = `
+                <div style="text-align: center; padding: 40px;">
+                    <i class="fas fa-search" style="font-size: 48px; color: #1a237e; margin-bottom: 20px;"></i>
+                    <h4 style="color: #1a237e; margin-bottom: 10px;">Enter Customer Name</h4>
+                    <p style="color: #666;">Type the customer name to load their deposit details.</p>
+                </div>
+            `;
+            document.getElementById('completeSaleBtn').disabled = true;
+        }
+        
         // Auto-save configuration changes
         setInterval(() => {
             localStorage.setItem('salesManagerConfig', JSON.stringify(systemConfig));
         }, 30000); // Save every 30 seconds
 
+        // Professional Receipt Generator
+        function setLastReceipt(payload) {
+            lastReceipt = {
+                ...payload,
+                company: {
+                    name: systemConfig?.companyName || 'Your Company',
+                    address: systemConfig?.companyAddress || '',
+                    phone: systemConfig?.companyPhone || '',
+                    email: systemConfig?.companyEmail || ''
+                },
+                developers: (systemConfig?.developers && Array.isArray(systemConfig.developers) ? systemConfig.developers : [
+                    { name: 'Developed by: Your Dev Team', contact: '' }
+                ])
+            };
+        }
+        
+        function generateReceiptHTML(data) {
+            if (!data) return '<p>No receipt data available.</p>';
+            const itemsRows = (data.items || []).map((it, idx) => `
+                <tr>
+                    <td>${idx+1}</td>
+                    <td>${it.name}</td>
+                    <td style="text-align:right;">${it.quantity}</td>
+                    <td style="text-align:right;">${formatCurrency(it.price || 0)}</td>
+                    <td style="text-align:right;">${formatCurrency(it.discount || 0)}</td>
+                    <td style="text-align:right;">${formatCurrency(it.tax || 0)}</td>
+                    <td style="text-align:right;" class="font-bold">${formatCurrency(it.total || 0)}</td>
+                </tr>
+            `).join('');
+            const devs = (data.developers || []).map(d => `${d.name}${d.contact? ' - '+d.contact: ''}`).join(' | ');
+            const stylesheet = `
+                <style>
+                    body { font-family: Arial, sans-serif; color: #111; }
+                    .receipt { width: 820px; margin: 0 auto; padding: 24px; }
+                    .r-header { display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #1a237e; padding-bottom:10px; }
+                    .r-header .company { color:#1a237e; }
+                    .r-meta { margin-top: 8px; font-size: 12px; color: #444; }
+                    .r-title { margin: 16px 0; color:#1a237e; }
+                    table { width:100%; border-collapse: collapse; }
+                    th, td { border: 1px solid #ddd; padding: 8px; font-size: 12px; }
+                    th { background:#f3f6ff; color:#1a237e; text-align:left; }
+                    .r-footer { margin-top:12px; font-size: 11px; color:#555; border-top:1px dashed #bbb; padding-top:8px; }
+                    .totals { width: 320px; margin-left:auto; }
+                    .totals td { border:none; }
+                    .totals tr td:first-child { text-align: right; color:#333; }
+                    .totals .grand td { font-weight: bold; border-top:1px solid #ccc; }
+                    @media print {
+                        @page { size: A4; margin: 12mm; }
+                        .no-print { display: none !important; }
+                    }
+                </style>
+            `;
+            return `
+                <!doctype html>
+                <html>
+                    <head>
+                        <meta charset="utf-8">
+                        <title>Receipt ${data.reference}</title>
+                        ${stylesheet}
+                    </head>
+                    <body>
+                        <div class="receipt">
+                            <div class="r-header">
+                                <div class="company">
+                                    <div style="font-size:20px; font-weight:bold;">${data.company.name}</div>
+                                    <div class="r-meta">${[data.company.address, data.company.phone, data.company.email].filter(Boolean).join(' • ')}</div>
+                                </div>
+                                <div style="text-align:right;">
+                                    <div class="r-title"><strong>${data.headerTitle || 'Receipt'}</strong></div>
+                                    <div class="r-meta">Ref: ${data.reference}</div>
+                                    <div class="r-meta">Date: ${data.date}</div>
+                                </div>
+                            </div>
+                            <div style="margin: 14px 0;">
+                                <strong>${data.partyLabel || 'Party'}:</strong> ${data.partyName || ''}
+                            </div>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Description</th>
+                                        <th style="text-align:right;">Qty</th>
+                                        <th style="text-align:right;">Unit Price</th>
+                                        <th style="text-align:right;">Discount</th>
+                                        <th style="text-align:right;">Tax</th>
+                                        <th style="text-align:right;">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>${itemsRows}</tbody>
+                            </table>
+                            <table class="totals" style="margin-top:10px;">
+                                <tr><td>Subtotal:</td><td style="text-align:right;">${formatCurrency(data.totals?.subtotal || 0)}</td></tr>
+                                <tr><td>Discount:</td><td style="text-align:right;">${formatCurrency(data.totals?.discount || 0)}</td></tr>
+                                <tr><td>Tax:</td><td style="text-align:right;">${formatCurrency(data.totals?.tax || 0)}</td></tr>
+                                <tr class="grand"><td>Grand Total:</td><td style="text-align:right;">${formatCurrency(data.totals?.grandTotal || 0)}</td></tr>
+                                <tr><td>Paid:</td><td style="text-align:right;">${formatCurrency(data.totals?.paid || 0)}</td></tr>
+                                <tr><td>Balance:</td><td style="text-align:right;">${formatCurrency(data.totals?.balance || 0)}</td></tr>
+                                <tr><td>Payment Method:</td><td style="text-align:right;">${data.paymentMethod || ''}</td></tr>
+                                <tr><td>Prepared By:</td><td style="text-align:right;">${data.preparedBy || ''}</td></tr>
+                            </table>
+                            <div class="r-footer">
+                                ${devs}
+                            </div>
+                        </div>
+                        <script>
+                            window.onload = () => { window.print(); setTimeout(()=>window.close(), 250); };
+                        <\/script>
+                    </body>
+                </html>
+            `;
+        }
+        
+        function printLastReceipt() {
+            if (!lastReceipt) {
+                showNotification('No receipt available. Please save a transaction first.', 'warning');
+                return;
+            }
+            const w = window.open('', '_blank');
+            w.document.open();
+            w.document.write(generateReceiptHTML(lastReceipt));
+            w.document.close();
+        }
+        
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
             if (e.ctrlKey && e.key === 's') {
@@ -4591,7 +5865,7 @@
             }
             if (e.ctrlKey && e.key === 'p') {
                 e.preventDefault();
-                printPage();
+                if (lastReceipt) { printLastReceipt(); } else { printPage(); }
             }
         });
     </script>
