@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SalesManager 7.0 - Business Management System</title>
+    <title>SalesManager 7.0 - Enhanced Business Management System</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         /* SalesManager 7.0 - Enhanced Navy Blue Theme */
@@ -19,6 +19,14 @@
             color: #fff;
             line-height: 1.6;
             min-height: 100vh;
+        }
+
+        /* Print Styles */
+        @media print {
+            body { background: white !important; color: black !important; }
+            .header, .nav-bar, .footer, .btn { display: none !important; }
+            .card { box-shadow: none !important; border: 1px solid #ccc !important; }
+            .receipt-container { width: 80mm !important; font-size: 12px !important; }
         }
 
         /* Login Modal */
@@ -40,17 +48,30 @@
             border-radius: 12px;
             padding: 40px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            width: 400px;
+            width: 450px;
             max-width: 90%;
             text-align: center;
             backdrop-filter: blur(10px);
         }
 
+        .company-logo {
+            font-size: 48px;
+            color: #1a237e;
+            margin-bottom: 20px;
+        }
+
         .modal-content h2 {
             color: #1a237e;
-            margin-bottom: 30px;
+            margin-bottom: 10px;
             font-size: 28px;
             font-weight: 600;
+        }
+
+        .company-display {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+            font-weight: 500;
         }
 
         .login-form .form-group {
@@ -283,7 +304,7 @@
             margin: 0 auto;
         }
 
-        /* Transaction Dropdown */
+        /* Transaction & Sales Dropdown */
         .transaction-controls {
             display: flex;
             gap: 20px;
@@ -292,7 +313,7 @@
             margin-bottom: 20px;
         }
 
-        .transaction-select {
+        .transaction-select, .sales-select {
             padding: 12px 16px;
             border: 2px solid #1a237e;
             border-radius: 8px;
@@ -303,14 +324,14 @@
             cursor: pointer;
         }
 
-        .transaction-select:focus {
+        .transaction-select:focus, .sales-select:focus {
             outline: none;
             border-color: #283593;
             box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.1);
         }
 
-        /* Purchase Sub-dropdown */
-        .purchase-controls {
+        /* Sub-dropdown controls */
+        .sub-controls {
             display: none;
             margin-top: 15px;
             padding: 15px;
@@ -319,7 +340,7 @@
             border-left: 4px solid #1a237e;
         }
 
-        .purchase-controls.active {
+        .sub-controls.active {
             display: block;
         }
 
@@ -379,6 +400,7 @@
             gap: 8px;
             text-decoration: none;
             font-size: 14px;
+            margin: 5px;
         }
 
         .btn-primary {
@@ -401,6 +423,11 @@
             color: white;
         }
 
+        .btn-info {
+            background: linear-gradient(135deg, #17a2b8 0%, #20c997 100%);
+            color: white;
+        }
+
         .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
@@ -412,6 +439,7 @@
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            margin-top: 20px;
         }
 
         table {
@@ -444,6 +472,105 @@
             color: #6c757d;
             font-style: italic;
             padding: 40px;
+        }
+
+        /* POS Styles */
+        .pos-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            height: 70vh;
+        }
+
+        .pos-items {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .pos-cart {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .item-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .item-card {
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .item-card:hover {
+            border-color: #1a237e;
+            transform: translateY(-2px);
+        }
+
+        .item-card h5 {
+            color: #1a237e;
+            margin-bottom: 8px;
+        }
+
+        .cart-items {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #e1e8ed;
+        }
+
+        .cart-total {
+            border-top: 2px solid #1a237e;
+            padding-top: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #1a237e;
+        }
+
+        /* Receipt Styles */
+        .receipt-container {
+            background: white;
+            color: black;
+            padding: 20px;
+            width: 300px;
+            margin: 20px auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+
+        .receipt-header {
+            text-align: center;
+            border-bottom: 2px dashed #000;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+
+        .receipt-items {
+            margin: 10px 0;
+        }
+
+        .receipt-total {
+            border-top: 2px dashed #000;
+            padding-top: 10px;
+            text-align: right;
+            font-weight: bold;
         }
 
         /* Settings Page */
@@ -479,20 +606,20 @@
             display: block;
         }
 
-        .permission-grid {
+        .permission-grid, .user-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
         }
 
-        .permission-card {
+        .permission-card, .user-card {
             background: #f8f9fa;
             padding: 20px;
             border-radius: 8px;
             border: 1px solid #dee2e6;
         }
 
-        .permission-card h4 {
+        .permission-card h4, .user-card h4 {
             color: #1a237e;
             margin-bottom: 15px;
         }
@@ -552,26 +679,6 @@
 
         input:checked + .slider:before {
             transform: translateX(26px);
-        }
-
-        /* User Management */
-        .user-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .user-card {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px solid #dee2e6;
-            position: relative;
-        }
-
-        .user-card h4 {
-            color: #1a237e;
-            margin-bottom: 10px;
         }
 
         .user-role {
@@ -673,12 +780,53 @@
             to { transform: translateX(0); opacity: 1; }
         }
 
+        /* Reports Styles */
+        .report-controls {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .date-range {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .account-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .summary-card h4 {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .summary-card .amount {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
         /* Responsive Design */
         @media (max-width: 1200px) {
             .main-content { padding: 20px; }
             .form-row { grid-template-columns: 1fr; }
             .permission-grid { grid-template-columns: 1fr; }
             .user-grid { grid-template-columns: 1fr; }
+            .pos-container { grid-template-columns: 1fr; }
         }
 
         @media (max-width: 768px) {
@@ -702,12 +850,16 @@
                 align-items: stretch;
             }
             
-            .transaction-select {
+            .transaction-select, .sales-select {
                 min-width: 100%;
             }
             
             .settings-tabs {
                 flex-direction: column;
+            }
+            
+            .account-summary {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -742,7 +894,11 @@
     <!-- Login Modal -->
     <div id="loginModal" class="modal">
         <div class="modal-content">
-            <h2><i class="fas fa-business-time"></i> SalesManager 7.0</h2>
+            <div class="company-logo">
+                <i class="fas fa-business-time"></i>
+            </div>
+            <h2>SalesManager 7.0</h2>
+            <div class="company-display" id="loginCompanyDisplay">Business Management System</div>
             <div class="login-form">
                 <div class="form-group">
                     <label for="username">Username:</label>
@@ -780,11 +936,11 @@
                     <h1><i class="fas fa-business-time"></i> SalesManager 7.0</h1>
                     <div class="company-info">
                         <span class="company-name" id="companyDisplay">Business Management System</span>
-                        <span class="branch-name"> > > <span id="currentBranch">MAIN BRANCH</span></span>
+                        <span class="branch-name"> >> <span id="currentBranch">MAIN BRANCH</span></span>
                     </div>
                 </div>
                 <div class="user-info">
-                    <span class="notification-count">12</span>
+                    <span class="notification-count" id="notificationCount">0</span>
                     <span class="username" id="currentUser">ADMIN</span>
                     <button class="logout-btn" onclick="logout()">
                         <i class="fas fa-sign-out-alt"></i>
@@ -800,16 +956,18 @@
                     <i class="fas fa-home"></i> Home</a></li>
                 <li><a href="#" data-section="transaction" class="nav-item">
                     <i class="fas fa-exchange-alt"></i> Transaction</a></li>
+                <li><a href="#" data-section="sales" class="nav-item">
+                    <i class="fas fa-shopping-cart"></i> Sales</a></li>
                 <li><a href="#" data-section="item" class="nav-item" data-permission="item">
                     <i class="fas fa-box"></i> Item</a></li>
                 <li><a href="#" data-section="partner" class="nav-item" data-permission="partner">
                     <i class="fas fa-users"></i> Partner</a></li>
                 <li><a href="#" data-section="accounts" class="nav-item" data-permission="accounts">
                     <i class="fas fa-calculator"></i> Accounts</a></li>
-                <li><a href="#" data-section="settings" class="nav-item" data-permission="settings">
-                    <i class="fas fa-cog"></i> Settings</a></li>
                 <li><a href="#" data-section="reports" class="nav-item" data-permission="reports">
                     <i class="fas fa-chart-bar"></i> Reports</a></li>
+                <li><a href="#" data-section="settings" class="nav-item" data-permission="settings">
+                    <i class="fas fa-cog"></i> Settings</a></li>
                 <li><a href="#" data-section="dashboards" class="nav-item" data-permission="dashboards">
                     <i class="fas fa-tachometer-alt"></i> Dashboards</a></li>
             </ul>
@@ -822,7 +980,7 @@
                 <div class="card welcome-card">
                     <i class="fas fa-chart-line"></i>
                     <h1>Welcome to SalesManager 7.0</h1>
-                    <p>Your comprehensive business management solution. Navigate through the system using the menu above to access different modules including transactions, inventory management, accounting, and more.</p>
+                    <p>Your comprehensive business management solution with enhanced POS, complete accounting books, and advanced sales functionality. Navigate through the system using the menu above to access different modules.</p>
                 </div>
             </section>
 
@@ -862,10 +1020,13 @@
                         <button class="btn btn-primary" onclick="newTransaction()">
                             <i class="fas fa-plus"></i> New Transaction
                         </button>
+                        <button class="btn btn-info" onclick="printPage()">
+                            <i class="fas fa-print"></i> Print
+                        </button>
                     </div>
 
                     <!-- Purchase & Expense Sub-menu -->
-                    <div id="purchaseControls" class="purchase-controls">
+                    <div id="purchaseControls" class="sub-controls">
                         <h4><i class="fas fa-shopping-cart"></i> Purchase & Expense Options</h4>
                         <div class="form-row">
                             <div class="form-group">
@@ -888,6 +1049,78 @@
                                 <i class="fas fa-clipboard-list" style="font-size: 48px; color: #1a237e; margin-bottom: 20px;"></i>
                                 <h3 style="color: #1a237e; margin-bottom: 10px;">Select Transaction Type</h3>
                                 <p style="color: #666;">Choose a transaction type from the dropdown above to get started.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Enhanced Sales Section -->
+            <section id="sales" class="content-section">
+                <div class="card">
+                    <h2><i class="fas fa-shopping-cart"></i> Sales Management</h2>
+                    <div class="transaction-controls">
+                        <select id="salesType" class="sales-select" onchange="loadSalesModule()">
+                            <option value="">Select Sales Type...</option>
+                            <option value="sale-quotation">Sale Quotation</option>
+                            <option value="sale-order">Sale Order</option>
+                            <option value="sale-invoice">Sale Invoice</option>
+                            <option value="retail-sale-invoice">Retail Sale Invoice</option>
+                            <option value="wholesale-invoice">Wholesale Invoice</option>
+                            <option value="special-sale-invoice">Special Sale Invoice</option>
+                            <option value="customer-screen">Customer Screen (POS)</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="newSaleTransaction()">
+                            <i class="fas fa-plus"></i> New Sale
+                        </button>
+                        <button class="btn btn-success" onclick="openPOS()">
+                            <i class="fas fa-cash-register"></i> Open POS
+                        </button>
+                        <button class="btn btn-info" onclick="printPage()">
+                            <i class="fas fa-print"></i> Print
+                        </button>
+                    </div>
+                    
+                    <!-- Sales Module Container -->
+                    <div id="salesModule">
+                        <div class="card">
+                            <div style="text-align: center; padding: 40px;">
+                                <i class="fas fa-store" style="font-size: 48px; color: #1a237e; margin-bottom: 20px;"></i>
+                                <h3 style="color: #1a237e; margin-bottom: 10px;">Select Sales Type</h3>
+                                <p style="color: #666;">Choose a sales type from the dropdown above to get started with sales transactions.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- POS Container -->
+                <div id="posContainer" style="display: none;">
+                    <div class="card">
+                        <h3><i class="fas fa-cash-register"></i> Point of Sale System</h3>
+                        <div class="pos-container">
+                            <div class="pos-items">
+                                <h4>Available Items</h4>
+                                <div id="itemGrid" class="item-grid"></div>
+                            </div>
+                            <div class="pos-cart">
+                                <h4>Shopping Cart</h4>
+                                <div id="cartItems" class="cart-items"></div>
+                                <div class="cart-total">
+                                    <div>Subtotal: <span id="subtotal">0.00</span></div>
+                                    <div>Tax: <span id="taxAmount">0.00</span></div>
+                                    <div>Total: <span id="grandTotal">0.00</span></div>
+                                </div>
+                                <div style="margin-top: 15px;">
+                                    <button class="btn btn-success" onclick="processPayment()">
+                                        <i class="fas fa-credit-card"></i> Process Payment
+                                    </button>
+                                    <button class="btn btn-warning" onclick="clearCart()">
+                                        <i class="fas fa-trash"></i> Clear Cart
+                                    </button>
+                                    <button class="btn btn-info" onclick="printReceipt()">
+                                        <i class="fas fa-print"></i> Print Receipt
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -959,6 +1192,9 @@
                         <button class="btn btn-primary" onclick="exportStock()">
                             <i class="fas fa-download"></i> Export Stock
                         </button>
+                        <button class="btn btn-info" onclick="printPage()">
+                            <i class="fas fa-print"></i> Print
+                        </button>
                     </div>
                 </div>
                 
@@ -1024,6 +1260,9 @@
                         <button class="btn btn-warning" onclick="clearPartnerForm()">
                             <i class="fas fa-broom"></i> Clear Form
                         </button>
+                        <button class="btn btn-info" onclick="printPage()">
+                            <i class="fas fa-print"></i> Print
+                        </button>
                     </div>
                 </div>
                 
@@ -1047,14 +1286,129 @@
                 </div>
             </section>
 
-            <!-- Accounts Section -->
+            <!-- Enhanced Accounts Section -->
             <section id="accounts" class="content-section">
                 <div class="card">
-                    <h2><i class="fas fa-calculator"></i> Accounting</h2>
-                    <div style="text-align: center; padding: 40px;">
-                        <i class="fas fa-chart-pie" style="font-size: 48px; color: #1a237e; margin-bottom: 20px;"></i>
-                        <h3 style="color: #1a237e; margin-bottom: 10px;">Accounting Module</h3>
-                        <p style="color: #666;">Comprehensive accounting features including ledgers, trial balance, profit & loss, and balance sheet reporting.</p>
+                    <h2><i class="fas fa-calculator"></i> Accounting Books</h2>
+                    
+                    <!-- Account Summary -->
+                    <div class="account-summary">
+                        <div class="summary-card">
+                            <h4>Total Assets</h4>
+                            <div class="amount" id="totalAssets">0.00</div>
+                        </div>
+                        <div class="summary-card">
+                            <h4>Total Liabilities</h4>
+                            <div class="amount" id="totalLiabilities">0.00</div>
+                        </div>
+                        <div class="summary-card">
+                            <h4>Total Equity</h4>
+                            <div class="amount" id="totalEquity">0.00</div>
+                        </div>
+                        <div class="summary-card">
+                            <h4>Net Profit</h4>
+                            <div class="amount" id="netProfit">0.00</div>
+                        </div>
+                    </div>
+
+                    <!-- Account Controls -->
+                    <div class="transaction-controls">
+                        <select id="accountBookType" class="transaction-select" onchange="loadAccountBook()">
+                            <option value="">Select Account Book...</option>
+                            <option value="general-ledger">General Ledger</option>
+                            <option value="cash-book">Cash Book</option>
+                            <option value="sales-book">Sales Book</option>
+                            <option value="purchase-book">Purchase Book</option>
+                            <option value="trial-balance">Trial Balance</option>
+                            <option value="profit-loss">Profit & Loss</option>
+                            <option value="balance-sheet">Balance Sheet</option>
+                            <option value="chart-of-accounts">Chart of Accounts</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="newAccountEntry()">
+                            <i class="fas fa-plus"></i> New Entry
+                        </button>
+                        <button class="btn btn-success" onclick="calculateTotals()">
+                            <i class="fas fa-calculator"></i> Calculate
+                        </button>
+                        <button class="btn btn-info" onclick="printPage()">
+                            <i class="fas fa-print"></i> Print
+                        </button>
+                    </div>
+                    
+                    <!-- Account Module Container -->
+                    <div id="accountModule">
+                        <div class="card">
+                            <div style="text-align: center; padding: 40px;">
+                                <i class="fas fa-chart-pie" style="font-size: 48px; color: #1a237e; margin-bottom: 20px;"></i>
+                                <h3 style="color: #1a237e; margin-bottom: 10px;">Select Account Book</h3>
+                                <p style="color: #666;">Choose an account book from the dropdown above to view or manage your accounting records.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Enhanced Reports Section -->
+            <section id="reports" class="content-section">
+                <div class="card">
+                    <h2><i class="fas fa-chart-bar"></i> Reports & Analytics</h2>
+                    
+                    <!-- Report Controls -->
+                    <div class="report-controls">
+                        <select id="reportType" class="transaction-select" onchange="loadReport()">
+                            <option value="">Select Report Type...</option>
+                            <optgroup label="Sales Reports">
+                                <option value="daily-sales">Daily Sales Report</option>
+                                <option value="monthly-sales">Monthly Sales Report</option>
+                                <option value="customer-sales">Customer Sales Report</option>
+                                <option value="product-sales">Product Sales Report</option>
+                            </optgroup>
+                            <optgroup label="Financial Reports">
+                                <option value="income-statement">Income Statement</option>
+                                <option value="balance-sheet-report">Balance Sheet</option>
+                                <option value="cash-flow">Cash Flow Statement</option>
+                                <option value="trial-balance-report">Trial Balance</option>
+                            </optgroup>
+                            <optgroup label="Inventory Reports">
+                                <option value="stock-report">Stock Report</option>
+                                <option value="low-stock">Low Stock Report</option>
+                                <option value="stock-movement">Stock Movement Report</option>
+                                <option value="valuation-report">Inventory Valuation</option>
+                            </optgroup>
+                            <optgroup label="Purchase Reports">
+                                <option value="purchase-report">Purchase Report</option>
+                                <option value="supplier-report">Supplier Report</option>
+                                <option value="purchase-analysis">Purchase Analysis</option>
+                            </optgroup>
+                        </select>
+                        
+                        <div class="date-range">
+                            <label>From:</label>
+                            <input type="date" id="reportFromDate" value="">
+                            <label>To:</label>
+                            <input type="date" id="reportToDate" value="">
+                        </div>
+                        
+                        <button class="btn btn-primary" onclick="generateReport()">
+                            <i class="fas fa-chart-line"></i> Generate Report
+                        </button>
+                        <button class="btn btn-success" onclick="exportReport()">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                        <button class="btn btn-info" onclick="printPage()">
+                            <i class="fas fa-print"></i> Print
+                        </button>
+                    </div>
+                    
+                    <!-- Report Module Container -->
+                    <div id="reportModule">
+                        <div class="card">
+                            <div style="text-align: center; padding: 40px;">
+                                <i class="fas fa-chart-area" style="font-size: 48px; color: #1a237e; margin-bottom: 20px;"></i>
+                                <h3 style="color: #1a237e; margin-bottom: 10px;">Select Report Type</h3>
+                                <p style="color: #666;">Choose a report type and date range from the dropdowns above to generate comprehensive business reports.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -1213,6 +1567,31 @@
                                     <span>Delete Transactions</span>
                                     <label class="switch">
                                         <input type="checkbox" data-permission="transaction-delete" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="permission-card">
+                                <h4><i class="fas fa-shopping-cart"></i> Sales Module</h4>
+                                <div class="permission-item">
+                                    <span>View Sales</span>
+                                    <label class="switch">
+                                        <input type="checkbox" data-permission="sales-view" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="permission-item">
+                                    <span>Create Sales</span>
+                                    <label class="switch">
+                                        <input type="checkbox" data-permission="sales-create" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="permission-item">
+                                    <span>POS Access</span>
+                                    <label class="switch">
+                                        <input type="checkbox" data-permission="pos-access" checked>
                                         <span class="slider"></span>
                                     </label>
                                 </div>
@@ -1444,18 +1823,6 @@
                 </div>
             </section>
 
-            <!-- Reports Section -->
-            <section id="reports" class="content-section">
-                <div class="card">
-                    <h2><i class="fas fa-chart-bar"></i> Reports & Analytics</h2>
-                    <div style="text-align: center; padding: 40px;">
-                        <i class="fas fa-chart-line" style="font-size: 48px; color: #1a237e; margin-bottom: 20px;"></i>
-                        <h3 style="color: #1a237e; margin-bottom: 10px;">Business Intelligence</h3>
-                        <p style="color: #666;">Comprehensive reporting including sales reports, inventory analysis, financial statements, and business analytics.</p>
-                    </div>
-                </div>
-            </section>
-
             <!-- Dashboards Section -->
             <section id="dashboards" class="content-section">
                 <div class="card">
@@ -1472,13 +1839,38 @@
         <!-- Footer -->
         <footer class="footer">
             <div class="footer-content">
-                <div>© 2025 SalesManager 7.0 - Business Management System</div>
+                <div>© 2025 SalesManager 7.0 - Enhanced Business Management System</div>
                 <div class="developer-info" id="footerDeveloperInfo">
                     Developed by: <span id="footerDevName">System Developer</span> | 
                     Contact: <span id="footerDevEmail">developer@example.com</span>
                 </div>
             </div>
         </footer>
+    </div>
+
+    <!-- Receipt Template (Hidden) -->
+    <div id="receiptTemplate" style="display: none;">
+        <div class="receipt-container">
+            <div class="receipt-header">
+                <h3 id="receiptCompanyName">Business Management System</h3>
+                <p id="receiptCompanyAddress">Company Address</p>
+                <p id="receiptCompanyPhone">Phone: +256-000-000-000</p>
+                <hr>
+                <p>Receipt #: <span id="receiptNumber"></span></p>
+                <p>Date: <span id="receiptDate"></span></p>
+                <p>Cashier: <span id="receiptCashier"></span></p>
+            </div>
+            <div class="receipt-items" id="receiptItems">
+                <!-- Items will be inserted here -->
+            </div>
+            <div class="receipt-total">
+                <p>Subtotal: <span id="receiptSubtotal"></span></p>
+                <p>Tax: <span id="receiptTax"></span></p>
+                <p><strong>Total: <span id="receiptGrandTotal"></span></strong></p>
+                <hr>
+                <p style="text-align: center;">Thank you for your business!</p>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -1489,6 +1881,9 @@
             enableVAT: false,
             vatRate: 18,
             currency: 'UGX',
+            phone: '',
+            email: '',
+            address: '',
             devInfo: {
                 company: 'System Developer',
                 name: 'Development Team',
@@ -1508,16 +1903,67 @@
         let currentUser = null;
         let transactions = [];
         let stockMovements = [];
+        let accountEntries = [];
+        let salesData = [];
+        let currentCart = [];
+        let receiptCounter = 1000;
+
+        // Accounting books structure
+        let accountingBooks = {
+            chartOfAccounts: [
+                { code: '1000', name: 'Cash', type: 'Asset', balance: 0 },
+                { code: '1100', name: 'Accounts Receivable', type: 'Asset', balance: 0 },
+                { code: '1200', name: 'Inventory', type: 'Asset', balance: 0 },
+                { code: '2000', name: 'Accounts Payable', type: 'Liability', balance: 0 },
+                { code: '3000', name: 'Capital', type: 'Equity', balance: 0 },
+                { code: '4000', name: 'Sales Revenue', type: 'Revenue', balance: 0 },
+                { code: '5000', name: 'Cost of Goods Sold', type: 'Expense', balance: 0 },
+                { code: '6000', name: 'Operating Expenses', type: 'Expense', balance: 0 }
+            ],
+            generalLedger: [],
+            cashBook: [],
+            salesBook: [],
+            purchaseBook: []
+        };
 
         // Initialize application
         document.addEventListener('DOMContentLoaded', () => {
             showLoginForm();
+            initializeDates();
+            initializeAccounting();
         });
+
+        function initializeDates() {
+            const today = new Date().toISOString().split('T')[0];
+            const elements = ['reportFromDate', 'reportToDate'];
+            elements.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) element.value = today;
+            });
+        }
+
+        function initializeAccounting() {
+            // Initialize opening balances
+            accountingBooks.chartOfAccounts.forEach(account => {
+                if (account.type === 'Asset') {
+                    account.balance = Math.random() * 10000; // Sample data
+                } else if (account.type === 'Liability') {
+                    account.balance = Math.random() * 5000; // Sample data
+                } else if (account.type === 'Equity') {
+                    account.balance = Math.random() * 15000; // Sample data
+                }
+            });
+        }
 
         // Login functionality
         function showLoginForm() {
             document.getElementById('loginModal').style.display = 'flex';
             document.getElementById('app').classList.add('app-hidden');
+            updateLoginDisplay();
+        }
+
+        function updateLoginDisplay() {
+            document.getElementById('loginCompanyDisplay').textContent = systemConfig.companyName;
         }
 
         function login() {
@@ -1549,6 +1995,7 @@
                 loadSystemConfig();
                 updateFooter();
                 loadUsers();
+                updateNotificationCount();
                 
                 showNotification(`Welcome ${user.fullName}! Login successful.`, 'success');
             } else {
@@ -1568,6 +2015,11 @@
                 showLoginForm();
                 showNotification('Logged out successfully', 'info');
             }
+        }
+
+        function updateNotificationCount() {
+            const lowStockItems = items.filter(item => item.stock <= item.minStock).length;
+            document.getElementById('notificationCount').textContent = lowStockItems;
         }
 
         // Navigation functionality
@@ -1592,8 +2044,495 @@
                     
                     const sectionId = item.getAttribute('data-section');
                     document.getElementById(sectionId).classList.add('active');
+                    
+                    // Load section-specific data
+                    if (sectionId === 'accounts') {
+                        calculateAccountSummary();
+                    } else if (sectionId === 'item') {
+                        refreshItemsTable();
+                    } else if (sectionId === 'partner') {
+                        refreshPartnersTable();
+                    }
                 });
             });
+        }
+
+        // Enhanced Sales Module Functions
+        function loadSalesModule() {
+            const salesType = document.getElementById('salesType').value;
+            const moduleContainer = document.getElementById('salesModule');
+            const posContainer = document.getElementById('posContainer');
+            
+            if (!salesType) {
+                moduleContainer.innerHTML = `
+                    <div class="card">
+                        <div style="text-align: center; padding: 40px;">
+                            <i class="fas fa-store" style="font-size: 48px; color: #1a237e; margin-bottom: 20px;"></i>
+                            <h3 style="color: #1a237e; margin-bottom: 10px;">Select Sales Type</h3>
+                            <p style="color: #666;">Choose a sales type from the dropdown above to get started with sales transactions.</p>
+                        </div>
+                    </div>
+                `;
+                posContainer.style.display = 'none';
+                return;
+            }
+
+            if (salesType === 'customer-screen') {
+                posContainer.style.display = 'block';
+                moduleContainer.innerHTML = '';
+                loadPOSItems();
+            } else {
+                posContainer.style.display = 'none';
+                let moduleContent = generateSalesInterface(salesType);
+                moduleContainer.innerHTML = moduleContent;
+            }
+        }
+
+        function generateSalesInterface(salesType) {
+            const title = salesType.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            const invoiceNumber = salesType.toUpperCase().replace(/-/g, '') + '-' + Date.now();
+            
+            return `
+                <div class="card">
+                    <h3><i class="fas fa-file-invoice"></i> ${title}</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Invoice/Document Number</label>
+                            <input type="text" value="${invoiceNumber}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input type="date" value="${new Date().toISOString().split('T')[0]}">
+                        </div>
+                        <div class="form-group">
+                            <label>Customer</label>
+                            <select id="salesCustomer">
+                                <option>Select Customer...</option>
+                                ${partners.filter(p => p.type === 'customer' || p.type === 'both')
+                                  .map(p => `<option value="${p.id}">${p.name}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Sales Representative</label>
+                            <input type="text" value="${currentUser.fullName}" readonly>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Item</label>
+                            <select id="salesItem" onchange="updateSalesItemDetails()">
+                                <option>Select Item...</option>
+                                ${items.map(item => `<option value="${item.id}">${item.name} - ${formatCurrency(salesType.includes('wholesale') ? item.factoryPrice : item.retailPrice)}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Quantity</label>
+                            <input type="number" id="salesQty" min="1" value="1" onchange="calculateSalesAmount()">
+                        </div>
+                        <div class="form-group">
+                            <label>Unit Price</label>
+                            <input type="number" id="salesPrice" step="0.01" onchange="calculateSalesAmount()">
+                        </div>
+                        <div class="form-group">
+                            <label>Discount (%)</label>
+                            <input type="number" id="salesDiscount" min="0" max="100" value="0" onchange="calculateSalesAmount()">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Subtotal</label>
+                            <input type="number" id="salesSubtotal" readonly>
+                        </div>
+                        ${systemConfig.enableVAT ? `
+                        <div class="form-group">
+                            <label>VAT (${systemConfig.vatRate}%)</label>
+                            <input type="number" id="salesVAT" readonly>
+                        </div>
+                        ` : ''}
+                        <div class="form-group">
+                            <label>Total Amount</label>
+                            <input type="number" id="salesTotal" readonly style="font-weight: bold; font-size: 16px;">
+                        </div>
+                        <div class="form-group">
+                            <label>Payment Method</label>
+                            <select id="paymentMethod">
+                                <option value="cash">Cash</option>
+                                <option value="card">Credit/Debit Card</option>
+                                <option value="mobile">Mobile Money</option>
+                                <option value="bank">Bank Transfer</option>
+                                <option value="credit">Credit</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Notes</label>
+                            <textarea rows="3" placeholder="Additional notes or special instructions"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <button class="btn btn-success" onclick="saveSaleTransaction('${salesType}')">
+                            <i class="fas fa-save"></i> Save Sale
+                        </button>
+                        <button class="btn btn-primary" onclick="processSalePayment()">
+                            <i class="fas fa-money-bill"></i> Process Payment
+                        </button>
+                        <button class="btn btn-info" onclick="printSalesReceipt()">
+                            <i class="fas fa-print"></i> Print Receipt
+                        </button>
+                        <button class="btn btn-warning" onclick="clearSalesForm()">
+                            <i class="fas fa-broom"></i> Clear Form
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateSalesItemDetails() {
+            const itemId = document.getElementById('salesItem').value;
+            const item = items.find(i => i.id === itemId);
+            if (item) {
+                const salesType = document.getElementById('salesType').value;
+                const price = salesType.includes('wholesale') ? item.factoryPrice : item.retailPrice;
+                document.getElementById('salesPrice').value = price || 0;
+                calculateSalesAmount();
+            }
+        }
+
+        function calculateSalesAmount() {
+            const qty = parseFloat(document.getElementById('salesQty').value) || 0;
+            const price = parseFloat(document.getElementById('salesPrice').value) || 0;
+            const discount = parseFloat(document.getElementById('salesDiscount').value) || 0;
+            
+            const subtotal = qty * price;
+            const discountAmount = subtotal * (discount / 100);
+            const afterDiscount = subtotal - discountAmount;
+            
+            document.getElementById('salesSubtotal').value = afterDiscount.toFixed(2);
+            
+            if (systemConfig.enableVAT) {
+                const vatAmount = afterDiscount * (systemConfig.vatRate / 100);
+                document.getElementById('salesVAT').value = vatAmount.toFixed(2);
+                document.getElementById('salesTotal').value = (afterDiscount + vatAmount).toFixed(2);
+            } else {
+                document.getElementById('salesTotal').value = afterDiscount.toFixed(2);
+            }
+        }
+
+        function saveSaleTransaction(salesType) {
+            const transaction = {
+                id: salesType.toUpperCase().replace(/-/g, '') + '-' + Date.now(),
+                type: salesType,
+                date: new Date().toISOString().split('T')[0],
+                amount: parseFloat(document.getElementById('salesTotal').value) || 0,
+                customer: document.getElementById('salesCustomer').value,
+                status: 'completed',
+                createdBy: currentUser.fullName
+            };
+            
+            transactions.push(transaction);
+            salesData.push(transaction);
+            
+            // Update inventory
+            const itemId = document.getElementById('salesItem').value;
+            const qty = parseFloat(document.getElementById('salesQty').value) || 0;
+            const item = items.find(i => i.id === itemId);
+            if (item && qty > 0) {
+                item.stock = Math.max(0, item.stock - qty);
+                item.status = item.stock <= item.minStock ? 'Low Stock' : 'In Stock';
+                
+                // Record stock movement
+                const stockMovement = {
+                    id: 'STK-' + Date.now(),
+                    itemId: item.id,
+                    itemName: item.name,
+                    type: 'Sale',
+                    quantity: -qty,
+                    date: new Date().toISOString().split('T')[0],
+                    user: currentUser.fullName,
+                    notes: `Sale transaction: ${transaction.id}`
+                };
+                stockMovements.push(stockMovement);
+            }
+            
+            // Add to accounting books
+            addAccountingEntry({
+                account: 'Sales Revenue',
+                type: 'Credit',
+                amount: transaction.amount,
+                reference: transaction.id,
+                description: `Sale: ${salesType}`
+            });
+            
+            addAccountingEntry({
+                account: 'Cash',
+                type: 'Debit',
+                amount: transaction.amount,
+                reference: transaction.id,
+                description: `Sale: ${salesType}`
+            });
+            
+            refreshItemsTable();
+            updateNotificationCount();
+            showNotification(`${salesType.replace('-', ' ')} saved successfully!`, 'success');
+        }
+
+        function clearSalesForm() {
+            document.querySelectorAll('#salesModule input[type="number"]').forEach(input => {
+                if (!input.readOnly) input.value = '';
+            });
+            document.querySelectorAll('#salesModule select').forEach(select => {
+                if (!select.disabled) select.selectedIndex = 0;
+            });
+        }
+
+        function newSaleTransaction() {
+            const salesType = document.getElementById('salesType').value;
+            if (!salesType) {
+                showNotification('Please select a sales type first', 'warning');
+                return;
+            }
+            
+            loadSalesModule();
+            showNotification('New sales transaction form loaded', 'info');
+        }
+
+        // POS System Functions
+        function openPOS() {
+            document.getElementById('salesType').value = 'customer-screen';
+            loadSalesModule();
+            showNotification('POS system opened', 'info');
+        }
+
+        function loadPOSItems() {
+            const itemGrid = document.getElementById('itemGrid');
+            itemGrid.innerHTML = '';
+            
+            items.forEach(item => {
+                if (item.stock > 0) {
+                    const itemCard = document.createElement('div');
+                    itemCard.className = 'item-card';
+                    itemCard.innerHTML = `
+                        <h5>${item.name}</h5>
+                        <p>Stock: ${item.stock}</p>
+                        <p class="text-success font-bold">${formatCurrency(item.retailPrice)}</p>
+                        <button class="btn btn-primary" onclick="addToCart('${item.id}')">
+                            <i class="fas fa-plus"></i> Add
+                        </button>
+                    `;
+                    itemGrid.appendChild(itemCard);
+                }
+            });
+        }
+
+        function addToCart(itemId) {
+            const item = items.find(i => i.id === itemId);
+            if (!item) return;
+            
+            const existingItem = currentCart.find(c => c.id === itemId);
+            if (existingItem) {
+                if (existingItem.quantity < item.stock) {
+                    existingItem.quantity++;
+                    existingItem.total = existingItem.quantity * existingItem.price;
+                }
+            } else {
+                currentCart.push({
+                    id: itemId,
+                    name: item.name,
+                    price: item.retailPrice,
+                    quantity: 1,
+                    total: item.retailPrice
+                });
+            }
+            
+            updateCartDisplay();
+        }
+
+        function updateCartDisplay() {
+            const cartItems = document.getElementById('cartItems');
+            cartItems.innerHTML = '';
+            
+            let subtotal = 0;
+            
+            currentCart.forEach((cartItem, index) => {
+                subtotal += cartItem.total;
+                
+                const cartItemDiv = document.createElement('div');
+                cartItemDiv.className = 'cart-item';
+                cartItemDiv.innerHTML = `
+                    <div>
+                        <strong>${cartItem.name}</strong><br>
+                        ${formatCurrency(cartItem.price)} x ${cartItem.quantity}
+                    </div>
+                    <div>
+                        <button class="btn btn-warning" onclick="removeFromCart(${index})" style="padding: 5px;">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <span style="margin: 0 10px;">${formatCurrency(cartItem.total)}</span>
+                        <button class="btn btn-primary" onclick="addQuantity(${index})" style="padding: 5px;">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                `;
+                cartItems.appendChild(cartItemDiv);
+            });
+            
+            const taxAmount = systemConfig.enableVAT ? subtotal * (systemConfig.vatRate / 100) : 0;
+            const grandTotal = subtotal + taxAmount;
+            
+            document.getElementById('subtotal').textContent = formatCurrency(subtotal);
+            document.getElementById('taxAmount').textContent = formatCurrency(taxAmount);
+            document.getElementById('grandTotal').textContent = formatCurrency(grandTotal);
+        }
+
+        function addQuantity(index) {
+            const cartItem = currentCart[index];
+            const item = items.find(i => i.id === cartItem.id);
+            if (cartItem.quantity < item.stock) {
+                cartItem.quantity++;
+                cartItem.total = cartItem.quantity * cartItem.price;
+                updateCartDisplay();
+            }
+        }
+
+        function removeFromCart(index) {
+            const cartItem = currentCart[index];
+            if (cartItem.quantity > 1) {
+                cartItem.quantity--;
+                cartItem.total = cartItem.quantity * cartItem.price;
+            } else {
+                currentCart.splice(index, 1);
+            }
+            updateCartDisplay();
+        }
+
+        function clearCart() {
+            currentCart = [];
+            updateCartDisplay();
+            showNotification('Cart cleared', 'info');
+        }
+
+        function processPayment() {
+            if (currentCart.length === 0) {
+                showNotification('Cart is empty', 'warning');
+                return;
+            }
+            
+            const subtotal = parseFloat(document.getElementById('subtotal').textContent.replace(/[^\d.-]/g, ''));
+            const taxAmount = parseFloat(document.getElementById('taxAmount').textContent.replace(/[^\d.-]/g, ''));
+            const grandTotal = parseFloat(document.getElementById('grandTotal').textContent.replace(/[^\d.-]/g, ''));
+            
+            // Create sale transaction
+            const saleId = 'POS-' + Date.now();
+            const transaction = {
+                id: saleId,
+                type: 'pos-sale',
+                date: new Date().toISOString().split('T')[0],
+                items: [...currentCart],
+                subtotal: subtotal,
+                tax: taxAmount,
+                total: grandTotal,
+                status: 'completed',
+                createdBy: currentUser.fullName
+            };
+            
+            transactions.push(transaction);
+            salesData.push(transaction);
+            
+            // Update inventory
+            currentCart.forEach(cartItem => {
+                const item = items.find(i => i.id === cartItem.id);
+                if (item) {
+                    item.stock -= cartItem.quantity;
+                    item.status = item.stock <= item.minStock ? 'Low Stock' : 'In Stock';
+                    
+                    // Record stock movement
+                    const stockMovement = {
+                        id: 'STK-' + Date.now(),
+                        itemId: item.id,
+                        itemName: item.name,
+                        type: 'POS Sale',
+                        quantity: -cartItem.quantity,
+                        date: new Date().toISOString().split('T')[0],
+                        user: currentUser.fullName,
+                        notes: `POS Sale: ${saleId}`
+                    };
+                    stockMovements.push(stockMovement);
+                }
+            });
+            
+            // Add to accounting books
+            addAccountingEntry({
+                account: 'Sales Revenue',
+                type: 'Credit',
+                amount: grandTotal,
+                reference: saleId,
+                description: 'POS Sale'
+            });
+            
+            addAccountingEntry({
+                account: 'Cash',
+                type: 'Debit',
+                amount: grandTotal,
+                reference: saleId,
+                description: 'POS Sale'
+            });
+            
+            clearCart();
+            loadPOSItems();
+            updateNotificationCount();
+            showNotification('Payment processed successfully!', 'success');
+        }
+
+        function printReceipt() {
+            if (currentCart.length === 0) {
+                showNotification('Cart is empty', 'warning');
+                return;
+            }
+            
+            generateAndPrintReceipt();
+        }
+
+        function generateAndPrintReceipt() {
+            const receiptTemplate = document.getElementById('receiptTemplate').cloneNode(true);
+            receiptTemplate.style.display = 'block';
+            receiptTemplate.id = 'printableReceipt';
+            
+            // Fill receipt data
+            receiptTemplate.querySelector('#receiptCompanyName').textContent = systemConfig.companyName;
+            receiptTemplate.querySelector('#receiptCompanyAddress').textContent = systemConfig.address || 'Company Address';
+            receiptTemplate.querySelector('#receiptCompanyPhone').textContent = `Phone: ${systemConfig.phone || '+256-000-000-000'}`;
+            receiptTemplate.querySelector('#receiptNumber').textContent = 'R' + (++receiptCounter);
+            receiptTemplate.querySelector('#receiptDate').textContent = new Date().toLocaleString();
+            receiptTemplate.querySelector('#receiptCashier').textContent = currentUser.fullName;
+            
+            // Fill items
+            const itemsContainer = receiptTemplate.querySelector('#receiptItems');
+            itemsContainer.innerHTML = '';
+            
+            currentCart.forEach(cartItem => {
+                const itemDiv = document.createElement('div');
+                itemDiv.style.display = 'flex';
+                itemDiv.style.justifyContent = 'space-between';
+                itemDiv.innerHTML = `
+                    <span>${cartItem.name} x${cartItem.quantity}</span>
+                    <span>${formatCurrency(cartItem.total)}</span>
+                `;
+                itemsContainer.appendChild(itemDiv);
+            });
+            
+            // Fill totals
+            receiptTemplate.querySelector('#receiptSubtotal').textContent = document.getElementById('subtotal').textContent;
+            receiptTemplate.querySelector('#receiptTax').textContent = document.getElementById('taxAmount').textContent;
+            receiptTemplate.querySelector('#receiptGrandTotal').textContent = document.getElementById('grandTotal').textContent;
+            
+            // Add to body and print
+            document.body.appendChild(receiptTemplate);
+            
+            setTimeout(() => {
+                window.print();
+                document.body.removeChild(receiptTemplate);
+            }, 100);
         }
 
         // Transaction module functionality
@@ -1665,7 +2604,6 @@
             moduleContainer.innerHTML = moduleContent;
         }
 
-        // Purchase module interfaces
         function generatePurchaseOrderInterface() {
             return `
                 <div class="card">
@@ -1729,6 +2667,9 @@
                         <button class="btn btn-warning" onclick="clearPurchaseForm()">
                             <i class="fas fa-broom"></i> Clear Form
                         </button>
+                        <button class="btn btn-info" onclick="printPage()">
+                            <i class="fas fa-print"></i> Print
+                        </button>
                     </div>
                 </div>
             `;
@@ -1786,7 +2727,7 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label>Item</label>
-                            <select onchange="addPurchaseInvoiceItem(this.value)">
+                            <select>
                                 <option>Select Item...</option>
                                 ${items.map(item => `<option value="${item.id}">${item.name}</option>`).join('')}
                             </select>
@@ -1826,74 +2767,8 @@
                         <button class="btn btn-primary" onclick="recordPayment()">
                             <i class="fas fa-money-bill"></i> Record Payment
                         </button>
-                    </div>
-                </div>
-            `;
-        }
-
-        function generateGoodsServicesInterface() {
-            return `
-                <div class="card">
-                    <h3><i class="fas fa-truck"></i> Goods and Services</h3>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Reference Number</label>
-                            <input type="text" value="GS-${Date.now()}" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label>Date</label>
-                            <input type="date" value="${new Date().toISOString().split('T')[0]}">
-                        </div>
-                        <div class="form-group">
-                            <label>Type</label>
-                            <select id="goodsServiceType">
-                                <option value="goods">Goods Purchase</option>
-                                <option value="services">Service Purchase</option>
-                                <option value="both">Goods & Services</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Supplier/Service Provider</label>
-                            <select>
-                                <option>Select Supplier...</option>
-                                ${partners.filter(p => p.type === 'supplier' || p.type === 'both')
-                                  .map(p => `<option value="${p.id}">${p.name}</option>`).join('')}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Description</label>
-                            <textarea rows="3" placeholder="Describe the goods or services purchased"></textarea>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Quantity</label>
-                            <input type="number" min="1" value="1">
-                        </div>
-                        <div class="form-group">
-                            <label>Unit Cost</label>
-                            <input type="number" step="0.01" placeholder="0.00">
-                        </div>
-                        <div class="form-group">
-                            <label>Total Cost</label>
-                            <input type="number" step="0.01" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label>Add to Inventory</label>
-                            <label class="switch">
-                                <input type="checkbox" id="addToInventory">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <button class="btn btn-success" onclick="saveTransaction('goods-services')">
-                            <i class="fas fa-save"></i> Save Record
-                        </button>
-                        <button class="btn btn-primary" onclick="generateStockEntry()">
-                            <i class="fas fa-boxes"></i> Generate Stock Entry
+                        <button class="btn btn-info" onclick="printPage()">
+                            <i class="fas fa-print"></i> Print
                         </button>
                     </div>
                 </div>
@@ -1951,13 +2826,6 @@
                             <label>Reference/Receipt No.</label>
                             <input type="text" placeholder="Receipt or reference number">
                         </div>
-                        <div class="form-group">
-                            <label>Recurring Expense</label>
-                            <label class="switch">
-                                <input type="checkbox" id="recurringExpense">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
@@ -1965,27 +2833,15 @@
                             <textarea rows="3" placeholder="Detailed description of the expense"></textarea>
                         </div>
                     </div>
-                    ${systemConfig.enableVAT ? `
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>VAT Inclusive</label>
-                            <label class="switch">
-                                <input type="checkbox" id="vatInclusive">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                        <div class="form-group">
-                            <label>VAT Amount</label>
-                            <input type="number" step="0.01" readonly>
-                        </div>
-                    </div>
-                    ` : ''}
                     <div class="form-row">
                         <button class="btn btn-success" onclick="saveTransaction('expense')">
                             <i class="fas fa-save"></i> Save Expense
                         </button>
                         <button class="btn btn-primary" onclick="attachReceipt()">
                             <i class="fas fa-paperclip"></i> Attach Receipt
+                        </button>
+                        <button class="btn btn-info" onclick="printPage()">
+                            <i class="fas fa-print"></i> Print
                         </button>
                     </div>
                 </div>
@@ -2045,45 +2901,79 @@
                         </div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group">
-                            <label>Depreciation Method</label>
-                            <select>
-                                <option value="straight-line">Straight Line</option>
-                                <option value="reducing-balance">Reducing Balance</option>
-                                <option value="sum-of-years">Sum of Years Digits</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Location</label>
-                            <input type="text" placeholder="Where is the asset located?">
-                        </div>
-                        <div class="form-group">
-                            <label>Warranty Period</label>
-                            <input type="text" placeholder="e.g., 2 years">
-                        </div>
-                        <div class="form-group">
-                            <label>Insurance Required</label>
-                            <label class="switch">
-                                <input type="checkbox" id="insuranceRequired">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Notes</label>
-                            <textarea rows="3" placeholder="Additional asset information"></textarea>
-                        </div>
-                    </div>
-                    <div class="form-row">
                         <button class="btn btn-success" onclick="saveTransaction('asset')">
                             <i class="fas fa-save"></i> Save Asset
                         </button>
                         <button class="btn btn-primary" onclick="generateAssetTag()">
                             <i class="fas fa-tags"></i> Generate Asset Tag
                         </button>
-                        <button class="btn btn-warning" onclick="scheduleDepreciation()">
-                            <i class="fas fa-calendar"></i> Schedule Depreciation
+                        <button class="btn btn-info" onclick="printPage()">
+                            <i class="fas fa-print"></i> Print
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateGoodsServicesInterface() {
+            return `
+                <div class="card">
+                    <h3><i class="fas fa-truck"></i> Goods and Services</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Reference Number</label>
+                            <input type="text" value="GS-${Date.now()}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input type="date" value="${new Date().toISOString().split('T')[0]}">
+                        </div>
+                        <div class="form-group">
+                            <label>Type</label>
+                            <select id="goodsServiceType">
+                                <option value="goods">Goods Purchase</option>
+                                <option value="services">Service Purchase</option>
+                                <option value="both">Goods & Services</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Supplier/Service Provider</label>
+                            <select>
+                                <option>Select Supplier...</option>
+                                ${partners.filter(p => p.type === 'supplier' || p.type === 'both')
+                                  .map(p => `<option value="${p.id}">${p.name}</option>`).join('')}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea rows="3" placeholder="Describe the goods or services purchased"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Quantity</label>
+                            <input type="number" min="1" value="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Unit Cost</label>
+                            <input type="number" step="0.01" placeholder="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label>Total Cost</label>
+                            <input type="number" step="0.01" readonly>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <button class="btn btn-success" onclick="saveTransaction('goods-services')">
+                            <i class="fas fa-save"></i> Save Record
+                        </button>
+                        <button class="btn btn-primary" onclick="generateStockEntry()">
+                            <i class="fas fa-boxes"></i> Generate Stock Entry
+                        </button>
+                        <button class="btn btn-info" onclick="printPage()">
+                            <i class="fas fa-print"></i> Print
                         </button>
                     </div>
                 </div>
@@ -2105,6 +2995,1075 @@
                     </div>
                 </div>
             `;
+        }
+
+        // Enhanced Accounting Functions
+        function loadAccountBook() {
+            const bookType = document.getElementById('accountBookType').value;
+            const moduleContainer = document.getElementById('accountModule');
+            
+            if (!bookType) {
+                moduleContainer.innerHTML = `
+                    <div class="card">
+                        <div style="text-align: center; padding: 40px;">
+                            <i class="fas fa-chart-pie" style="font-size: 48px; color: #1a237e; margin-bottom: 20px;"></i>
+                            <h3 style="color: #1a237e; margin-bottom: 10px;">Select Account Book</h3>
+                            <p style="color: #666;">Choose an account book from the dropdown above to view or manage your accounting records.</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            let moduleContent = '';
+            
+            switch(bookType) {
+                case 'general-ledger':
+                    moduleContent = generateGeneralLedgerInterface();
+                    break;
+                case 'cash-book':
+                    moduleContent = generateCashBookInterface();
+                    break;
+                case 'sales-book':
+                    moduleContent = generateSalesBookInterface();
+                    break;
+                case 'purchase-book':
+                    moduleContent = generatePurchaseBookInterface();
+                    break;
+                case 'trial-balance':
+                    moduleContent = generateTrialBalanceInterface();
+                    break;
+                case 'profit-loss':
+                    moduleContent = generateProfitLossInterface();
+                    break;
+                case 'balance-sheet':
+                    moduleContent = generateBalanceSheetInterface();
+                    break;
+                case 'chart-of-accounts':
+                    moduleContent = generateChartOfAccountsInterface();
+                    break;
+                default:
+                    moduleContent = generateGenericAccountInterface(bookType);
+            }
+            
+            moduleContainer.innerHTML = moduleContent;
+        }
+
+        function generateGeneralLedgerInterface() {
+            return `
+                <div class="card">
+                    <h3><i class="fas fa-book"></i> General Ledger</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Account</th>
+                                    <th>Reference</th>
+                                    <th>Description</th>
+                                    <th>Debit</th>
+                                    <th>Credit</th>
+                                    <th>Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody id="generalLedgerBody">
+                                ${generateGeneralLedgerRows()}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateCashBookInterface() {
+            const cashEntries = accountingBooks.cashBook;
+            return `
+                <div class="card">
+                    <h3><i class="fas fa-money-bill-wave"></i> Cash Book</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Description</th>
+                                    <th>Reference</th>
+                                    <th>Cash In</th>
+                                    <th>Cash Out</th>
+                                    <th>Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cashBookBody">
+                                ${cashEntries.length === 0 ? '<tr class="no-records"><td colspan="6">No cash transactions recorded yet.</td></tr>' : generateCashBookRows()}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateSalesBookInterface() {
+            return `
+                <div class="card">
+                    <h3><i class="fas fa-shopping-cart"></i> Sales Book</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Invoice No.</th>
+                                    <th>Customer</th>
+                                    <th>Description</th>
+                                    <th>Amount</th>
+                                    <th>Tax</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="salesBookBody">
+                                ${generateSalesBookRows()}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generatePurchaseBookInterface() {
+            return `
+                <div class="card">
+                    <h3><i class="fas fa-file-invoice"></i> Purchase Book</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Invoice No.</th>
+                                    <th>Supplier</th>
+                                    <th>Description</th>
+                                    <th>Amount</th>
+                                    <th>Tax</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="purchaseBookBody">
+                                ${generatePurchaseBookRows()}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateTrialBalanceInterface() {
+            return `
+                <div class="card">
+                    <h3><i class="fas fa-balance-scale"></i> Trial Balance</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Account Code</th>
+                                    <th>Account Name</th>
+                                    <th>Debit Balance</th>
+                                    <th>Credit Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody id="trialBalanceBody">
+                                ${generateTrialBalanceRows()}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateProfitLossInterface() {
+            const profitLoss = calculateProfitLoss();
+            return `
+                <div class="card">
+                    <h3><i class="fas fa-chart-line"></i> Profit & Loss Statement</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <h4 class="text-success">INCOME</h4>
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Account</th>
+                                            <th>Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Sales Revenue</td>
+                                            <td class="text-success">${formatCurrency(profitLoss.income.sales)}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Other Income</td>
+                                            <td class="text-success">${formatCurrency(profitLoss.income.other)}</td>
+                                        </tr>
+                                        <tr class="font-bold">
+                                            <td>Total Income</td>
+                                            <td class="text-success">${formatCurrency(profitLoss.income.total)}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <h4 class="text-danger">EXPENSES</h4>
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Account</th>
+                                            <th>Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Cost of Goods Sold</td>
+                                            <td class="text-danger">${formatCurrency(profitLoss.expenses.cogs)}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Operating Expenses</td>
+                                            <td class="text-danger">${formatCurrency(profitLoss.expenses.operating)}</td>
+                                        </tr>
+                                        <tr class="font-bold">
+                                            <td>Total Expenses</td>
+                                            <td class="text-danger">${formatCurrency(profitLoss.expenses.total)}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <h3>Net Profit/Loss: <span class="${profitLoss.netProfit >= 0 ? 'text-success' : 'text-danger'}">${formatCurrency(profitLoss.netProfit)}</span></h3>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateBalanceSheetInterface() {
+            const balanceSheet = calculateBalanceSheet();
+            return `
+                <div class="card">
+                    <h3><i class="fas fa-clipboard-list"></i> Balance Sheet</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <h4 class="text-primary">ASSETS</h4>
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Account</th>
+                                            <th>Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${balanceSheet.assets.map(asset => `
+                                            <tr>
+                                                <td>${asset.name}</td>
+                                                <td class="text-primary">${formatCurrency(asset.balance)}</td>
+                                            </tr>
+                                        `).join('')}
+                                        <tr class="font-bold">
+                                            <td>Total Assets</td>
+                                            <td class="text-primary">${formatCurrency(balanceSheet.totalAssets)}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <h4 class="text-warning">LIABILITIES & EQUITY</h4>
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Account</th>
+                                            <th>Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${balanceSheet.liabilities.map(liability => `
+                                            <tr>
+                                                <td>${liability.name}</td>
+                                                <td class="text-warning">${formatCurrency(liability.balance)}</td>
+                                            </tr>
+                                        `).join('')}
+                                        ${balanceSheet.equity.map(equity => `
+                                            <tr>
+                                                <td>${equity.name}</td>
+                                                <td class="text-success">${formatCurrency(equity.balance)}</td>
+                                            </tr>
+                                        `).join('')}
+                                        <tr class="font-bold">
+                                            <td>Total Liabilities & Equity</td>
+                                            <td>${formatCurrency(balanceSheet.totalLiabilitiesEquity)}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateChartOfAccountsInterface() {
+            return `
+                <div class="card">
+                    <h3><i class="fas fa-list"></i> Chart of Accounts</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Account Code</th>
+                                    <th>Account Name</th>
+                                    <th>Account Type</th>
+                                    <th>Balance</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${accountingBooks.chartOfAccounts.map(account => `
+                                    <tr>
+                                        <td>${account.code}</td>
+                                        <td>${account.name}</td>
+                                        <td>
+                                            <span class="price-tag ${getAccountTypeClass(account.type)}">
+                                                ${account.type}
+                                            </span>
+                                        </td>
+                                        <td class="font-bold">${formatCurrency(account.balance)}</td>
+                                        <td>
+                                            <button class="btn btn-primary" onclick="editAccount('${account.code}')">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getAccountTypeClass(type) {
+            switch(type) {
+                case 'Asset': return 'retail-price';
+                case 'Liability': return 'factory-price';
+                case 'Equity': return 'retail-price';
+                case 'Revenue': return 'retail-price';
+                case 'Expense': return 'factory-price';
+                default: return '';
+            }
+        }
+
+        // Accounting calculation functions
+        function calculateAccountSummary() {
+            let totalAssets = 0;
+            let totalLiabilities = 0;
+            let totalEquity = 0;
+            let netProfit = 0;
+            
+            accountingBooks.chartOfAccounts.forEach(account => {
+                switch(account.type) {
+                    case 'Asset':
+                        totalAssets += account.balance;
+                        break;
+                    case 'Liability':
+                        totalLiabilities += account.balance;
+                        break;
+                    case 'Equity':
+                        totalEquity += account.balance;
+                        break;
+                }
+            });
+            
+            // Calculate net profit from sales data
+            const totalSales = salesData.reduce((sum, sale) => sum + (sale.total || sale.amount || 0), 0);
+            const totalExpenses = transactions.filter(t => t.type === 'expense').reduce((sum, expense) => sum + (expense.amount || 0), 0);
+            netProfit = totalSales - totalExpenses;
+            
+            // Update UI
+            document.getElementById('totalAssets').textContent = formatCurrency(totalAssets);
+            document.getElementById('totalLiabilities').textContent = formatCurrency(totalLiabilities);
+            document.getElementById('totalEquity').textContent = formatCurrency(totalEquity);
+            document.getElementById('netProfit').textContent = formatCurrency(netProfit);
+        }
+
+        function calculateProfitLoss() {
+            const totalSales = salesData.reduce((sum, sale) => sum + (sale.total || sale.amount || 0), 0);
+            const totalExpenses = transactions.filter(t => t.type === 'expense').reduce((sum, expense) => sum + (expense.amount || 0), 0);
+            const totalCOGS = 0; // Calculate based on cost of items sold
+            
+            return {
+                income: {
+                    sales: totalSales,
+                    other: 0,
+                    total: totalSales
+                },
+                expenses: {
+                    cogs: totalCOGS,
+                    operating: totalExpenses,
+                    total: totalCOGS + totalExpenses
+                },
+                netProfit: totalSales - (totalCOGS + totalExpenses)
+            };
+        }
+
+        function calculateBalanceSheet() {
+            const assets = accountingBooks.chartOfAccounts.filter(a => a.type === 'Asset');
+            const liabilities = accountingBooks.chartOfAccounts.filter(a => a.type === 'Liability');
+            const equity = accountingBooks.chartOfAccounts.filter(a => a.type === 'Equity');
+            
+            const totalAssets = assets.reduce((sum, asset) => sum + asset.balance, 0);
+            const totalLiabilities = liabilities.reduce((sum, liability) => sum + liability.balance, 0);
+            const totalEquity = equity.reduce((sum, eq) => sum + eq.balance, 0);
+            
+            return {
+                assets: assets,
+                liabilities: liabilities,
+                equity: equity,
+                totalAssets: totalAssets,
+                totalLiabilities: totalLiabilities,
+                totalEquity: totalEquity,
+                totalLiabilitiesEquity: totalLiabilities + totalEquity
+            };
+        }
+
+        function generateGeneralLedgerRows() {
+            if (accountEntries.length === 0) {
+                return '<tr class="no-records"><td colspan="7">No general ledger entries recorded yet.</td></tr>';
+            }
+            
+            return accountEntries.map(entry => `
+                <tr>
+                    <td>${entry.date}</td>
+                    <td>${entry.account}</td>
+                    <td>${entry.reference}</td>
+                    <td>${entry.description}</td>
+                    <td class="text-success">${entry.type === 'Debit' ? formatCurrency(entry.amount) : ''}</td>
+                    <td class="text-danger">${entry.type === 'Credit' ? formatCurrency(entry.amount) : ''}</td>
+                    <td>${formatCurrency(entry.balance || 0)}</td>
+                </tr>
+            `).join('');
+        }
+
+        function generateCashBookRows() {
+            // Generate cash book entries based on cash transactions
+            const cashTransactions = transactions.filter(t => t.paymentMethod === 'cash' || t.type === 'cash-receipts' || t.type === 'cash-payments');
+            let balance = 0;
+            
+            if (cashTransactions.length === 0) {
+                return '<tr class="no-records"><td colspan="6">No cash transactions recorded yet.</td></tr>';
+            }
+            
+            return cashTransactions.map(transaction => {
+                const isIncoming = transaction.type.includes('receipt') || transaction.type.includes('sale');
+                const amount = transaction.amount || transaction.total || 0;
+                balance += isIncoming ? amount : -amount;
+                
+                return `
+                    <tr>
+                        <td>${transaction.date}</td>
+                        <td>${transaction.description || transaction.type}</td>
+                        <td>${transaction.id}</td>
+                        <td class="text-success">${isIncoming ? formatCurrency(amount) : ''}</td>
+                        <td class="text-danger">${!isIncoming ? formatCurrency(amount) : ''}</td>
+                        <td class="font-bold">${formatCurrency(balance)}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function generateSalesBookRows() {
+            if (salesData.length === 0) {
+                return '<tr class="no-records"><td colspan="7">No sales transactions recorded yet.</td></tr>';
+            }
+            
+            return salesData.map(sale => {
+                const taxAmount = sale.tax || (systemConfig.enableVAT ? (sale.amount * systemConfig.vatRate / 100) : 0);
+                const total = sale.total || sale.amount || 0;
+                
+                return `
+                    <tr>
+                        <td>${sale.date}</td>
+                        <td>${sale.id}</td>
+                        <td>${getCustomerName(sale.customer) || 'Walk-in Customer'}</td>
+                        <td>${sale.type || 'Sale'}</td>
+                        <td class="text-success">${formatCurrency(total - taxAmount)}</td>
+                        <td class="text-warning">${formatCurrency(taxAmount)}</td>
+                        <td class="font-bold">${formatCurrency(total)}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function generatePurchaseBookRows() {
+            const purchaseTransactions = transactions.filter(t => t.type.includes('purchase'));
+            
+            if (purchaseTransactions.length === 0) {
+                return '<tr class="no-records"><td colspan="7">No purchase transactions recorded yet.</td></tr>';
+            }
+            
+            return purchaseTransactions.map(purchase => {
+                const taxAmount = systemConfig.enableVAT ? (purchase.amount * systemConfig.vatRate / 100) : 0;
+                
+                return `
+                    <tr>
+                        <td>${purchase.date}</td>
+                        <td>${purchase.id}</td>
+                        <td>${getSupplierName(purchase.supplier) || 'Unknown Supplier'}</td>
+                        <td>${purchase.type}</td>
+                        <td class="text-primary">${formatCurrency(purchase.amount - taxAmount)}</td>
+                        <td class="text-warning">${formatCurrency(taxAmount)}</td>
+                        <td class="font-bold">${formatCurrency(purchase.amount)}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function generateTrialBalanceRows() {
+            let totalDebits = 0;
+            let totalCredits = 0;
+            
+            const rows = accountingBooks.chartOfAccounts.map(account => {
+                const isDebitBalance = ['Asset', 'Expense'].includes(account.type);
+                if (isDebitBalance) totalDebits += account.balance;
+                else totalCredits += account.balance;
+                
+                return `
+                    <tr>
+                        <td>${account.code}</td>
+                        <td>${account.name}</td>
+                        <td class="text-success">${isDebitBalance ? formatCurrency(account.balance) : ''}</td>
+                        <td class="text-danger">${!isDebitBalance ? formatCurrency(account.balance) : ''}</td>
+                    </tr>
+                `;
+            }).join('');
+            
+            const totalRow = `
+                <tr class="font-bold" style="border-top: 2px solid #1a237e;">
+                    <td colspan="2">TOTALS</td>
+                    <td class="text-success">${formatCurrency(totalDebits)}</td>
+                    <td class="text-danger">${formatCurrency(totalCredits)}</td>
+                </tr>
+            `;
+            
+            return rows + totalRow;
+        }
+
+        function addAccountingEntry(entry) {
+            const accountEntry = {
+                id: 'ACC-' + Date.now(),
+                date: new Date().toISOString().split('T')[0],
+                account: entry.account,
+                type: entry.type, // 'Debit' or 'Credit'
+                amount: entry.amount,
+                reference: entry.reference,
+                description: entry.description,
+                balance: 0
+            };
+            
+            accountEntries.push(accountEntry);
+            
+            // Update account balance
+            const account = accountingBooks.chartOfAccounts.find(a => a.name === entry.account);
+            if (account) {
+                if (entry.type === 'Debit') {
+                    if (['Asset', 'Expense'].includes(account.type)) {
+                        account.balance += entry.amount;
+                    } else {
+                        account.balance -= entry.amount;
+                    }
+                } else { // Credit
+                    if (['Asset', 'Expense'].includes(account.type)) {
+                        account.balance -= entry.amount;
+                    } else {
+                        account.balance += entry.amount;
+                    }
+                }
+            }
+        }
+
+        function getCustomerName(customerId) {
+            const customer = partners.find(p => p.id === customerId);
+            return customer ? customer.name : null;
+        }
+
+        function getSupplierName(supplierId) {
+            const supplier = partners.find(p => p.id === supplierId);
+            return supplier ? supplier.name : null;
+        }
+
+        // Enhanced Reports Functions
+        function loadReport() {
+            const reportType = document.getElementById('reportType').value;
+            const moduleContainer = document.getElementById('reportModule');
+            
+            if (!reportType) {
+                moduleContainer.innerHTML = `
+                    <div class="card">
+                        <div style="text-align: center; padding: 40px;">
+                            <i class="fas fa-chart-area" style="font-size: 48px; color: #1a237e; margin-bottom: 20px;"></i>
+                            <h3 style="color: #1a237e; margin-bottom: 10px;">Select Report Type</h3>
+                            <p style="color: #666;">Choose a report type and date range from the dropdowns above to generate comprehensive business reports.</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            let moduleContent = generateReportInterface(reportType);
+            moduleContainer.innerHTML = moduleContent;
+        }
+
+        function generateReportInterface(reportType) {
+            const title = reportType.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            
+            switch(reportType) {
+                case 'daily-sales':
+                    return generateDailySalesReport();
+                case 'monthly-sales':
+                    return generateMonthlySalesReport();
+                case 'stock-report':
+                    return generateStockReport();
+                case 'low-stock':
+                    return generateLowStockReport();
+                case 'income-statement':
+                    return generateIncomeStatementReport();
+                case 'cash-flow':
+                    return generateCashFlowReport();
+                default:
+                    return `
+                        <div class="card">
+                            <h3><i class="fas fa-chart-bar"></i> ${title}</h3>
+                            <div style="text-align: center; padding: 40px;">
+                                <i class="fas fa-file-alt" style="font-size: 48px; color: #1a237e; margin-bottom: 20px;"></i>
+                                <h4 style="color: #1a237e; margin-bottom: 10px;">${title} Report</h4>
+                                <p style="color: #666;">This report module is ready for implementation with customized data analysis and visualization.</p>
+                                <button class="btn btn-primary mt-20" onclick="showNotification('${title} report is under development', 'info')">
+                                    <i class="fas fa-cog"></i> Configure Report
+                                </button>
+                            </div>
+                        </div>
+                    `;
+            }
+        }
+
+        function generateDailySalesReport() {
+            const today = new Date().toISOString().split('T')[0];
+            const todaySales = salesData.filter(sale => sale.date === today);
+            const totalSales = todaySales.reduce((sum, sale) => sum + (sale.total || sale.amount || 0), 0);
+            
+            return `
+                <div class="card">
+                    <h3><i class="fas fa-calendar-day"></i> Daily Sales Report</h3>
+                    <div class="summary-card">
+                        <h4>Today's Sales Summary (${today})</h4>
+                        <p>Total Transactions: ${todaySales.length}</p>
+                        <p class="text-success font-bold">Total Sales: ${formatCurrency(totalSales)}</p>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Invoice No.</th>
+                                    <th>Customer</th>
+                                    <th>Items</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${todaySales.length === 0 ? 
+                                    '<tr class="no-records"><td colspan="5">No sales recorded for today.</td></tr>' :
+                                    todaySales.map(sale => `
+                                        <tr>
+                                            <td>${new Date(sale.date).toLocaleTimeString()}</td>
+                                            <td>${sale.id}</td>
+                                            <td>${getCustomerName(sale.customer) || 'Walk-in Customer'}</td>
+                                            <td>${sale.items ? sale.items.length : 1}</td>
+                                            <td class="text-success font-bold">${formatCurrency(sale.total || sale.amount)}</td>
+                                        </tr>
+                                    `).join('')
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateMonthlySalesReport() {
+            const currentMonth = new Date().getMonth();
+            const currentYear = new Date().getFullYear();
+            const monthlySales = salesData.filter(sale => {
+                const saleDate = new Date(sale.date);
+                return saleDate.getMonth() === currentMonth && saleDate.getFullYear() === currentYear;
+            });
+            const totalSales = monthlySales.reduce((sum, sale) => sum + (sale.total || sale.amount || 0), 0);
+            
+            return `
+                <div class="card">
+                    <h3><i class="fas fa-calendar-alt"></i> Monthly Sales Report</h3>
+                    <div class="summary-card">
+                        <h4>This Month's Sales Summary</h4>
+                        <p>Total Transactions: ${monthlySales.length}</p>
+                        <p class="text-success font-bold">Total Sales: ${formatCurrency(totalSales)}</p>
+                        <p>Average per Transaction: ${formatCurrency(monthlySales.length > 0 ? totalSales / monthlySales.length : 0)}</p>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Invoice No.</th>
+                                    <th>Customer</th>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${monthlySales.length === 0 ? 
+                                    '<tr class="no-records"><td colspan="5">No sales recorded for this month.</td></tr>' :
+                                    monthlySales.map(sale => `
+                                        <tr>
+                                            <td>${sale.date}</td>
+                                            <td>${sale.id}</td>
+                                            <td>${getCustomerName(sale.customer) || 'Walk-in Customer'}</td>
+                                            <td>${sale.type || 'Sale'}</td>
+                                            <td class="text-success font-bold">${formatCurrency(sale.total || sale.amount)}</td>
+                                        </tr>
+                                    `).join('')
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateStockReport() {
+            const totalStockValue = items.reduce((sum, item) => sum + (item.stock * (item.retailPrice || 0)), 0);
+            
+            return `
+                <div class="card">
+                    <h3><i class="fas fa-boxes"></i> Stock Report</h3>
+                    <div class="summary-card">
+                        <h4>Current Stock Summary</h4>
+                        <p>Total Items: ${items.length}</p>
+                        <p>Items in Stock: ${items.filter(item => item.stock > 0).length}</p>
+                        <p>Out of Stock: ${items.filter(item => item.stock === 0).length}</p>
+                        <p class="text-success font-bold">Total Stock Value: ${formatCurrency(totalStockValue)}</p>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Item Code</th>
+                                    <th>Item Name</th>
+                                    <th>Category</th>
+                                    <th>Stock Qty</th>
+                                    <th>Unit Price</th>
+                                    <th>Stock Value</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${items.length === 0 ? 
+                                    '<tr class="no-records"><td colspan="7">No items in inventory.</td></tr>' :
+                                    items.map(item => `
+                                        <tr>
+                                            <td>${item.code}</td>
+                                            <td>${item.name}</td>
+                                            <td>${item.category}</td>
+                                            <td>${item.stock}</td>
+                                            <td>${formatCurrency(item.retailPrice)}</td>
+                                            <td class="font-bold">${formatCurrency(item.stock * item.retailPrice)}</td>
+                                            <td>
+                                                <span class="price-tag ${item.status === 'Low Stock' ? 'retail-price' : 'factory-price'}">
+                                                    ${item.status}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    `).join('')
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateLowStockReport() {
+            const lowStockItems = items.filter(item => item.stock <= item.minStock);
+            
+            return `
+                <div class="card">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Low Stock Report</h3>
+                    <div class="summary-card" style="background: linear-gradient(135deg, #dc3545 0%, #e83e8c 100%);">
+                        <h4>Low Stock Alert</h4>
+                        <p>Items Below Minimum Stock: ${lowStockItems.length}</p>
+                        <p>Action Required: Reorder these items immediately</p>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Item Code</th>
+                                    <th>Item Name</th>
+                                    <th>Current Stock</th>
+                                    <th>Minimum Stock</th>
+                                    <th>Shortage</th>
+                                    <th>Suggested Reorder</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${lowStockItems.length === 0 ? 
+                                    '<tr><td colspan="6" class="text-success text-center">All items are above minimum stock levels.</td></tr>' :
+                                    lowStockItems.map(item => {
+                                        const shortage = Math.max(0, item.minStock - item.stock);
+                                        const suggestedReorder = Math.max(shortage, item.minStock * 2);
+                                        return `
+                                            <tr>
+                                                <td>${item.code}</td>
+                                                <td>${item.name}</td>
+                                                <td class="text-danger font-bold">${item.stock}</td>
+                                                <td>${item.minStock}</td>
+                                                <td class="text-danger font-bold">${shortage}</td>
+                                                <td class="text-success font-bold">${suggestedReorder}</td>
+                                            </tr>
+                                        `;
+                                    }).join('')
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateIncomeStatementReport() {
+            const profitLoss = calculateProfitLoss();
+            
+            return `
+                <div class="card">
+                    <h3><i class="fas fa-chart-line"></i> Income Statement</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th colspan="2">REVENUE</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Sales Revenue</td>
+                                    <td class="text-success font-bold">${formatCurrency(profitLoss.income.sales)}</td>
+                                </tr>
+                                <tr>
+                                    <td>Other Income</td>
+                                    <td class="text-success">${formatCurrency(profitLoss.income.other)}</td>
+                                </tr>
+                                <tr class="font-bold">
+                                    <td>Total Revenue</td>
+                                    <td class="text-success">${formatCurrency(profitLoss.income.total)}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table style="margin-top: 20px;">
+                            <thead>
+                                <tr>
+                                    <th colspan="2">EXPENSES</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Cost of Goods Sold</td>
+                                    <td class="text-danger">${formatCurrency(profitLoss.expenses.cogs)}</td>
+                                </tr>
+                                <tr>
+                                    <td>Operating Expenses</td>
+                                    <td class="text-danger">${formatCurrency(profitLoss.expenses.operating)}</td>
+                                </tr>
+                                <tr class="font-bold">
+                                    <td>Total Expenses</td>
+                                    <td class="text-danger">${formatCurrency(profitLoss.expenses.total)}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table style="margin-top: 20px;">
+                            <thead>
+                                <tr>
+                                    <th colspan="2">NET RESULT</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="font-bold" style="font-size: 18px;">
+                                    <td>Net Profit/(Loss)</td>
+                                    <td class="${profitLoss.netProfit >= 0 ? 'text-success' : 'text-danger'}">${formatCurrency(profitLoss.netProfit)}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateCashFlowReport() {
+            const cashInflows = salesData.reduce((sum, sale) => sum + (sale.total || sale.amount || 0), 0);
+            const cashOutflows = transactions.filter(t => t.type === 'expense').reduce((sum, expense) => sum + (expense.amount || 0), 0);
+            const netCashFlow = cashInflows - cashOutflows;
+            
+            return `
+                <div class="card">
+                    <h3><i class="fas fa-money-bill-wave"></i> Cash Flow Statement</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th colspan="2">CASH INFLOWS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Sales Collections</td>
+                                    <td class="text-success font-bold">${formatCurrency(cashInflows)}</td>
+                                </tr>
+                                <tr>
+                                    <td>Other Receipts</td>
+                                    <td class="text-success">0.00</td>
+                                </tr>
+                                <tr class="font-bold">
+                                    <td>Total Cash Inflows</td>
+                                    <td class="text-success">${formatCurrency(cashInflows)}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table style="margin-top: 20px;">
+                            <thead>
+                                <tr>
+                                    <th colspan="2">CASH OUTFLOWS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Operating Expenses</td>
+                                    <td class="text-danger">${formatCurrency(cashOutflows)}</td>
+                                </tr>
+                                <tr>
+                                    <td>Capital Expenditure</td>
+                                    <td class="text-danger">0.00</td>
+                                </tr>
+                                <tr class="font-bold">
+                                    <td>Total Cash Outflows</td>
+                                    <td class="text-danger">${formatCurrency(cashOutflows)}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table style="margin-top: 20px;">
+                            <thead>
+                                <tr>
+                                    <th colspan="2">NET CASH FLOW</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="font-bold" style="font-size: 18px;">
+                                    <td>Net Cash Flow</td>
+                                    <td class="${netCashFlow >= 0 ? 'text-success' : 'text-danger'}">${formatCurrency(netCashFlow)}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateReport() {
+            const reportType = document.getElementById('reportType').value;
+            if (!reportType) {
+                showNotification('Please select a report type first', 'warning');
+                return;
+            }
+            
+            loadReport();
+            showNotification('Report generated successfully', 'success');
+        }
+
+        function exportReport() {
+            const reportType = document.getElementById('reportType').value;
+            if (!reportType) {
+                showNotification('Please select and generate a report first', 'warning');
+                return;
+            }
+            
+            // Generate CSV export based on report type
+            let csvContent = '';
+            let filename = '';
+            
+            switch(reportType) {
+                case 'stock-report':
+                    csvContent = generateStockCSV();
+                    filename = 'stock_report';
+                    break;
+                case 'daily-sales':
+                    csvContent = generateDailySalesCSV();
+                    filename = 'daily_sales_report';
+                    break;
+                case 'monthly-sales':
+                    csvContent = generateMonthlySalesCSV();
+                    filename = 'monthly_sales_report';
+                    break;
+                default:
+                    csvContent = "Report Type,Data\nGeneric Report,Data not available for export";
+                    filename = 'generic_report';
+            }
+            
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${filename}_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            
+            showNotification('Report exported successfully!', 'success');
+        }
+
+        function generateStockCSV() {
+            let csvContent = "Item Code,Item Name,Category,Stock Qty,Unit Price,Stock Value,Status\n";
+            items.forEach(item => {
+                csvContent += `${item.code},${item.name},${item.category},${item.stock},${item.retailPrice},${item.stock * item.retailPrice},${item.status}\n`;
+            });
+            return csvContent;
+        }
+
+        function generateDailySalesCSV() {
+            const today = new Date().toISOString().split('T')[0];
+            const todaySales = salesData.filter(sale => sale.date === today);
+            let csvContent = "Time,Invoice No,Customer,Items,Amount\n";
+            todaySales.forEach(sale => {
+                csvContent += `${new Date(sale.date).toLocaleTimeString()},${sale.id},${getCustomerName(sale.customer) || 'Walk-in Customer'},${sale.items ? sale.items.length : 1},${sale.total || sale.amount}\n`;
+            });
+            return csvContent;
+        }
+
+        function generateMonthlySalesCSV() {
+            const currentMonth = new Date().getMonth();
+            const currentYear = new Date().getFullYear();
+            const monthlySales = salesData.filter(sale => {
+                const saleDate = new Date(sale.date);
+                return saleDate.getMonth() === currentMonth && saleDate.getFullYear() === currentYear;
+            });
+            let csvContent = "Date,Invoice No,Customer,Type,Amount\n";
+            monthlySales.forEach(sale => {
+                csvContent += `${sale.date},${sale.id},${getCustomerName(sale.customer) || 'Walk-in Customer'},${sale.type || 'Sale'},${sale.total || sale.amount}\n`;
+            });
+            return csvContent;
         }
 
         // Transaction helper functions
@@ -2138,13 +4097,51 @@
             showNotification('Purchase order saved successfully!', 'success');
         }
 
-        function sendPurchaseOrder() {
-            showNotification('Purchase order sent to supplier!', 'info');
+        function newTransaction() {
+            const transactionType = document.getElementById('transactionType').value;
+            if (!transactionType) {
+                showNotification('Please select a transaction type first', 'warning');
+                return;
+            }
+            
+            if (transactionType === 'purchase-expense') {
+                const purchaseSubType = document.getElementById('purchaseSubType').value;
+                if (!purchaseSubType) {
+                    showNotification('Please select a purchase sub-type first', 'warning');
+                    return;
+                }
+            }
+            
+            loadTransactionModule();
+            showNotification('New transaction form loaded', 'info');
         }
 
-        function clearPurchaseForm() {
-            document.querySelectorAll('#transactionModule input[type="number"]').forEach(input => input.value = '');
-            document.querySelectorAll('#transactionModule select').forEach(select => select.selectedIndex = 0);
+        function saveTransaction(type) {
+            const transaction = {
+                id: type.toUpperCase() + '-' + Date.now(),
+                type: type,
+                date: new Date().toISOString().split('T')[0],
+                user: currentUser.fullName,
+                status: 'completed'
+            };
+            
+            transactions.push(transaction);
+            showNotification(`${type.replace('-', ' ')} saved successfully!`, 'success');
+        }
+
+        function newAccountEntry() {
+            const bookType = document.getElementById('accountBookType').value;
+            if (!bookType) {
+                showNotification('Please select an account book first', 'warning');
+                return;
+            }
+            
+            showNotification('New account entry form would open here', 'info');
+        }
+
+        function calculateTotals() {
+            calculateAccountSummary();
+            showNotification('Account totals calculated and updated', 'success');
         }
 
         // Settings functionality
@@ -2175,10 +4172,16 @@
             systemConfig.currency = document.getElementById('companyCurrency').value;
             systemConfig.enableVAT = document.getElementById('enableVAT').checked;
             systemConfig.vatRate = parseFloat(document.getElementById('vatRate').value) || 18;
+            systemConfig.phone = document.getElementById('companyPhone').value;
+            systemConfig.email = document.getElementById('companyEmail').value;
+            systemConfig.address = document.getElementById('companyAddress').value;
             
             // Update header display
             document.getElementById('companyDisplay').textContent = systemConfig.companyName;
             document.getElementById('currentBranch').textContent = systemConfig.mainLocation;
+            
+            // Update login display
+            updateLoginDisplay();
             
             showNotification('Company information saved successfully!', 'success');
         }
@@ -2369,6 +4372,7 @@
             
             refreshItemsTable();
             clearItemForm();
+            updateNotificationCount();
             showNotification('Item saved successfully with stock recorded!', 'success');
         }
 
@@ -2509,6 +4513,11 @@
             `).join('');
         }
 
+        // Print functionality
+        function printPage() {
+            window.print();
+        }
+
         // Utility functions
         function checkPermission(permission) {
             // Admin has all permissions by default
@@ -2528,38 +4537,6 @@
             }
         }
 
-        function newTransaction() {
-            const transactionType = document.getElementById('transactionType').value;
-            if (!transactionType) {
-                showNotification('Please select a transaction type first', 'warning');
-                return;
-            }
-            
-            if (transactionType === 'purchase-expense') {
-                const purchaseSubType = document.getElementById('purchaseSubType').value;
-                if (!purchaseSubType) {
-                    showNotification('Please select a purchase sub-type first', 'warning');
-                    return;
-                }
-            }
-            
-            loadTransactionModule();
-            showNotification('New transaction form loaded', 'info');
-        }
-
-        function saveTransaction(type) {
-            const transaction = {
-                id: type.toUpperCase() + '-' + Date.now(),
-                type: type,
-                date: new Date().toISOString().split('T')[0],
-                user: currentUser.fullName,
-                status: 'completed'
-            };
-            
-            transactions.push(transaction);
-            showNotification(`${type.replace('-', ' ')} saved successfully!`, 'success');
-        }
-
         function loadSystemConfig() {
             // Load saved configuration from localStorage
             const saved = localStorage.getItem('salesManagerConfig');
@@ -2576,6 +4553,7 @@
                 }
                 
                 updateFooter();
+                updateLoginDisplay();
             }
         }
 
@@ -2610,6 +4588,10 @@
             if (e.ctrlKey && e.key === 's') {
                 e.preventDefault();
                 showNotification('Auto-save is enabled', 'info');
+            }
+            if (e.ctrlKey && e.key === 'p') {
+                e.preventDefault();
+                printPage();
             }
         });
     </script>
