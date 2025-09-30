@@ -21,6 +21,87 @@
             min-height: 100vh;
         }
 
+        /* Login Modal */
+        .modal {
+            display: flex;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            width: 400px;
+            max-width: 90%;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-content h2 {
+            color: #1a237e;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .login-form .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .login-form label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .login-form input,
+        .login-form select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .login-form input:focus,
+        .login-form select:focus {
+            outline: none;
+            border-color: #1a237e;
+            box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            background: linear-gradient(135deg, #283593 0%, #1a237e 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(26, 35, 126, 0.3);
+        }
+
         /* App Container */
         .app-hidden {
             display: none;
@@ -170,7 +251,7 @@
             margin-bottom: 20px;
         }
 
-        .card h2 {
+        .card h2, .card h3 {
             color: #1a237e;
             margin-bottom: 15px;
             font-size: 20px;
@@ -226,6 +307,20 @@
             outline: none;
             border-color: #283593;
             box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.1);
+        }
+
+        /* Purchase Sub-dropdown */
+        .purchase-controls {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(26, 35, 126, 0.05);
+            border-radius: 8px;
+            border-left: 4px solid #1a237e;
+        }
+
+        .purchase-controls.active {
+            display: block;
         }
 
         /* Forms */
@@ -459,6 +554,82 @@
             transform: translateX(26px);
         }
 
+        /* User Management */
+        .user-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .user-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            position: relative;
+        }
+
+        .user-card h4 {
+            color: #1a237e;
+            margin-bottom: 10px;
+        }
+
+        .user-role {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .role-admin {
+            background: #dc3545;
+            color: white;
+        }
+
+        .role-user {
+            background: #28a745;
+            color: white;
+        }
+
+        /* Stock Management */
+        .stock-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #1a237e;
+            margin-bottom: 15px;
+        }
+
+        .stock-item h5 {
+            color: #1a237e;
+            margin-bottom: 8px;
+        }
+
+        .price-display {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .price-tag {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .retail-price {
+            background: #28a745;
+            color: white;
+        }
+
+        .factory-price {
+            background: #17a2b8;
+            color: white;
+        }
+
         /* Footer */
         .footer {
             background: rgba(0, 0, 0, 0.2);
@@ -507,6 +678,7 @@
             .main-content { padding: 20px; }
             .form-row { grid-template-columns: 1fr; }
             .permission-grid { grid-template-columns: 1fr; }
+            .user-grid { grid-template-columns: 1fr; }
         }
 
         @media (max-width: 768px) {
@@ -567,8 +739,40 @@
     </style>
 </head>
 <body>
-    <!-- Main Application (Auto Login as Admin) -->
-    <div id="app">
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <h2><i class="fas fa-business-time"></i> SalesManager 7.0</h2>
+            <div class="login-form">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" value="admin" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" value="admin123" required>
+                </div>
+                <div class="form-group">
+                    <label for="branch">Select Branch:</label>
+                    <select id="branch" name="branch" required>
+                        <option value="">Choose Branch...</option>
+                        <option value="MAIN BRANCH" selected>MAIN BRANCH</option>
+                        <option value="KAMPALA">KAMPALA</option>
+                        <option value="ENTEBBE">ENTEBBE</option>
+                        <option value="JINJA">JINJA</option>
+                        <option value="MBARARA">MBARARA</option>
+                        <option value="GULU">GULU</option>
+                    </select>
+                </div>
+                <button type="button" onclick="login()" class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="app" class="app-hidden">
         <!-- Header -->
         <header class="header">
             <div class="header-content">
@@ -630,9 +834,7 @@
                         <select id="transactionType" class="transaction-select" onchange="loadTransactionModule()">
                             <option value="">Select Transaction Type...</option>
                             <optgroup label="Purchase & Expense">
-                                <option value="purchase-order">Purchase Order</option>
-                                <option value="purchase-invoice">Purchase Invoice</option>
-                                <option value="record-expense">Record Expense</option>
+                                <option value="purchase-expense">Purchase & Expense</option>
                             </optgroup>
                             <optgroup label="Sales">
                                 <option value="sales-invoice">Sales Invoice</option>
@@ -660,6 +862,23 @@
                         <button class="btn btn-primary" onclick="newTransaction()">
                             <i class="fas fa-plus"></i> New Transaction
                         </button>
+                    </div>
+
+                    <!-- Purchase & Expense Sub-menu -->
+                    <div id="purchaseControls" class="purchase-controls">
+                        <h4><i class="fas fa-shopping-cart"></i> Purchase & Expense Options</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <select id="purchaseSubType" class="transaction-select" onchange="loadPurchaseSubModule()">
+                                    <option value="">Select Purchase Type...</option>
+                                    <option value="purchase-order">Purchase Order</option>
+                                    <option value="purchase-invoice">Purchase Invoice</option>
+                                    <option value="goods-services">Goods and Services</option>
+                                    <option value="expenses">Expenses</option>
+                                    <option value="assets">Assets</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                     
                     <!-- Transaction Module Container -->
@@ -696,11 +915,38 @@
                                 <option value="electronics">Electronics</option>
                                 <option value="clothing">Clothing</option>
                                 <option value="accessories">Accessories</option>
+                                <option value="food">Food & Beverages</option>
+                                <option value="office">Office Supplies</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Unit Price</label>
-                            <input type="number" id="itemPrice" placeholder="0.00" step="0.01">
+                            <label>Retail Price</label>
+                            <input type="number" id="itemRetailPrice" placeholder="0.00" step="0.01">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Factory Price</label>
+                            <input type="number" id="itemFactoryPrice" placeholder="0.00" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label>Stock Quantity</label>
+                            <input type="number" id="itemStock" placeholder="0" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Unit</label>
+                            <select id="itemUnit">
+                                <option value="PCS">Pieces</option>
+                                <option value="KG">Kilograms</option>
+                                <option value="L">Liters</option>
+                                <option value="M">Meters</option>
+                                <option value="BOX">Box</option>
+                                <option value="SET">Set</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Minimum Stock Level</label>
+                            <input type="number" id="itemMinStock" placeholder="0" min="0">
                         </div>
                     </div>
                     <div class="form-row">
@@ -709,6 +955,9 @@
                         </button>
                         <button class="btn btn-warning" onclick="clearItemForm()">
                             <i class="fas fa-broom"></i> Clear Form
+                        </button>
+                        <button class="btn btn-primary" onclick="exportStock()">
+                            <i class="fas fa-download"></i> Export Stock
                         </button>
                     </div>
                 </div>
@@ -720,13 +969,16 @@
                                 <th>Item Code</th>
                                 <th>Item Name</th>
                                 <th>Category</th>
-                                <th>Unit Price</th>
+                                <th>Stock</th>
+                                <th>Retail Price</th>
+                                <th>Factory Price</th>
+                                <th>Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody id="itemsTableBody">
                             <tr class="no-records">
-                                <td colspan="5">No items found. Add your first item above.</td>
+                                <td colspan="8">No items found. Add your first item above.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -774,6 +1026,25 @@
                         </button>
                     </div>
                 </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Partner Name</th>
+                                <th>Type</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="partnersTableBody">
+                            <tr class="no-records">
+                                <td colspan="5">No partners found. Add your first partner above.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </section>
 
             <!-- Accounts Section -->
@@ -795,6 +1066,7 @@
                     
                     <div class="settings-tabs">
                         <button class="tab-btn active" onclick="showTab('company')">Company Info</button>
+                        <button class="tab-btn" onclick="showTab('users')">User Management</button>
                         <button class="tab-btn" onclick="showTab('permissions')">User Permissions</button>
                         <button class="tab-btn" onclick="showTab('system')">System Settings</button>
                         <button class="tab-btn" onclick="showTab('developer')">Developer Info</button>
@@ -866,6 +1138,49 @@
                         <button class="btn btn-success" onclick="saveCompanyInfo()">
                             <i class="fas fa-save"></i> Save Company Information
                         </button>
+                    </div>
+
+                    <!-- User Management Tab -->
+                    <div id="users-tab" class="tab-content">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Username</label>
+                                <input type="text" id="newUsername" placeholder="Enter username">
+                            </div>
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input type="password" id="newPassword" placeholder="Enter password">
+                            </div>
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                <input type="text" id="newFullName" placeholder="Enter full name">
+                            </div>
+                            <div class="form-group">
+                                <label>Role</label>
+                                <select id="newUserRole">
+                                    <option value="user">User</option>
+                                    <option value="admin">Admin</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="newUserEmail" placeholder="user@example.com">
+                            </div>
+                            <div class="form-group">
+                                <label>Phone</label>
+                                <input type="tel" id="newUserPhone" placeholder="Enter phone number">
+                            </div>
+                        </div>
+                        <button class="btn btn-success" onclick="addUser()">
+                            <i class="fas fa-user-plus"></i> Add User
+                        </button>
+
+                        <h4 class="mt-20">Current Users</h4>
+                        <div class="user-grid" id="userGrid">
+                            <!-- Users will be dynamically loaded here -->
+                        </div>
                     </div>
 
                     <!-- User Permissions Tab -->
@@ -1187,14 +1502,73 @@
         let userPermissions = {};
         let items = [];
         let partners = [];
+        let users = [
+            { id: 1, username: 'admin', password: 'admin123', fullName: 'System Administrator', role: 'admin', email: 'admin@system.com', phone: '', active: true }
+        ];
+        let currentUser = null;
+        let transactions = [];
+        let stockMovements = [];
 
         // Initialize application
         document.addEventListener('DOMContentLoaded', () => {
-            initNavigation();
-            loadSystemConfig();
-            updateFooter();
-            showNotification('Welcome Admin! System initialized successfully.', 'success');
+            showLoginForm();
         });
+
+        // Login functionality
+        function showLoginForm() {
+            document.getElementById('loginModal').style.display = 'flex';
+            document.getElementById('app').classList.add('app-hidden');
+        }
+
+        function login() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const branch = document.getElementById('branch').value;
+
+            if (!username || !password || !branch) {
+                showNotification('Please fill in all fields', 'error');
+                return;
+            }
+
+            // Check credentials
+            const user = users.find(u => u.username === username && u.password === password && u.active);
+            
+            if (user) {
+                currentUser = user;
+                
+                // Update UI with user info
+                document.getElementById('currentUser').textContent = user.fullName.toUpperCase();
+                document.getElementById('currentBranch').textContent = branch;
+                
+                // Hide login modal and show app
+                document.getElementById('loginModal').style.display = 'none';
+                document.getElementById('app').classList.remove('app-hidden');
+                
+                // Initialize application
+                initNavigation();
+                loadSystemConfig();
+                updateFooter();
+                loadUsers();
+                
+                showNotification(`Welcome ${user.fullName}! Login successful.`, 'success');
+            } else {
+                showNotification('Invalid credentials. Please try again.', 'error');
+            }
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                currentUser = null;
+                
+                // Reset form
+                document.getElementById('username').value = 'admin';
+                document.getElementById('password').value = 'admin123';
+                document.getElementById('branch').value = 'MAIN BRANCH';
+                
+                showLoginForm();
+                showNotification('Logged out successfully', 'info');
+            }
+        }
 
         // Navigation functionality
         function initNavigation() {
@@ -1226,6 +1600,7 @@
         function loadTransactionModule() {
             const transactionType = document.getElementById('transactionType').value;
             const moduleContainer = document.getElementById('transactionModule');
+            const purchaseControls = document.getElementById('purchaseControls');
             
             if (!transactionType) {
                 moduleContainer.innerHTML = `
@@ -1237,66 +1612,166 @@
                         </div>
                     </div>
                 `;
+                purchaseControls.classList.remove('active');
                 return;
             }
 
-            // Generate transaction interface based on type
+            if (transactionType === 'purchase-expense') {
+                purchaseControls.classList.add('active');
+                moduleContainer.innerHTML = `
+                    <div class="card">
+                        <div style="text-align: center; padding: 40px;">
+                            <i class="fas fa-shopping-cart" style="font-size: 48px; color: #1a237e; margin-bottom: 20px;"></i>
+                            <h3 style="color: #1a237e; margin-bottom: 10px;">Purchase & Expense Module</h3>
+                            <p style="color: #666;">Select a specific purchase type from the dropdown above to continue.</p>
+                        </div>
+                    </div>
+                `;
+            } else {
+                purchaseControls.classList.remove('active');
+                let moduleContent = generateGenericTransactionInterface(transactionType);
+                moduleContainer.innerHTML = moduleContent;
+            }
+        }
+
+        function loadPurchaseSubModule() {
+            const purchaseSubType = document.getElementById('purchaseSubType').value;
+            const moduleContainer = document.getElementById('transactionModule');
+            
+            if (!purchaseSubType) return;
+
             let moduleContent = '';
             
-            switch(transactionType) {
-                case 'sales-invoice':
-                    moduleContent = generateSalesInvoiceInterface();
-                    break;
+            switch(purchaseSubType) {
                 case 'purchase-order':
                     moduleContent = generatePurchaseOrderInterface();
                     break;
                 case 'purchase-invoice':
                     moduleContent = generatePurchaseInvoiceInterface();
                     break;
-                case 'record-expense':
-                    moduleContent = generateExpenseInterface();
+                case 'goods-services':
+                    moduleContent = generateGoodsServicesInterface();
                     break;
-                case 'cash-receipts':
-                    moduleContent = generateCashReceiptsInterface();
+                case 'expenses':
+                    moduleContent = generateExpensesInterface();
                     break;
-                case 'cash-payments':
-                    moduleContent = generateCashPaymentsInterface();
-                    break;
-                case 'manage-stock':
-                    moduleContent = generateStockManagementInterface();
-                    break;
-                case 'manage-approval':
-                    moduleContent = generateApprovalInterface();
-                    break;
-                case 'manage-draft':
-                    moduleContent = generateDraftInterface();
+                case 'assets':
+                    moduleContent = generateAssetsInterface();
                     break;
                 default:
-                    moduleContent = generateGenericTransactionInterface(transactionType);
+                    moduleContent = generateGenericTransactionInterface(purchaseSubType);
             }
             
             moduleContainer.innerHTML = moduleContent;
         }
 
-        function generateSalesInvoiceInterface() {
+        // Purchase module interfaces
+        function generatePurchaseOrderInterface() {
             return `
                 <div class="card">
-                    <h3><i class="fas fa-receipt"></i> Sales Invoice</h3>
+                    <h3><i class="fas fa-shopping-cart"></i> Purchase Order</h3>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Invoice No.</label>
-                            <input type="text" value="INV-${Date.now()}" readonly>
+                            <label>PO Number</label>
+                            <input type="text" value="PO-${Date.now()}" readonly>
                         </div>
                         <div class="form-group">
                             <label>Date</label>
                             <input type="date" value="${new Date().toISOString().split('T')[0]}">
                         </div>
                         <div class="form-group">
-                            <label>Customer</label>
-                            <select>
-                                <option>Select Customer...</option>
-                                ${partners.filter(p => p.type === 'customer' || p.type === 'both')
+                            <label>Supplier</label>
+                            <select id="purchaseSupplier">
+                                <option>Select Supplier...</option>
+                                ${partners.filter(p => p.type === 'supplier' || p.type === 'both')
                                   .map(p => `<option value="${p.id}">${p.name}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Expected Delivery</label>
+                            <input type="date">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Item</label>
+                            <select id="purchaseItem" onchange="updatePurchaseItemDetails()">
+                                <option>Select Item...</option>
+                                ${items.map(item => `<option value="${item.id}">${item.name} - ${formatCurrency(item.factoryPrice || item.retailPrice)}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Quantity</label>
+                            <input type="number" id="purchaseQty" min="1" value="1" onchange="calculatePurchaseAmount()">
+                        </div>
+                        <div class="form-group">
+                            <label>Unit Cost</label>
+                            <input type="number" id="purchaseCost" step="0.01" onchange="calculatePurchaseAmount()">
+                        </div>
+                        <div class="form-group">
+                            <label>Total Amount</label>
+                            <input type="number" id="purchaseTotal" readonly>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Notes</label>
+                            <textarea rows="3" placeholder="Additional notes or requirements"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <button class="btn btn-success" onclick="savePurchaseOrder()">
+                            <i class="fas fa-save"></i> Save Purchase Order
+                        </button>
+                        <button class="btn btn-primary" onclick="sendPurchaseOrder()">
+                            <i class="fas fa-paper-plane"></i> Send to Supplier
+                        </button>
+                        <button class="btn btn-warning" onclick="clearPurchaseForm()">
+                            <i class="fas fa-broom"></i> Clear Form
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generatePurchaseInvoiceInterface() {
+            return `
+                <div class="card">
+                    <h3><i class="fas fa-file-invoice"></i> Purchase Invoice</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Invoice Number</label>
+                            <input type="text" value="PI-${Date.now()}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Supplier Invoice No.</label>
+                            <input type="text" placeholder="Supplier's invoice number">
+                        </div>
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input type="date" value="${new Date().toISOString().split('T')[0]}">
+                        </div>
+                        <div class="form-group">
+                            <label>Due Date</label>
+                            <input type="date">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Supplier</label>
+                            <select>
+                                <option>Select Supplier...</option>
+                                ${partners.filter(p => p.type === 'supplier' || p.type === 'both')
+                                  .map(p => `<option value="${p.id}">${p.name}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Payment Terms</label>
+                            <select>
+                                <option>Net 30</option>
+                                <option>Net 15</option>
+                                <option>Immediate</option>
+                                <option>Cash on Delivery</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -1311,63 +1786,236 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label>Item</label>
-                            <select onchange="addInvoiceItem(this.value)">
+                            <select onchange="addPurchaseInvoiceItem(this.value)">
                                 <option>Select Item...</option>
-                                ${items.map(item => `<option value="${item.id}">${item.name} - ${formatCurrency(item.price)}</option>`).join('')}
+                                ${items.map(item => `<option value="${item.id}">${item.name}</option>`).join('')}
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Quantity</label>
-                            <input type="number" id="invoiceQty" min="1" value="1">
+                            <label>Quantity Received</label>
+                            <input type="number" min="1" value="1">
                         </div>
                         <div class="form-group">
-                            <label>Unit Price</label>
-                            <input type="number" id="invoicePrice" step="0.01">
+                            <label>Unit Cost</label>
+                            <input type="number" step="0.01">
                         </div>
                         <div class="form-group">
-                            <label>Amount</label>
-                            <input type="number" id="invoiceAmount" readonly>
+                            <label>Update Stock?</label>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
                         </div>
                     </div>
                     ${systemConfig.enableVAT ? `
                     <div class="form-row">
                         <div class="form-group">
-                            <label>VAT (${systemConfig.vatRate}%)</label>
-                            <input type="number" id="invoiceVAT" readonly>
+                            <label>VAT Amount</label>
+                            <input type="number" step="0.01" readonly>
                         </div>
                         <div class="form-group">
                             <label>Total Amount</label>
-                            <input type="number" id="invoiceTotal" readonly>
+                            <input type="number" step="0.01" readonly>
                         </div>
                     </div>
                     ` : ''}
                     <div class="form-row">
-                        <button class="btn btn-success" onclick="saveTransaction('sales-invoice')">
+                        <button class="btn btn-success" onclick="saveTransaction('purchase-invoice')">
                             <i class="fas fa-save"></i> Save Invoice
                         </button>
-                        <button class="btn btn-primary" onclick="printTransaction()">
-                            <i class="fas fa-print"></i> Print
-                        </button>
-                        <button class="btn btn-warning" onclick="clearTransactionForm()">
-                            <i class="fas fa-broom"></i> Clear
+                        <button class="btn btn-primary" onclick="recordPayment()">
+                            <i class="fas fa-money-bill"></i> Record Payment
                         </button>
                     </div>
                 </div>
             `;
         }
 
-        function generatePurchaseOrderInterface() {
+        function generateGoodsServicesInterface() {
             return `
                 <div class="card">
-                    <h3><i class="fas fa-shopping-cart"></i> Purchase Order</h3>
+                    <h3><i class="fas fa-truck"></i> Goods and Services</h3>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>PO No.</label>
-                            <input type="text" value="PO-${Date.now()}" readonly>
+                            <label>Reference Number</label>
+                            <input type="text" value="GS-${Date.now()}" readonly>
                         </div>
                         <div class="form-group">
                             <label>Date</label>
                             <input type="date" value="${new Date().toISOString().split('T')[0]}">
+                        </div>
+                        <div class="form-group">
+                            <label>Type</label>
+                            <select id="goodsServiceType">
+                                <option value="goods">Goods Purchase</option>
+                                <option value="services">Service Purchase</option>
+                                <option value="both">Goods & Services</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Supplier/Service Provider</label>
+                            <select>
+                                <option>Select Supplier...</option>
+                                ${partners.filter(p => p.type === 'supplier' || p.type === 'both')
+                                  .map(p => `<option value="${p.id}">${p.name}</option>`).join('')}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea rows="3" placeholder="Describe the goods or services purchased"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Quantity</label>
+                            <input type="number" min="1" value="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Unit Cost</label>
+                            <input type="number" step="0.01" placeholder="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label>Total Cost</label>
+                            <input type="number" step="0.01" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Add to Inventory</label>
+                            <label class="switch">
+                                <input type="checkbox" id="addToInventory">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <button class="btn btn-success" onclick="saveTransaction('goods-services')">
+                            <i class="fas fa-save"></i> Save Record
+                        </button>
+                        <button class="btn btn-primary" onclick="generateStockEntry()">
+                            <i class="fas fa-boxes"></i> Generate Stock Entry
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateExpensesInterface() {
+            return `
+                <div class="card">
+                    <h3><i class="fas fa-receipt"></i> Business Expenses</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Expense Number</label>
+                            <input type="text" value="EXP-${Date.now()}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input type="date" value="${new Date().toISOString().split('T')[0]}">
+                        </div>
+                        <div class="form-group">
+                            <label>Expense Category</label>
+                            <select id="expenseCategory">
+                                <option value="office-supplies">Office Supplies</option>
+                                <option value="utilities">Utilities</option>
+                                <option value="rent">Rent & Facilities</option>
+                                <option value="transport">Transport</option>
+                                <option value="marketing">Marketing</option>
+                                <option value="insurance">Insurance</option>
+                                <option value="professional-fees">Professional Fees</option>
+                                <option value="maintenance">Maintenance</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Payment Method</label>
+                            <select>
+                                <option value="cash">Cash</option>
+                                <option value="bank">Bank Transfer</option>
+                                <option value="mobile">Mobile Money</option>
+                                <option value="card">Credit/Debit Card</option>
+                                <option value="cheque">Cheque</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Payee/Supplier</label>
+                            <input type="text" placeholder="Who was paid?">
+                        </div>
+                        <div class="form-group">
+                            <label>Amount</label>
+                            <input type="number" step="0.01" placeholder="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label>Reference/Receipt No.</label>
+                            <input type="text" placeholder="Receipt or reference number">
+                        </div>
+                        <div class="form-group">
+                            <label>Recurring Expense</label>
+                            <label class="switch">
+                                <input type="checkbox" id="recurringExpense">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea rows="3" placeholder="Detailed description of the expense"></textarea>
+                        </div>
+                    </div>
+                    ${systemConfig.enableVAT ? `
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>VAT Inclusive</label>
+                            <label class="switch">
+                                <input type="checkbox" id="vatInclusive">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>VAT Amount</label>
+                            <input type="number" step="0.01" readonly>
+                        </div>
+                    </div>
+                    ` : ''}
+                    <div class="form-row">
+                        <button class="btn btn-success" onclick="saveTransaction('expense')">
+                            <i class="fas fa-save"></i> Save Expense
+                        </button>
+                        <button class="btn btn-primary" onclick="attachReceipt()">
+                            <i class="fas fa-paperclip"></i> Attach Receipt
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateAssetsInterface() {
+            return `
+                <div class="card">
+                    <h3><i class="fas fa-desktop"></i> Asset Purchase</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Asset Number</label>
+                            <input type="text" value="AST-${Date.now()}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Purchase Date</label>
+                            <input type="date" value="${new Date().toISOString().split('T')[0]}">
+                        </div>
+                        <div class="form-group">
+                            <label>Asset Category</label>
+                            <select id="assetCategory">
+                                <option value="equipment">Equipment</option>
+                                <option value="furniture">Furniture</option>
+                                <option value="vehicles">Vehicles</option>
+                                <option value="computers">Computers & IT</option>
+                                <option value="machinery">Machinery</option>
+                                <option value="property">Property</option>
+                                <option value="other">Other</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label>Supplier</label>
@@ -1377,80 +2025,65 @@
                                   .map(p => `<option value="${p.id}">${p.name}</option>`).join('')}
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label>Expected Date</label>
-                            <input type="date">
-                        </div>
                     </div>
                     <div class="form-row">
-                        <button class="btn btn-success" onclick="saveTransaction('purchase-order')">
-                            <i class="fas fa-save"></i> Save Order
-                        </button>
-                        <button class="btn btn-primary" onclick="sendPurchaseOrder()">
-                            <i class="fas fa-paper-plane"></i> Send to Supplier
-                        </button>
-                    </div>
-                </div>
-            `;
-        }
-
-        function generateCashReceiptsInterface() {
-            return `
-                <div class="card">
-                    <h3><i class="fas fa-money-bill-wave"></i> Cash Receipts</h3>
-                    <div class="form-row">
                         <div class="form-group">
-                            <label>Receipt No.</label>
-                            <input type="text" value="CR-${Date.now()}" readonly>
+                            <label>Asset Name</label>
+                            <input type="text" placeholder="Name/Description of asset">
                         </div>
                         <div class="form-group">
-                            <label>Date</label>
-                            <input type="date" value="${new Date().toISOString().split('T')[0]}">
+                            <label>Model/Serial Number</label>
+                            <input type="text" placeholder="Model or serial number">
                         </div>
                         <div class="form-group">
-                            <label>Received From</label>
-                            <input type="text" placeholder="Enter payer name">
-                        </div>
-                        <div class="form-group">
-                            <label>Amount</label>
+                            <label>Purchase Cost</label>
                             <input type="number" step="0.01" placeholder="0.00">
                         </div>
+                        <div class="form-group">
+                            <label>Useful Life (Years)</label>
+                            <input type="number" min="1" max="50" value="5">
+                        </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Payment Method</label>
+                            <label>Depreciation Method</label>
                             <select>
-                                <option value="cash">Cash</option>
-                                <option value="bank">Bank Transfer</option>
-                                <option value="mobile">Mobile Money</option>
-                                <option value="card">Credit/Debit Card</option>
+                                <option value="straight-line">Straight Line</option>
+                                <option value="reducing-balance">Reducing Balance</option>
+                                <option value="sum-of-years">Sum of Years Digits</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Reference No.</label>
-                            <input type="text" placeholder="Transaction reference">
+                            <label>Location</label>
+                            <input type="text" placeholder="Where is the asset located?">
                         </div>
                         <div class="form-group">
-                            <label>Account</label>
-                            <select>
-                                <option>Cash Account</option>
-                                <option>Bank Account</option>
-                                <option>Mobile Money</option>
-                            </select>
+                            <label>Warranty Period</label>
+                            <input type="text" placeholder="e.g., 2 years">
+                        </div>
+                        <div class="form-group">
+                            <label>Insurance Required</label>
+                            <label class="switch">
+                                <input type="checkbox" id="insuranceRequired">
+                                <span class="slider"></span>
+                            </label>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Description</label>
-                            <textarea rows="3" placeholder="Enter payment description"></textarea>
+                            <label>Notes</label>
+                            <textarea rows="3" placeholder="Additional asset information"></textarea>
                         </div>
                     </div>
                     <div class="form-row">
-                        <button class="btn btn-success" onclick="saveTransaction('cash-receipt')">
-                            <i class="fas fa-save"></i> Record Receipt
+                        <button class="btn btn-success" onclick="saveTransaction('asset')">
+                            <i class="fas fa-save"></i> Save Asset
                         </button>
-                        <button class="btn btn-primary" onclick="printReceipt()">
-                            <i class="fas fa-print"></i> Print Receipt
+                        <button class="btn btn-primary" onclick="generateAssetTag()">
+                            <i class="fas fa-tags"></i> Generate Asset Tag
+                        </button>
+                        <button class="btn btn-warning" onclick="scheduleDepreciation()">
+                            <i class="fas fa-calendar"></i> Schedule Depreciation
                         </button>
                     </div>
                 </div>
@@ -1472,6 +2105,46 @@
                     </div>
                 </div>
             `;
+        }
+
+        // Transaction helper functions
+        function updatePurchaseItemDetails() {
+            const itemId = document.getElementById('purchaseItem').value;
+            const item = items.find(i => i.id === itemId);
+            if (item) {
+                document.getElementById('purchaseCost').value = item.factoryPrice || item.retailPrice || 0;
+                calculatePurchaseAmount();
+            }
+        }
+
+        function calculatePurchaseAmount() {
+            const qty = parseFloat(document.getElementById('purchaseQty').value) || 0;
+            const cost = parseFloat(document.getElementById('purchaseCost').value) || 0;
+            const total = qty * cost;
+            document.getElementById('purchaseTotal').value = total.toFixed(2);
+        }
+
+        function savePurchaseOrder() {
+            const transaction = {
+                id: 'PO-' + Date.now(),
+                type: 'purchase-order',
+                date: new Date().toISOString().split('T')[0],
+                amount: parseFloat(document.getElementById('purchaseTotal').value) || 0,
+                status: 'pending',
+                createdBy: currentUser.fullName
+            };
+            
+            transactions.push(transaction);
+            showNotification('Purchase order saved successfully!', 'success');
+        }
+
+        function sendPurchaseOrder() {
+            showNotification('Purchase order sent to supplier!', 'info');
+        }
+
+        function clearPurchaseForm() {
+            document.querySelectorAll('#transactionModule input[type="number"]').forEach(input => input.value = '');
+            document.querySelectorAll('#transactionModule select').forEach(select => select.selectedIndex = 0);
         }
 
         // Settings functionality
@@ -1542,7 +2215,107 @@
             document.getElementById('footerDevEmail').textContent = systemConfig.devInfo.email;
         }
 
-        // Item management
+        // User management functionality
+        function loadUsers() {
+            const userGrid = document.getElementById('userGrid');
+            userGrid.innerHTML = '';
+            
+            users.forEach(user => {
+                const userCard = document.createElement('div');
+                userCard.className = 'user-card';
+                userCard.innerHTML = `
+                    <h4>${user.fullName}</h4>
+                    <div class="user-role role-${user.role}">${user.role.toUpperCase()}</div>
+                    <p><strong>Username:</strong> ${user.username}</p>
+                    <p><strong>Email:</strong> ${user.email || 'Not provided'}</p>
+                    <p><strong>Phone:</strong> ${user.phone || 'Not provided'}</p>
+                    <p><strong>Status:</strong> ${user.active ? 'Active' : 'Inactive'}</p>
+                    <div style="margin-top: 15px;">
+                        <button class="btn btn-primary" onclick="editUser(${user.id})" style="margin-right: 5px;">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        ${user.id !== 1 ? `
+                        <button class="btn btn-danger" onclick="deleteUser(${user.id})">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                        ` : ''}
+                    </div>
+                `;
+                userGrid.appendChild(userCard);
+            });
+        }
+
+        function addUser() {
+            const username = document.getElementById('newUsername').value.trim();
+            const password = document.getElementById('newPassword').value.trim();
+            const fullName = document.getElementById('newFullName').value.trim();
+            const role = document.getElementById('newUserRole').value;
+            const email = document.getElementById('newUserEmail').value.trim();
+            const phone = document.getElementById('newUserPhone').value.trim();
+            
+            if (!username || !password || !fullName) {
+                showNotification('Please fill in required fields (Username, Password, Full Name)', 'error');
+                return;
+            }
+            
+            if (users.find(u => u.username === username)) {
+                showNotification('Username already exists!', 'error');
+                return;
+            }
+            
+            const newUser = {
+                id: users.length + 1,
+                username,
+                password,
+                fullName,
+                role,
+                email,
+                phone,
+                active: true
+            };
+            
+            users.push(newUser);
+            
+            // Clear form
+            document.getElementById('newUsername').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('newFullName').value = '';
+            document.getElementById('newUserRole').value = 'user';
+            document.getElementById('newUserEmail').value = '';
+            document.getElementById('newUserPhone').value = '';
+            
+            loadUsers();
+            showNotification('User added successfully!', 'success');
+        }
+
+        function editUser(userId) {
+            const user = users.find(u => u.id === userId);
+            if (user) {
+                document.getElementById('newUsername').value = user.username;
+                document.getElementById('newPassword').value = user.password;
+                document.getElementById('newFullName').value = user.fullName;
+                document.getElementById('newUserRole').value = user.role;
+                document.getElementById('newUserEmail').value = user.email || '';
+                document.getElementById('newUserPhone').value = user.phone || '';
+                
+                showNotification('User details loaded for editing', 'info');
+            }
+        }
+
+        function deleteUser(userId) {
+            if (userId === 1) {
+                showNotification('Cannot delete default admin user!', 'error');
+                return;
+            }
+            
+            if (confirm('Are you sure you want to delete this user?')) {
+                users = users.filter(u => u.id !== userId);
+                loadUsers();
+                showNotification('User deleted successfully!', 'success');
+            }
+        }
+
+        // Item management with stock recording
         function saveItem() {
             if (!checkPermission('item-create')) {
                 showNotification('Access denied: Cannot create items', 'error');
@@ -1552,7 +2325,11 @@
             const code = document.getElementById('itemCodeInput').value.trim();
             const name = document.getElementById('itemNameInput').value.trim();
             const category = document.getElementById('itemCategory').value;
-            const price = parseFloat(document.getElementById('itemPrice').value) || 0;
+            const retailPrice = parseFloat(document.getElementById('itemRetailPrice').value) || 0;
+            const factoryPrice = parseFloat(document.getElementById('itemFactoryPrice').value) || 0;
+            const stock = parseInt(document.getElementById('itemStock').value) || 0;
+            const unit = document.getElementById('itemUnit').value;
+            const minStock = parseInt(document.getElementById('itemMinStock').value) || 0;
             
             if (!code || !name || !category) {
                 showNotification('Please fill in all required fields', 'error');
@@ -1564,27 +2341,53 @@
                 code,
                 name,
                 category,
-                price
+                retailPrice,
+                factoryPrice,
+                stock,
+                unit,
+                minStock,
+                status: stock <= minStock ? 'Low Stock' : 'In Stock',
+                dateAdded: new Date().toISOString().split('T')[0]
             };
             
             items.push(item);
+            
+            // Record stock movement
+            if (stock > 0) {
+                const stockMovement = {
+                    id: 'STK-' + Date.now(),
+                    itemId: item.id,
+                    itemName: item.name,
+                    type: 'Initial Stock',
+                    quantity: stock,
+                    date: new Date().toISOString().split('T')[0],
+                    user: currentUser.fullName,
+                    notes: 'Initial stock entry'
+                };
+                stockMovements.push(stockMovement);
+            }
+            
             refreshItemsTable();
             clearItemForm();
-            showNotification('Item saved successfully!', 'success');
+            showNotification('Item saved successfully with stock recorded!', 'success');
         }
 
         function clearItemForm() {
             document.getElementById('itemCodeInput').value = '';
             document.getElementById('itemNameInput').value = '';
             document.getElementById('itemCategory').value = '';
-            document.getElementById('itemPrice').value = '';
+            document.getElementById('itemRetailPrice').value = '';
+            document.getElementById('itemFactoryPrice').value = '';
+            document.getElementById('itemStock').value = '';
+            document.getElementById('itemUnit').value = 'PCS';
+            document.getElementById('itemMinStock').value = '';
         }
 
         function refreshItemsTable() {
             const tbody = document.getElementById('itemsTableBody');
             
             if (items.length === 0) {
-                tbody.innerHTML = '<tr class="no-records"><td colspan="5">No items found. Add your first item above.</td></tr>';
+                tbody.innerHTML = '<tr class="no-records"><td colspan="8">No items found. Add your first item above.</td></tr>';
                 return;
             }
             
@@ -1593,7 +2396,14 @@
                     <td>${item.code}</td>
                     <td>${item.name}</td>
                     <td>${item.category}</td>
-                    <td>${formatCurrency(item.price)}</td>
+                    <td>${item.stock} ${item.unit}</td>
+                    <td class="text-success font-bold">${formatCurrency(item.retailPrice)}</td>
+                    <td class="text-primary font-bold">${formatCurrency(item.factoryPrice)}</td>
+                    <td>
+                        <span class="price-tag ${item.status === 'Low Stock' ? 'retail-price' : 'factory-price'}">
+                            ${item.status}
+                        </span>
+                    </td>
                     <td>
                         <button class="btn btn-primary" onclick="editItem('${item.id}')">
                             <i class="fas fa-edit"></i>
@@ -1604,6 +2414,27 @@
                     </td>
                 </tr>
             `).join('');
+        }
+
+        function exportStock() {
+            if (items.length === 0) {
+                showNotification('No items to export!', 'warning');
+                return;
+            }
+            
+            let csvContent = "Item Code,Item Name,Category,Stock,Unit,Retail Price,Factory Price,Status\n";
+            items.forEach(item => {
+                csvContent += `${item.code},${item.name},${item.category},${item.stock},${item.unit},${item.retailPrice},${item.factoryPrice},${item.status}\n`;
+            });
+            
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `stock_report_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            
+            showNotification('Stock report exported successfully!', 'success');
         }
 
         // Partner management
@@ -1630,10 +2461,12 @@
                 type,
                 email,
                 phone,
-                address
+                address,
+                dateAdded: new Date().toISOString().split('T')[0]
             };
             
             partners.push(partner);
+            refreshPartnersTable();
             clearPartnerForm();
             showNotification('Partner saved successfully!', 'success');
         }
@@ -1646,10 +2479,40 @@
             document.getElementById('partnerAddress').value = '';
         }
 
+        function refreshPartnersTable() {
+            const tbody = document.getElementById('partnersTableBody');
+            
+            if (partners.length === 0) {
+                tbody.innerHTML = '<tr class="no-records"><td colspan="5">No partners found. Add your first partner above.</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = partners.map(partner => `
+                <tr>
+                    <td>${partner.name}</td>
+                    <td>
+                        <span class="price-tag ${partner.type === 'customer' ? 'retail-price' : partner.type === 'supplier' ? 'factory-price' : 'text-warning'}">
+                            ${partner.type.toUpperCase()}
+                        </span>
+                    </td>
+                    <td>${partner.email || 'N/A'}</td>
+                    <td>${partner.phone || 'N/A'}</td>
+                    <td>
+                        <button class="btn btn-primary" onclick="editPartner('${partner.id}')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-danger" onclick="deletePartner('${partner.id}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
         // Utility functions
         function checkPermission(permission) {
             // Admin has all permissions by default
-            return userPermissions[permission] !== false;
+            return currentUser && (currentUser.role === 'admin' || userPermissions[permission] !== false);
         }
 
         function formatCurrency(amount, currency = null) {
@@ -1672,12 +2535,29 @@
                 return;
             }
             
+            if (transactionType === 'purchase-expense') {
+                const purchaseSubType = document.getElementById('purchaseSubType').value;
+                if (!purchaseSubType) {
+                    showNotification('Please select a purchase sub-type first', 'warning');
+                    return;
+                }
+            }
+            
             loadTransactionModule();
             showNotification('New transaction form loaded', 'info');
         }
 
         function saveTransaction(type) {
-            showNotification(`${type} saved successfully!`, 'success');
+            const transaction = {
+                id: type.toUpperCase() + '-' + Date.now(),
+                type: type,
+                date: new Date().toISOString().split('T')[0],
+                user: currentUser.fullName,
+                status: 'completed'
+            };
+            
+            transactions.push(transaction);
+            showNotification(`${type.replace('-', ' ')} saved successfully!`, 'success');
         }
 
         function loadSystemConfig() {
@@ -1696,15 +2576,6 @@
                 }
                 
                 updateFooter();
-            }
-        }
-
-        function logout() {
-            if (confirm('Are you sure you want to logout?')) {
-                showNotification('Logged out successfully', 'info');
-                setTimeout(() => {
-                    location.reload();
-                }, 1000);
             }
         }
 
@@ -1733,6 +2604,14 @@
         setInterval(() => {
             localStorage.setItem('salesManagerConfig', JSON.stringify(systemConfig));
         }, 30000); // Save every 30 seconds
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                showNotification('Auto-save is enabled', 'info');
+            }
+        });
     </script>
 </body>
 </html>
