@@ -6,7 +6,7 @@
     <title>SalesManager 7.0 - Enhanced Professional Business Management System</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* Consolidated Styles - Professional Blue Theme */
+        /* Enhanced Styles - Professional Blue Theme with UGX support */
         * { box-sizing: border-box; }
         html, body { height: 100%; }
         body {
@@ -58,15 +58,16 @@
         .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 12px; }
         .form-group { display: flex; flex-direction: column; gap: 6px; }
         .form-group.full-width { grid-column: 1/-1; }
+        .form-actions { display: flex; gap: 10px; margin-top: 20px; }
         .table-container { border-radius: 12px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,.18); }
         table { width: 100%; border-collapse: collapse; background: #fff; }
         th { background: linear-gradient(135deg, #1a237e, #283593); color: #fff; padding: 12px; text-align: left; font-size: 13px; }
         td { padding: 10px 12px; border-bottom: 1px solid #eceff1; font-size: 13px; }
         tr.no-records td { text-align: center; color: #6c757d; padding: 26px; font-style: italic; }
-        .pos-container { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
-        .pos-items { background: #fff; border-radius: 12px; padding: 12px; min-height: 280px; }
-        .pos-right { background: #fff; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 12px; }
-        .pos-categories { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+        .sales-container { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+        .sales-items { background: #fff; border-radius: 12px; padding: 12px; min-height: 280px; color: #222; }
+        .sales-right { background: #fff; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 12px; color: #222; }
+        .sales-categories { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
         .category-btn { background: #e3f2fd; border: 1px solid #90caf9; color: #0d47a1; padding: 6px 10px; border-radius: 20px; cursor: pointer; }
         .category-btn.active { background: #bbdefb; }
         .cart-items { flex: 1; overflow: auto; border: 1px dashed #cfd8dc; border-radius: 8px; padding: 10px; }
@@ -81,7 +82,7 @@
         .badge.admin { background: #3949ab; color: #fff; }
         .badge.active { background: #2e7d32; color: #fff; }
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,.6); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-        .modal-content { width: 460px; max-width: 92%; background: rgba(255,255,255,.96); border-radius: 12px; padding: 28px; box-shadow: 0 18px 36px rgba(0,0,0,.3); text-align: center; }
+        .modal-content { width: 460px; max-width: 92%; background: rgba(255,255,255,.96); border-radius: 12px; padding: 28px; box-shadow: 0 18px 36px rgba(0,0,0,.3); text-align: center; color: #222; }
         .company-logo { font-size: 48px; color: #1a237e; margin-bottom: 8px; }
         .login-btn { width: 100%; padding: 12px; border-radius: 8px; border: 0; color: #fff; background: linear-gradient(135deg, #1a237e, #283593); cursor: pointer; margin-top: 6px; }
         .notification-container { position: fixed; top: 16px; right: 16px; display: grid; gap: 10px; z-index: 1100; }
@@ -90,7 +91,22 @@
         .notification.error { background: #c62828; }
         .notification.info { background: #0277bd; }
         .notification.warning { background: #ef6c00; }
-        @media (max-width: 980px) { .pos-container { grid-template-columns: 1fr; } .nav-list { padding: 0 12px; } }
+        .currency-selector { display: flex; gap: 8px; align-items: center; margin-bottom: 16px; }
+        .currency-selector select { padding: 6px; border-radius: 6px; }
+        .accounting-modules { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 20px; }
+        .module-card { background: rgba(255,255,255,.1); border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s; }
+        .module-card:hover { background: rgba(255,255,255,.2); }
+        .module-card i { font-size: 48px; margin-bottom: 12px; }
+        .report-categories { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+        .category-card { background: rgba(255,255,255,.1); border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s; }
+        .category-card:hover { background: rgba(255,255,255,.2); }
+        .category-card i { font-size: 48px; margin-bottom: 12px; }
+        .settings-tabs { display: flex; gap: 2px; margin-bottom: 20px; }
+        .tab-btn { background: rgba(255,255,255,.1); border: none; color: #fff; padding: 12px 20px; border-radius: 8px 8px 0 0; cursor: pointer; }
+        .tab-btn.active { background: rgba(255,255,255,.96); color: #222; }
+        .settings-tab { display: none; }
+        .settings-tab.active { display: block; }
+        @media (max-width: 980px) { .sales-container { grid-template-columns: 1fr; } .nav-list { padding: 0 12px; } }
         /* Print */
         @media print { .header, .nav-bar, .footer, .btn, .action-buttons, .notifications, .modal { display: none !important; } .card { box-shadow: none !important; border: 1px solid #ccc; } body { background: #fff !important; color: #000 !important; } }
     </style>
@@ -147,6 +163,17 @@
                     </div>
                 </div>
                 <div class="user-info">
+                    <div class="currency-selector">
+                        <label>Currency:</label>
+                        <select id="globalCurrency" onchange="changeCurrency()">
+                            <option value="UGX">UGX - Ugandan Shilling</option>
+                            <option value="USD">USD - US Dollar</option>
+                            <option value="KES">KES - Kenyan Shilling</option>
+                            <option value="TZS">TZS - Tanzanian Shilling</option>
+                            <option value="EUR">EUR - Euro</option>
+                            <option value="GBP">GBP - British Pound</option>
+                        </select>
+                    </div>
                     <div class="notifications" onclick="showNotifications()">
                         <i class="fas fa-bell"></i>
                         <span class="notification-count" id="notificationCount">0</span>
@@ -170,7 +197,7 @@
                 <li><a href="#" data-section="transactions" class="nav-item" data-permission="transactions">
                     <i class="fas fa-exchange-alt"></i> Transactions</a></li>
                 <li><a href="#" data-section="sales" class="nav-item" data-permission="sales">
-                    <i class="fas fa-shopping-cart"></i> Sales & POS</a></li>
+                    <i class="fas fa-shopping-cart"></i> Sales</a></li>
                 <li><a href="#" data-section="inventory" class="nav-item" data-permission="inventory">
                     <i class="fas fa-boxes"></i> Inventory</a></li>
                 <li><a href="#" data-section="customers" class="nav-item" data-permission="customers">
@@ -197,7 +224,7 @@
                         </div>
                         <div class="card-content">
                             <h3>Today's Sales</h3>
-                            <div class="card-value" id="todaySales">$0.00</div>
+                            <div class="card-value" id="todaySales">UGX 0</div>
                             <div class="card-change positive" id="salesChange">+0%</div>
                         </div>
                     </div>
@@ -230,7 +257,7 @@
                         </div>
                         <div class="card-content">
                             <h3>Monthly Profit</h3>
-                            <div class="card-value" id="monthlyProfit">$0.00</div>
+                            <div class="card-value" id="monthlyProfit">UGX 0</div>
                             <div class="card-change" id="profitChange">+0%</div>
                         </div>
                     </div>
@@ -269,9 +296,13 @@
                             <i class="fas fa-user-plus"></i>
                             <span>New Customer</span>
                         </button>
-                        <button class="action-btn" onclick="viewReports()">
-                            <i class="fas fa-chart-bar"></i>
-                            <span>View Reports</span>
+                        <button class="action-btn" onclick="recordExpense()">
+                            <i class="fas fa-receipt"></i>
+                            <span>Record Expense</span>
+                        </button>
+                        <button class="action-btn" onclick="receiveDeposit()">
+                            <i class="fas fa-hand-holding-usd"></i>
+                            <span>Receive Deposit</span>
                         </button>
                         <button class="action-btn print-allowed" onclick="printDashboard()">
                             <i class="fas fa-print"></i>
@@ -306,6 +337,7 @@
                                     <option value="sales-return">Sales Return</option>
                                     <option value="sales-quote">Sales Quotation</option>
                                     <option value="sales-order">Sales Order</option>
+                                    <option value="receive-deposit">Receive Deposit</option>
                                 </optgroup>
                                 <optgroup label="Purchase Transactions">
                                     <option value="purchase-order">Purchase Order</option>
@@ -317,6 +349,7 @@
                                     <option value="cash-payment">Cash Payment</option>
                                     <option value="bank-deposit">Bank Deposit</option>
                                     <option value="bank-withdrawal">Bank Withdrawal</option>
+                                    <option value="expense">Expense</option>
                                 </optgroup>
                                 <optgroup label="Inventory Transactions">
                                     <option value="stock-adjustment">Stock Adjustment</option>
@@ -376,14 +409,11 @@
                 </div>
             </section>
 
-            <!-- Sales & POS Section -->
+            <!-- Professional Sales Section -->
             <section id="sales" class="content-section">
                 <div class="sales-header">
-                    <h2><i class="fas fa-shopping-cart"></i> Sales & Point of Sale</h2>
+                    <h2><i class="fas fa-shopping-cart"></i> Professional Sales Management</h2>
                     <div class="sales-actions">
-                        <button class="btn btn-success" onclick="openPOS()">
-                            <i class="fas fa-cash-register"></i> Open POS
-                        </button>
                         <button class="btn btn-primary" onclick="newSale()">
                             <i class="fas fa-plus"></i> New Sale
                         </button>
@@ -393,17 +423,17 @@
                     </div>
                 </div>
                 
-                <!-- POS Interface -->
-                <div id="posInterface" class="pos-container" style="display: none;">
-                    <div class="pos-left">
+                <!-- Professional Sales Interface -->
+                <div id="salesInterface" class="sales-container" style="display: none;">
+                    <div class="sales-items">
                         <div class="pos-search">
-                            <input type="text" id="itemSearch" placeholder="Search items..." onkeyup="searchItems()">
+                            <input type="text" id="itemSearch" placeholder="Search items by code or name..." onkeyup="searchItems()">
                             <button class="btn btn-primary" onclick="searchItems()">
                                 <i class="fas fa-search"></i>
                             </button>
                         </div>
                         
-                        <div class="pos-categories">
+                        <div class="sales-categories">
                             <button class="category-btn active" onclick="filterByCategory('all')">All Items</button>
                             <button class="category-btn" onclick="filterByCategory('electronics')">Electronics</button>
                             <button class="category-btn" onclick="filterByCategory('clothing')">Clothing</button>
@@ -412,17 +442,28 @@
                             <button class="category-btn" onclick="filterByCategory('other')">Other</button>
                         </div>
                         
-                        <div class="pos-items" id="posItems">
+                        <div class="pos-items" id="salesItems">
                             <!-- Items will be loaded here dynamically -->
                         </div>
                     </div>
                     
-                    <div class="pos-right">
+                    <div class="sales-right">
                         <div class="cart-header">
-                            <h3>Shopping Cart</h3>
-                            <button class="btn btn-warning" onclick="clearCart()">
-                                <i class="fas fa-trash"></i> Clear
-                            </button>
+                            <h3>Sales Cart</h3>
+                            <div>
+                                <button class="btn btn-warning btn-sm" onclick="clearCart()">
+                                    <i class="fas fa-trash"></i> Clear
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Customer Selection -->
+                        <div class="customer-selection">
+                            <label>Customer:</label>
+                            <select id="saleCustomer">
+                                <option value="">Walk-in Customer</option>
+                                <!-- Will be populated with customers -->
+                            </select>
                         </div>
                         
                         <div class="cart-items" id="cartItems">
@@ -435,19 +476,19 @@
                         <div class="cart-summary">
                             <div class="summary-row">
                                 <span>Subtotal:</span>
-                                <span id="cartSubtotal">$0.00</span>
+                                <span id="cartSubtotal">UGX 0</span>
                             </div>
                             <div class="summary-row">
-                                <span>Tax:</span>
-                                <span id="cartTax">$0.00</span>
+                                <span>Tax (<span id="taxPercent">18</span>%):</span>
+                                <span id="cartTax">UGX 0</span>
                             </div>
                             <div class="summary-row">
                                 <span>Discount:</span>
-                                <span id="cartDiscount">$0.00</span>
+                                <span id="cartDiscount">UGX 0</span>
                             </div>
                             <div class="summary-row total">
                                 <span>Total:</span>
-                                <span id="cartTotal">$0.00</span>
+                                <span id="cartTotal">UGX 0</span>
                             </div>
                         </div>
                         
@@ -470,11 +511,11 @@
                             
                             <div class="change-amount">
                                 <span>Change: </span>
-                                <span id="changeAmount">$0.00</span>
+                                <span id="changeAmount">UGX 0</span>
                             </div>
                             
                             <div class="checkout-actions">
-                                <button class="btn btn-success btn-large" onclick="processPayment()">
+                                <button class="btn btn-success" onclick="processPayment()">
                                     <i class="fas fa-credit-card"></i> Process Payment
                                 </button>
                                 <button class="btn btn-info print-allowed" onclick="printReceipt()">
@@ -509,6 +550,9 @@
                                     <th>Invoice #</th>
                                     <th>Customer</th>
                                     <th>Items</th>
+                                    <th>Unit Price</th>
+                                    <th>Quantity</th>
+                                    <th>Amount</th>
                                     <th>Total</th>
                                     <th>Payment</th>
                                     <th>Status</th>
@@ -517,7 +561,7 @@
                             </thead>
                             <tbody id="salesTableBody">
                                 <tr class="no-records">
-                                    <td colspan="8">No sales records found.</td>
+                                    <td colspan="11">No sales records found.</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -627,35 +671,6 @@
                                 <div class="form-group">
                                     <label>Location/Shelf:</label>
                                     <input type="text" id="itemLocation" placeholder="A1-B2">
-                                </div>
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Supplier:</label>
-                                    <select id="itemSupplier">
-                                        <option value="">Select Supplier</option>
-                                        <!-- Suppliers will be loaded dynamically -->
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Barcode:</label>
-                                    <input type="text" id="itemBarcode">
-                                    <button type="button" class="btn btn-sm" onclick="generateBarcode()">
-                                        <i class="fas fa-barcode"></i> Generate
-                                    </button>
-                                </div>
-                                <div class="form-group">
-                                    <label>Tax Rate (%):</label>
-                                    <input type="number" id="taxRate" step="0.01" value="0">
-                                </div>
-                                <div class="form-group">
-                                    <label>Status:</label>
-                                    <select id="itemStatus">
-                                        <option value="active">Active</option>
-                                        <option value="inactive">Inactive</option>
-                                        <option value="discontinued">Discontinued</option>
-                                    </select>
                                 </div>
                             </div>
                             
@@ -777,27 +792,16 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label>Title:</label>
-                                    <select id="customerTitle">
-                                        <option value="">Select Title</option>
-                                        <option value="Mr">Mr.</option>
-                                        <option value="Mrs">Mrs.</option>
-                                        <option value="Ms">Ms.</option>
-                                        <option value="Dr">Dr.</option>
-                                        <option value="Prof">Prof.</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
                                     <label>First Name:</label>
                                     <input type="text" id="firstName" required>
                                 </div>
-                            </div>
-                            
-                            <div class="form-row">
                                 <div class="form-group">
                                     <label>Last Name:</label>
                                     <input type="text" id="lastName" required>
                                 </div>
+                            </div>
+                            
+                            <div class="form-row">
                                 <div class="form-group">
                                     <label>Company Name:</label>
                                     <input type="text" id="companyName">
@@ -810,85 +814,9 @@
                                     <label>Phone:</label>
                                     <input type="tel" id="customerPhone" required>
                                 </div>
-                            </div>
-                            
-                            <div class="form-row">
                                 <div class="form-group">
-                                    <label>Alternative Phone:</label>
-                                    <input type="tel" id="altPhone">
-                                </div>
-                                <div class="form-group">
-                                    <label>Date of Birth:</label>
-                                    <input type="date" id="dateOfBirth">
-                                </div>
-                                <div class="form-group">
-                                    <label>Gender:</label>
-                                    <select id="gender">
-                                        <option value="">Select Gender</option>
-                                        <option value="male">Male</option>
-                                        <option value="female">Female</option>
-                                        <option value="other">Other</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>ID/Passport Number:</label>
-                                    <input type="text" id="idNumber">
-                                </div>
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Address Line 1:</label>
-                                    <input type="text" id="address1">
-                                </div>
-                                <div class="form-group">
-                                    <label>Address Line 2:</label>
-                                    <input type="text" id="address2">
-                                </div>
-                                <div class="form-group">
-                                    <label>City:</label>
-                                    <input type="text" id="city">
-                                </div>
-                                <div class="form-group">
-                                    <label>State/Region:</label>
-                                    <input type="text" id="state">
-                                </div>
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Postal Code:</label>
-                                    <input type="text" id="postalCode">
-                                </div>
-                                <div class="form-group">
-                                    <label>Country:</label>
-                                    <select id="country">
-                                        <option value="Uganda">Uganda</option>
-                                        <option value="Kenya">Kenya</option>
-                                        <option value="Tanzania">Tanzania</option>
-                                        <option value="Rwanda">Rwanda</option>
-                                        <option value="Other">Other</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Credit Limit:</label>
-                                    <input type="number" id="creditLimit" step="0.01" value="0">
-                                </div>
-                                <div class="form-group">
-                                    <label>Payment Terms:</label>
-                                    <select id="paymentTerms">
-                                        <option value="cash">Cash</option>
-                                        <option value="net15">Net 15 Days</option>
-                                        <option value="net30">Net 30 Days</option>
-                                        <option value="net60">Net 60 Days</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group full-width">
-                                    <label>Notes:</label>
-                                    <textarea id="customerNotes" rows="3"></textarea>
+                                    <label>Address:</label>
+                                    <input type="text" id="customerAddress">
                                 </div>
                             </div>
                             
@@ -906,28 +834,6 @@
                         </form>
                     </div>
                     
-                    <!-- Customer Filters -->
-                    <div class="customer-filters">
-                        <div class="filter-group">
-                            <input type="text" id="customerSearch" placeholder="Search customers..." onkeyup="filterCustomers()">
-                        </div>
-                        <div class="filter-group">
-                            <select id="customerTypeFilter" onchange="filterCustomers()">
-                                <option value="">All Types</option>
-                                <option value="individual">Individual</option>
-                                <option value="business">Business</option>
-                                <option value="wholesale">Wholesale</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <select id="customerStatusFilter" onchange="filterCustomers()">
-                                <option value="">All Status</option>
-                                <option value="active">Active</option>
-                                <option value="inactive">Inactive</option>
-                            </select>
-                        </div>
-                    </div>
-                    
                     <!-- Customers Table -->
                     <div class="table-container">
                         <table>
@@ -939,14 +845,12 @@
                                     <th>Email</th>
                                     <th>Phone</th>
                                     <th>Total Purchases</th>
-                                    <th>Credit Limit</th>
-                                    <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="customersTableBody">
                                 <tr class="no-records">
-                                    <td colspan="9">No customers found. Add your first customer above.</td>
+                                    <td colspan="7">No customers found. Add your first customer above.</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -963,19 +867,12 @@
                             <button class="btn btn-success" onclick="addNewSupplier()">
                                 <i class="fas fa-plus"></i> Add Supplier
                             </button>
-                            <button class="btn btn-info" onclick="importSuppliers()">
-                                <i class="fas fa-upload"></i> Import
-                            </button>
-                            <button class="btn btn-primary" onclick="exportSuppliers()">
-                                <i class="fas fa-download"></i> Export
-                            </button>
                             <button class="btn btn-info print-allowed" onclick="printSuppliers()">
                                 <i class="fas fa-print"></i> Print
                             </button>
                         </div>
                     </div>
                     
-                    <!-- Similar structure as customers but for suppliers -->
                     <div class="table-container">
                         <table>
                             <thead>
@@ -986,14 +883,12 @@
                                     <th>Email</th>
                                     <th>Phone</th>
                                     <th>Total Purchases</th>
-                                    <th>Payment Terms</th>
-                                    <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="suppliersTableBody">
                                 <tr class="no-records">
-                                    <td colspan="9">No suppliers found. Add your first supplier above.</td>
+                                    <td colspan="7">No suppliers found. Add your first supplier above.</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1001,82 +896,88 @@
                 </div>
             </section>
 
-            <!-- Accounting Section -->
+            <!-- Professional Accounting Section -->
             <section id="accounting" class="content-section">
-                <div class="accounting-dashboard">
-                    <div class="accounting-summary">
-                        <div class="summary-card assets">
-                            <h3>Total Assets</h3>
-                            <div class="amount" id="totalAssets">$0.00</div>
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-calculator"></i> Professional Books of Accounts</h2>
+                    </div>
+                    
+                    <div class="accounting-dashboard">
+                        <div class="dashboard-grid">
+                            <div class="dashboard-card">
+                                <div class="card-icon"><i class="fas fa-money-bill-wave"></i></div>
+                                <div class="card-content">
+                                    <h3>Total Revenue</h3>
+                                    <div class="card-value" id="totalRevenue">UGX 0</div>
+                                </div>
+                            </div>
+                            <div class="dashboard-card">
+                                <div class="card-icon"><i class="fas fa-shopping-cart"></i></div>
+                                <div class="card-content">
+                                    <h3>Cost of Goods Sold</h3>
+                                    <div class="card-value" id="totalCOGS">UGX 0</div>
+                                </div>
+                            </div>
+                            <div class="dashboard-card">
+                                <div class="card-icon"><i class="fas fa-receipt"></i></div>
+                                <div class="card-content">
+                                    <h3>Total Expenses</h3>
+                                    <div class="card-value" id="totalExpenses">UGX 0</div>
+                                </div>
+                            </div>
+                            <div class="dashboard-card">
+                                <div class="card-icon"><i class="fas fa-chart-line"></i></div>
+                                <div class="card-content">
+                                    <h3>Net Profit</h3>
+                                    <div class="card-value" id="netProfit">UGX 0</div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="summary-card liabilities">
-                            <h3>Total Liabilities</h3>
-                            <div class="amount" id="totalLiabilities">$0.00</div>
-                        </div>
-                        <div class="summary-card equity">
-                            <h3>Total Equity</h3>
-                            <div class="amount" id="totalEquity">$0.00</div>
-                        </div>
-                        <div class="summary-card profit">
-                            <h3>Net Profit</h3>
-                            <div class="amount" id="netProfit">$0.00</div>
+                        
+                        <div class="accounting-modules">
+                            <div class="module-card" onclick="openAccountingModule('chart-of-accounts')">
+                                <i class="fas fa-list"></i>
+                                <h3>Chart of Accounts</h3>
+                                <p>Manage your account structure</p>
+                            </div>
+                            
+                            <div class="module-card" onclick="openAccountingModule('general-ledger')">
+                                <i class="fas fa-book"></i>
+                                <h3>General Ledger</h3>
+                                <p>View all account transactions</p>
+                            </div>
+                            
+                            <div class="module-card" onclick="openAccountingModule('trial-balance')">
+                                <i class="fas fa-balance-scale"></i>
+                                <h3>Trial Balance</h3>
+                                <p>Verify account balances</p>
+                            </div>
+                            
+                            <div class="module-card" onclick="openAccountingModule('balance-sheet')">
+                                <i class="fas fa-clipboard-list"></i>
+                                <h3>Balance Sheet</h3>
+                                <p>Financial position statement</p>
+                            </div>
                         </div>
                     </div>
                     
-                    <div class="accounting-modules">
-                        <div class="module-card" onclick="openAccountingModule('chart-of-accounts')">
-                            <i class="fas fa-list"></i>
-                            <h3>Chart of Accounts</h3>
-                            <p>Manage your account structure</p>
+                    <!-- Accounting Module Content -->
+                    <div id="accountingModuleContent" class="card" style="display: none;">
+                        <div class="card-header">
+                            <h3 id="accountingModuleTitle">Accounting Module</h3>
+                            <button class="btn btn-secondary" onclick="closeAccountingModule()">
+                                <i class="fas fa-times"></i> Close
+                            </button>
                         </div>
-                        
-                        <div class="module-card" onclick="openAccountingModule('general-ledger')">
-                            <i class="fas fa-book"></i>
-                            <h3>General Ledger</h3>
-                            <p>View all account transactions</p>
+                        <div id="accountingModuleBody">
+                            <!-- Module content will be loaded here -->
                         </div>
-                        
-                        <div class="module-card" onclick="openAccountingModule('trial-balance')">
-                            <i class="fas fa-balance-scale"></i>
-                            <h3>Trial Balance</h3>
-                            <p>Verify account balances</p>
-                        </div>
-                        
-                        <div class="module-card" onclick="openAccountingModule('profit-loss')">
-                            <i class="fas fa-chart-line"></i>
-                            <h3>Profit & Loss</h3>
-                            <p>Income statement report</p>
-                        </div>
-                        
-                        <div class="module-card" onclick="openAccountingModule('balance-sheet')">
-                            <i class="fas fa-clipboard-list"></i>
-                            <h3>Balance Sheet</h3>
-                            <p>Financial position statement</p>
-                        </div>
-                        
-                        <div class="module-card" onclick="openAccountingModule('cash-flow')">
-                            <i class="fas fa-money-bill-wave"></i>
-                            <h3>Cash Flow</h3>
-                            <p>Cash movement analysis</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Accounting Module Content -->
-                <div id="accountingModuleContent" class="card" style="display: none;">
-                    <div class="card-header">
-                        <h3 id="accountingModuleTitle">Accounting Module</h3>
-                        <button class="btn btn-secondary" onclick="closeAccountingModule()">
-                            <i class="fas fa-times"></i> Close
-                        </button>
-                    </div>
-                    <div id="accountingModuleBody">
-                        <!-- Module content will be loaded here -->
                     </div>
                 </div>
             </section>
 
-            <!-- Reports Section -->
+            <!-- Enhanced Reports Section -->
             <section id="reports" class="content-section">
                 <div class="reports-dashboard">
                     <div class="report-categories">
@@ -1092,10 +993,16 @@
                             <p>Stock levels and movements</p>
                         </div>
                         
+                        <div class="category-card" onclick="loadReportCategory('profit-loss')">
+                            <i class="fas fa-chart-line"></i>
+                            <h3>Profit & Loss</h3>
+                            <p>Revenue, COGS, Expenses, Net Profit</p>
+                        </div>
+                        
                         <div class="category-card" onclick="loadReportCategory('financial')">
                             <i class="fas fa-calculator"></i>
                             <h3>Financial Reports</h3>
-                            <p>Accounting and financial analysis</p>
+                            <p>Balance sheet, cash flow</p>
                         </div>
                         
                         <div class="category-card" onclick="loadReportCategory('customer')">
@@ -1146,562 +1053,443 @@
                 </div>
             </section>
 
-            <!-- Settings Section -->
-            <section id="settings" class="content-section">
-                <div class="settings-nav">
-                    <div class="settings-tabs">
-                        <button class="tab-btn active" onclick="showSettingsTab('company')">
-                            <i class="fas fa-building"></i> Company
-                        </button>
-                        <button class="tab-btn" onclick="showSettingsTab('users')">
-                            <i class="fas fa-users-cog"></i> Users
-                        </button>
-                        <button class="tab-btn" onclick="showSettingsTab('permissions')">
-                            <i class="fas fa-shield-alt"></i> Permissions
-                        </button>
-                        <button class="tab-btn" onclick="showSettingsTab('system')">
-                            <i class="fas fa-cogs"></i> System
-                        </button>
-                        <button class="tab-btn" onclick="showSettingsTab('backup')">
-                            <i class="fas fa-database"></i> Backup
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Company Settings -->
-                <div id="company-settings" class="settings-tab active">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-building"></i> Company Information</h3>
-                        </div>
-                        
-                        <form onsubmit="saveCompanySettings(event)">
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Company Name:</label>
-                                    <input type="text" id="companyName" value="Enhanced Business Management System">
-                                </div>
-                                <div class="form-group">
-                                    <label>Business Registration No:</label>
-                                    <input type="text" id="businessRegNo">
-                                </div>
-                                <div class="form-group">
-                                    <label>Tax ID Number:</label>
-                                    <input type="text" id="taxIdNumber">
-                                </div>
-                                <div class="form-group">
-                                    <label>Business Type:</label>
-                                    <select id="businessType">
-                                        <option value="retail">Retail</option>
-                                        <option value="wholesale">Wholesale</option>
-                                        <option value="manufacturing">Manufacturing</option>
-                                        <option value="service">Service</option>
-                                        <option value="other">Other</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Phone:</label>
-                                    <input type="tel" id="companyPhone">
-                                </div>
-                                <div class="form-group">
-                                    <label>Email:</label>
-                                    <input type="email" id="companyEmail">
-                                </div>
-                                <div class="form-group">
-                                    <label>Website:</label>
-                                    <input type="url" id="companyWebsite">
-                                </div>
-                                <div class="form-group">
-                                    <label>Currency:</label>
-                                    <select id="companyCurrency">
-                                        <option value="USD">USD - US Dollar</option>
-                                        <option value="UGX">UGX - Ugandan Shilling</option>
-                                        <option value="KES">KES - Kenyan Shilling</option>
-                                        <option value="TZS">TZS - Tanzanian Shilling</option>
-                                        <option value="EUR">EUR - Euro</option>
-                                        <option value="GBP">GBP - British Pound</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group full-width">
-                                    <label>Address:</label>
-                                    <textarea id="companyAddress" rows="3"></textarea>
-                                </div>
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>
-                                        <input type="checkbox" id="enableTax"> Enable Tax
-                                    </label>
-                                </div>
-                                <div class="form-group">
-                                    <label>Tax Rate (%):</label>
-                                    <input type="number" id="taxRate" step="0.01" value="18">
-                                </div>
-                                <div class="form-group">
-                                    <label>Fiscal Year Start:</label>
-                                    <select id="fiscalYearStart">
-                                        <option value="01">January</option>
-                                        <option value="07">July</option>
-                                        <option value="04">April</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <div class="form-actions">
-                                <button type="submit" class="btn btn-success">
-                                    <i class="fas fa-save"></i> Save Company Settings
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                
-                <!-- User Management -->
-                <div id="users-settings" class="settings-tab">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-users-cog"></i> User Management</h3>
-                            <button class="btn btn-success" onclick="addNewUser()">
-                                <i class="fas fa-user-plus"></i> Add User
-                            </button>
-                        </div>
-                        
-                        <!-- User Form -->
-                        <div id="userForm" class="form-section" style="display: none;">
-                            <form onsubmit="saveUser(event)">
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label>Username:</label>
-                                        <input type="text" id="username" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Full Name:</label>
-                                        <input type="text" id="fullName" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Email:</label>
-                                        <input type="email" id="userEmail">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Role:</label>
-                                        <select id="userRole" required>
-                                            <option value="admin">Administrator</option>
-                                            <option value="manager">Manager</option>
-                                            <option value="cashier">Cashier</option>
-                                            <option value="staff">Staff</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label>Password:</label>
-                                        <input type="password" id="userPassword" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Confirm Password:</label>
-                                        <input type="password" id="confirmPassword" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Status:</label>
-                                        <select id="userStatus">
-                                            <option value="active">Active</option>
-                                            <option value="inactive">Inactive</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                
-                                <div class="form-actions">
-                                    <button type="submit" class="btn btn-success">
-                                        <i class="fas fa-save"></i> Save User
-                                    </button>
-                                    <button type="button" class="btn btn-secondary" onclick="cancelUserForm()">
-                                        <i class="fas fa-times"></i> Cancel
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                        
-                        <!-- Users Table -->
-                        <div class="table-container">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Username</th>
-                                        <th>Full Name</th>
-                                        <th>Email</th>
-                                        <th>Role</th>
-                                        <th>Status</th>
-                                        <th>Last Login</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="usersTableBody">
-                                    <tr>
-                                        <td>admin</td>
-                                        <td>System Administrator</td>
-                                        <td>admin@system.com</td>
-                                        <td><span class="badge admin">Administrator</span></td>
-                                        <td><span class="badge active">Active</span></td>
-                                        <td>Just now</td>
-                                        <td>
-                                            <button class="btn btn-sm btn-primary" onclick="editUser('admin')">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Permissions Settings -->
-                <div id="permissions-settings" class="settings-tab">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-shield-alt"></i> User Permissions</h3>
-                            <div class="permission-info">
-                                <i class="fas fa-info-circle"></i>
-                                <span>Admin has full access. Printing is available to all users.</span>
-                            </div>
-                        </div>
-                        
-                        <div class="permissions-grid">
-                            <div class="permission-section">
-                                <h4>Dashboard & Overview</h4>
-                                <div class="permission-items">
-                                    <label class="permission-item">
-                                        <input type="checkbox" name="dashboard" checked disabled>
-                                        <span>View Dashboard</span>
-                                        <small>Access to main dashboard (Always enabled)</small>
-                                    </label>
-                                </div>
-                            </div>
-                            
-                            <div class="permission-section">
-                                <h4>Transactions</h4>
-                                <div class="permission-items">
-                                    <label class="permission-item">
-                                        <input type="checkbox" name="transactions-view" id="perm-transactions-view">
-                                        <span>View Transactions</span>
-                                    </label>
-                                    <label class="permission-item">
-                                        <input type="checkbox" name="transactions-create" id="perm-transactions-create">
-                                        <span>Create Transactions</span>
-                                    </label>
-                                    <label class="permission-item">
-                                        <input type="checkbox" name="transactions-edit" id="perm-transactions-edit">
-                                        <span>Edit Transactions</span>
-                                    </label>
-                                    <label class="permission-item">
-                                        <input type="checkbox" name="transactions-delete" id="perm-transactions-delete">
-                                        <span>Delete Transactions</span>
-                                    </label>
-                                </div>
-                            </div>
-                            
-                            <div class="permission-section">
-                                <h4>Sales & POS</h4>
-                                <div class="permission-items">
-                                    <label class="permission-item">
-                                        <input type="checkbox" name="sales-view" id="perm-sales-view">
-                                        <span>View Sales</span>
-                                    </label>
-                                    <label class="permission-item">
-                                        <input type="checkbox" name="sales-create" id="perm-sales-create">
-                                        <span>Create Sales</span>
-                                    </label>
-                                    <label class="permission-item">
-                                        <input type="checkbox" name="pos-access" id="perm-pos-access">
-                                        <span>Access POS System</span>
-                                    </label>
-                                </div>
-                            </div>
-                            
-                            <div class="permission-section">
-                                <h4>Inventory Management</h4>
-                                <div class="permission-items">
-                                    <label class="permission-item">
-                                        <input type="checkbox" name="inventory-view" id="perm-inventory-view">
-                                        <span>View Inventory</span>
-                                    </label>
-                                    <label class="permission-item">
-                                        <input type="checkbox" name="inventory-create" id="perm-inventory-create">
-                                        <span>Add Items</span>
-                                    </label>
-                                    <label class="permission-item">
-                                        <input type="checkbox" name="inventory-edit" id="perm-inventory-edit">
-                                        <span>Edit Items</span>
-                                    </label>
-                                    <label class="permission-item">
-                                        <input type="checkbox" name="inventory-delete" id="perm-inventory-delete">
-                                        <span>Delete Items</span>
-                                    </label>
-                                </div>
-                            </div>
-                            
-                            <div class="permission-section">
-                                <h4>Customer Management</h4>
-                                <div class="permission-items">
-                                    <label class="permission-item">
-                                        <input type="checkbox" name="customers-view" id="perm-customers-view">
-                                        <span>View Customers</span>
-                                    </label>
-                                    <label class="permission-item">
-                                        <input type="checkbox" name="customers-create" id="perm-customers-create">
-                                        <span>Add Customers</span>
-                                    </label>
-                                    <label class="permission-item">
-                                        <input type="checkbox" name="customers-edit" id="perm-customers-edit">
-                                        <span>Edit Customers</span>
-                                    </label>
-                                </div>
-                            </div>
-                            
-                            <div class="permission-section">
-                                <h4>Supplier Management</h4>
-                                <div class="permission-items">
-                                    <label class="permission-item">
-                                        <input type="checkbox" name="suppliers-view" id="perm-suppliers-view">
-                                        <span>View Suppliers</span>
-                                    </label>
-                                    <label class="permission-item">
-                                        <input type="checkbox" name="suppliers-create" id="perm-suppliers-create">
-                                        <span>Add Suppliers</span>
-                                    </label>
-                                    <label class="permission-item">
-                                        <input type="checkbox" name="suppliers-edit" id="perm-suppliers-edit">
-                                        <span>Edit Suppliers</span>
-                                    </label>
-                                </div>
-                            </div>
-                            
-                            <div class="permission-section">
-                                <h4>Accounting</h4>
-                                <div class="permission-items">
-                                    <label class="permission-item">
-                                        <input type="checkbox" name="accounting-view" id="perm-accounting-view">
-                                        <span>View Accounting</span>
-                                    </label>
-                                    <label class="permission-item">
-                                        <input type="checkbox" name="accounting-create" id="perm-accounting-create">
-                                        <span>Create Entries</span>
-                                    </label>
-                                    <label class="permission-item">
-                                        <input type="checkbox" name="accounting-edit" id="perm-accounting-edit">
-                                        <span>Edit Entries</span>
-                                    </label>
-                                </div>
-                            </div>
-                            
-                            <div class="permission-section">
-                                <h4>Reports</h4>
-                                <div class="permission-items">
-                                    <label class="permission-item">
-                                        <input type="checkbox" name="reports-view" id="perm-reports-view">
-                                        <span>View Reports</span>
-                                    </label>
-                                    <label class="permission-item">
-                                        <input type="checkbox" name="reports-export" id="perm-reports-export">
-                                        <span>Export Reports</span>
-                                    </label>
-                                </div>
-                            </div>
-                            
-                            <div class="permission-section">
-                                <h4>System Settings</h4>
-                                <div class="permission-items">
-                                    <label class="permission-item">
-                                        <input type="checkbox" name="settings-access" id="perm-settings-access">
-                                        <span>Access Settings</span>
-                                    </label>
-                                    <label class="permission-item">
-                                        <input type="checkbox" name="settings-modify" id="perm-settings-modify">
-                                        <span>Modify Settings</span>
-                                    </label>
-                                </div>
-                            </div>
-                            
-                            <div class="permission-section">
-                                <h4>Printing (Available to All Users)</h4>
-                                <div class="permission-items">
-                                    <label class="permission-item">
-                                        <input type="checkbox" checked disabled>
-                                        <span>Print Documents</span>
-                                        <small>All users can print documents and receipts</small>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-actions">
-                            <button class="btn btn-success" onclick="savePermissions()">
-                                <i class="fas fa-save"></i> Save Permissions
-                            </button>
-                            <button class="btn btn-primary" onclick="setDefaultPermissions()">
-                                <i class="fas fa-undo"></i> Reset to Default
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- System Settings -->
-                <div id="system-settings" class="settings-tab">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-cogs"></i> System Configuration</h3>
-                        </div>
-                        
-                        <form onsubmit="saveSystemSettings(event)">
-                            <div class="settings-section">
-                                <h4>General Settings</h4>
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label>System Theme:</label>
-                                        <select id="systemTheme">
-                                            <option value="blue">Professional Blue</option>
-                                            <option value="dark">Dark Mode</option>
-                                            <option value="green">Nature Green</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Date Format:</label>
-                                        <select id="dateFormat">
-                                            <option value="DD/MM/YYYY">DD/MM/YYYY</option>
-                                            <option value="MM/DD/YYYY">MM/DD/YYYY</option>
-                                            <option value="YYYY-MM-DD">YYYY-MM-DD</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Time Format:</label>
-                                        <select id="timeFormat">
-                                            <option value="24">24 Hour</option>
-                                            <option value="12">12 Hour</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="settings-section">
-                                <h4>Business Settings</h4>
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label>
-                                            <input type="checkbox" id="autoSave"> Auto Save Changes
-                                        </label>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>
-                                            <input type="checkbox" id="lowStockAlerts"> Low Stock Alerts
-                                        </label>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>
-                                            <input type="checkbox" id="emailNotifications"> Email Notifications
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="settings-section">
-                                <h4>Receipt Settings</h4>
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label>Receipt Header:</label>
-                                        <input type="text" id="receiptHeader" value="Thank you for your business!">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Receipt Footer:</label>
-                                        <input type="text" id="receiptFooter" value="Visit us again soon!">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Print Logo on Receipt:</label>
-                                        <input type="checkbox" id="printLogo">
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="form-actions">
-                                <button type="submit" class="btn btn-success">
-                                    <i class="fas fa-save"></i> Save System Settings
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                
-                <!-- Backup Settings -->
-                <div id="backup-settings" class="settings-tab">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-database"></i> Data Backup & Export</h3>
-                        </div>
-                        
-                        <div class="backup-section">
-                            <h4>Manual Backup</h4>
-                            <p>Create a backup of all your data including inventory, customers, sales, and settings.</p>
-                            <div class="backup-actions">
-                                <button class="btn btn-success" onclick="createBackup()">
-                                    <i class="fas fa-download"></i> Create Full Backup
-                                </button>
-                                <button class="btn btn-primary" onclick="restoreBackup()">
-                                    <i class="fas fa-upload"></i> Restore from Backup
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div class="export-section">
-                            <h4>Data Export</h4>
-                            <p>Export specific data to CSV files for external use.</p>
-                            <div class="export-options">
-                                <button class="btn btn-info" onclick="exportData('inventory')">
-                                    <i class="fas fa-boxes"></i> Export Inventory
-                                </button>
-                                <button class="btn btn-info" onclick="exportData('customers')">
-                                    <i class="fas fa-users"></i> Export Customers
-                                </button>
-                                <button class="btn btn-info" onclick="exportData('sales')">
-                                    <i class="fas fa-shopping-cart"></i> Export Sales
-                                </button>
-                                <button class="btn btn-info" onclick="exportData('transactions')">
-                                    <i class="fas fa-exchange-alt"></i> Export Transactions
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div class="import-section">
-                            <h4>Data Import</h4>
-                            <p>Import data from CSV files. Make sure your files follow the required format.</p>
-                            <div class="import-options">
-                                <div class="import-item">
-                                    <label for="inventoryFile">Import Inventory:</label>
-                                    <input type="file" id="inventoryFile" accept=".csv">
-                                    <button class="btn btn-primary" onclick="importData('inventory')">
-                                        <i class="fas fa-upload"></i> Import
-                                    </button>
-                                </div>
-                                <div class="import-item">
-                                    <label for="customersFile">Import Customers:</label>
-                                    <input type="file" id="customersFile" accept=".csv">
-                                    <button class="btn btn-primary" onclick="importData('customers')">
-                                        <i class="fas fa-upload"></i> Import
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
+           <section id="settings" class="content-section">
+  <div class="settings-nav">
+    <div class="settings-tabs">
+      <button class="tab-btn active" onclick="showSettingsTab('company')">
+        <i class="fas fa-building"></i> Company
+      </button>
+      <button class="tab-btn" onclick="showSettingsTab('users')">
+        <i class="fas fa-users-cog"></i> Users
+      </button>
+      <button class="tab-btn" onclick="showSettingsTab('permissions')">
+        <i class="fas fa-shield-alt"></i> Permissions
+      </button>
+      <button class="tab-btn" onclick="showSettingsTab('system')">
+        <i class="fas fa-cogs"></i> System
+      </button>
+      <button class="tab-btn" onclick="showSettingsTab('backup')">
+        <i class="fas fa-database"></i> Backup
+      </button>
+    </div>
+  </div>
 
+  <!-- Company -->
+  <div id="company-settings" class="settings-tab active">
+    <div class="card">
+      <div class="card-header">
+        <h3><i class="fas fa-building"></i> Company Information</h3>
+      </div>
+      <form onsubmit="saveCompanySettings(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Company Name:</label>
+            <input type="text" id="companyName" value="Enhanced Business Management System" required>
+          </div>
+          <div class="form-group">
+            <label>Business Registration No:</label>
+            <input type="text" id="businessRegNo">
+          </div>
+          <div class="form-group">
+            <label>Tax ID Number:</label>
+            <input type="text" id="taxIdNumber">
+          </div>
+          <div class="form-group">
+            <label>Business Type:</label>
+            <select id="businessType">
+              <option value="retail" selected>Retail</option>
+              <option value="wholesale">Wholesale</option>
+              <option value="manufacturing">Manufacturing</option>
+              <option value="service">Service</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Phone:</label>
+            <input type="tel" id="companyPhone">
+          </div>
+          <div class="form-group">
+            <label>Email:</label>
+            <input type="email" id="companyEmail">
+          </div>
+          <div class="form-group">
+            <label>Website:</label>
+            <input type="url" id="companyWebsite">
+          </div>
+          <div class="form-group">
+            <label>Currency:</label>
+            <select id="companyCurrency">
+              <option value="UGX" selected>UGX - Ugandan Shilling</option>
+              <option value="USD">USD - US Dollar</option>
+              <option value="KES">KES - Kenyan Shilling</option>
+              <option value="TZS">TZS - Tanzanian Shilling</option>
+              <option value="EUR">EUR - Euro</option>
+              <option value="GBP">GBP - British Pound</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label>Address:</label>
+            <textarea id="companyAddress" rows="3"></textarea>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>
+              <input type="checkbox" id="enableTax"> Enable Tax
+            </label>
+          </div>
+          <div class="form-group">
+            <label>Tax Rate (%):</label>
+            <input type="number" id="taxRate" step="0.01" value="18">
+          </div>
+          <div class="form-group">
+            <label>Fiscal Year Start:</label>
+            <select id="fiscalYearStart">
+              <option value="01" selected>January</option>
+              <option value="07">July</option>
+              <option value="04">April</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-success">
+            <i class="fas fa-save"></i> Save Company Settings
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Users -->
+  <div id="users-settings" class="settings-tab">
+    <div class="card">
+      <div class="card-header">
+        <h3><i class="fas fa-users-cog"></i> User Management</h3>
+        <button class="btn btn-success" onclick="openUserForm()">
+          <i class="fas fa-user-plus"></i> Add User
+        </button>
+      </div>
+
+      <!-- Add/Edit User Modal -->
+      <div id="userModal" class="modal" style="display:none;">
+        <div class="modal-content">
+          <h3 id="userModalTitle">Add User</h3>
+          <form onsubmit="saveUser(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Username:</label>
+                <input type="text" id="user_username" required>
+              </div>
+              <div class="form-group">
+                <label>Full Name:</label>
+                <input type="text" id="user_fullName" required>
+              </div>
+              <div class="form-group">
+                <label>Email:</label>
+                <input type="email" id="user_email">
+              </div>
+              <div class="form-group">
+                <label>Role:</label>
+                <select id="user_role" required>
+                  <option value="admin">Administrator</option>
+                  <option value="manager">Manager</option>
+                  <option value="cashier">Cashier</option>
+                  <option value="staff">Staff</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Password:</label>
+                <input type="password" id="user_password" required>
+              </div>
+              <div class="form-group">
+                <label>Confirm Password:</label>
+                <input type="password" id="user_confirm" required>
+              </div>
+              <div class="form-group">
+                <label>Status:</label>
+                <select id="user_status">
+                  <option value="active" selected>Active</option>
+                  <option value="inactive">Inactive</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Save</button>
+              <button type="button" class="btn btn-secondary" onclick="closeUserForm()"><i class="fas fa-times"></i> Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Users Table -->
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Full Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Status</th>
+              <th>Last Login</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="usersTableBody">
+            <tr>
+              <td>admin</td>
+              <td>System Administrator</td>
+              <td>admin@system.com</td>
+              <td><span class="badge admin">Administrator</span></td>
+              <td><span class="badge active">Active</span></td>
+              <td>Just now</td>
+              <td>
+                <button class="btn btn-sm btn-primary" onclick="editUser('admin')"><i class="fas fa-edit"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Permissions -->
+  <div id="permissions-settings" class="settings-tab">
+    <div class="card">
+      <div class="card-header">
+        <h3><i class="fas fa-shield-alt"></i> User Permissions</h3>
+        <div class="permission-info">
+          <i class="fas fa-info-circle"></i>
+          <span>Admin has full access. Printing is available to all users.</span>
+        </div>
+      </div>
+
+      <div class="permissions-grid">
+        <div class="permission-section">
+          <h4>Dashboard & Overview</h4>
+          <label class="permission-item">
+            <input type="checkbox" id="perm-dashboard-view" checked disabled>
+            <span>View Dashboard</span>
+            <small>Access to main dashboard (Always enabled)</small>
+          </label>
+        </div>
+
+        <div class="permission-section">
+          <h4>Transactions</h4>
+          <label><input type="checkbox" id="perm-transactions-view"> View Transactions</label>
+          <label><input type="checkbox" id="perm-transactions-create"> Create Transactions</label>
+          <label><input type="checkbox" id="perm-transactions-edit"> Edit Transactions</label>
+          <label><input type="checkbox" id="perm-transactions-delete"> Delete Transactions</label>
+        </div>
+
+        <div class="permission-section">
+          <h4>Sales</h4>
+          <label><input type="checkbox" id="perm-sales-view"> View Sales</label>
+          <label><input type="checkbox" id="perm-sales-create"> Create Sales</label>
+        </div>
+
+        <div class="permission-section">
+          <h4>Inventory Management</h4>
+          <label><input type="checkbox" id="perm-inventory-view"> View Inventory</label>
+          <label><input type="checkbox" id="perm-inventory-create"> Add Items</label>
+          <label><input type="checkbox" id="perm-inventory-edit"> Edit Items</label>
+          <label><input type="checkbox" id="perm-inventory-delete"> Delete Items</label>
+        </div>
+
+        <div class="permission-section">
+          <h4>Customer Management</h4>
+          <label><input type="checkbox" id="perm-customers-view"> View Customers</label>
+          <label><input type="checkbox" id="perm-customers-create"> Add Customers</label>
+          <label><input type="checkbox" id="perm-customers-edit"> Edit Customers</label>
+        </div>
+
+        <div class="permission-section">
+          <h4>Supplier Management</h4>
+          <label><input type="checkbox" id="perm-suppliers-view"> View Suppliers</label>
+          <label><input type="checkbox" id="perm-suppliers-create"> Add Suppliers</label>
+          <label><input type="checkbox" id="perm-suppliers-edit"> Edit Suppliers</label>
+        </div>
+
+        <div class="permission-section">
+          <h4>Accounting</h4>
+          <label><input type="checkbox" id="perm-accounting-view"> View Accounting</label>
+          <label><input type="checkbox" id="perm-accounting-create"> Create Entries</label>
+          <label><input type="checkbox" id="perm-accounting-edit"> Edit Entries</label>
+        </div>
+
+        <div class="permission-section">
+          <h4>Reports</h4>
+          <label><input type="checkbox" id="perm-reports-view"> View Reports</label>
+          <label><input type="checkbox" id="perm-reports-export"> Export Reports</label>
+        </div>
+
+        <div class="permission-section">
+          <h4>System Settings</h4>
+          <label><input type="checkbox" id="perm-settings-access"> Access Settings</label>
+          <label><input type="checkbox" id="perm-settings-modify"> Modify Settings</label>
+        </div>
+
+        <div class="permission-section">
+          <h4>Printing (Available to All Users)</h4>
+          <label class="permission-item">
+            <input type="checkbox" checked disabled>
+            <span>Print Documents</span>
+            <small>All users can print documents and receipts</small>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn btn-success" onclick="savePermissions()">
+          <i class="fas fa-save"></i> Save Permissions
+        </button>
+        <button class="btn btn-primary" onclick="setDefaultPermissions()">
+          <i class="fas fa-undo"></i> Reset to Default
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- System -->
+  <div id="system-settings" class="settings-tab">
+    <div class="card">
+      <div class="card-header">
+        <h3><i class="fas fa-cogs"></i> System Configuration</h3>
+      </div>
+
+      <form onsubmit="saveSystemSettings(event)">
+        <div class="settings-section">
+          <h4>General Settings</h4>
+          <div class="form-row">
+            <div class="form-group">
+              <label>System Theme:</label>
+              <select id="systemTheme">
+                <option value="blue">Professional Blue</option>
+                <option value="dark" selected>Dark Mode</option>
+                <option value="green">Nature Green</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Date Format:</label>
+              <select id="dateFormat">
+                <option value="DD/MM/YYYY" selected>DD/MM/YYYY</option>
+                <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Time Format:</label>
+              <select id="timeFormat">
+                <option value="24" selected>24 Hour</option>
+                <option value="12">12 Hour</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h4>Business Settings</h4>
+          <div class="form-row">
+            <div class="form-group">
+              <label><input type="checkbox" id="autoSave" checked> Auto Save Changes</label>
+            </div>
+            <div class="form-group">
+              <label><input type="checkbox" id="lowStockAlerts" checked> Low Stock Alerts</label>
+            </div>
+            <div class="form-group">
+              <label><input type="checkbox" id="emailNotifications"> Email Notifications</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h4>Receipt Settings</h4>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Receipt Header:</label>
+              <input type="text" id="receiptHeader" value="Thank you for your business!">
+            </div>
+            <div class="form-group">
+              <label>Receipt Footer:</label>
+              <input type="text" id="receiptFooter" value="Visit us again soon!">
+            </div>
+            <div class="form-group">
+              <label>Print Logo on Receipt:</label>
+              <input type="checkbox" id="printLogo">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-success">
+            <i class="fas fa-save"></i> Save System Settings
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Backup -->
+  <div id="backup-settings" class="settings-tab">
+    <div class="card">
+      <div class="card-header">
+        <h3><i class="fas fa-database"></i> Data Backup & Export</h3>
+      </div>
+
+      <div class="backup-section">
+        <h4>Manual Backup</h4>
+        <p>Create a backup of all your data including inventory, customers, sales, and settings.</p>
+        <div class="backup-actions">
+          <button class="btn btn-success" onclick="createBackup()">
+            <i class="fas fa-download"></i> Create Full Backup
+          </button>
+          <label class="btn btn-primary" style="cursor:pointer;">
+            <i class="fas fa-upload"></i> Restore from Backup
+            <input type="file" id="restoreFile" accept=".json" style="display:none" onchange="restoreBackup(event)">
+          </label>
+        </div>
+      </div>
+
+      <div class="export-section">
+        <h4>Data Export</h4>
+        <p>Export specific data to CSV files for external use.</p>
+        <div class="export-options">
+          <button class="btn btn-info" onclick="exportData('inventory')"><i class="fas fa-boxes"></i> Export Inventory</button>
+          <button class="btn btn-info" onclick="exportData('customers')"><i class="fas fa-users"></i> Export Customers</button>
+          <button class="btn btn-info" onclick="exportData('sales')"><i class="fas fa-shopping-cart"></i> Export Sales</button>
+          <button class="btn btn-info" onclick="exportData('transactions')"><i class="fas fa-exchange-alt"></i> Export Transactions</button>
+        </div>
+      </div>
+
+      <div class="import-section">
+        <h4>Data Import</h4>
+        <p>Import data from CSV files. Make sure your files follow the required format.</p>
+        <div class="import-options">
+          <div class="import-item">
+            <label>Import Inventory:</label>
+            <input type="file" id="inventoryFile" accept=".csv">
+            <button class="btn btn-primary" onclick="importData('inventory')"><i class="fas fa-upload"></i> Import</button>
+          </div>
+          <div class="import-item" style="margin-top:8px;">
+            <label>Import Customers:</label>
+            <input type="file" id="customersFile" accept=".csv">
+            <button class="btn btn-primary" onclick="importData('customers')"><i class="fas fa-upload"></i> Import</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
         <!-- Footer -->
         <footer class="footer">
             <div class="footer-content">
@@ -1709,8 +1497,7 @@
                     <p>&copy; 2024 SalesManager 7.0 - Enhanced Business Management System</p>
                 </div>
                 <div class="footer-right">
-                    <p>Developed by: <span id="developerName">Professional Development Team</span></p>
-                    <p>Version: 7.0.1 | Last Updated: <span id="lastUpdated">2024</span></p>
+                    <p>Current Currency: <span id="footerCurrency">UGX</span> | Version: 7.0.1</p>
                 </div>
             </div>
         </footer>
@@ -1718,39 +1505,11 @@
 
     <!-- Notification Container -->
     <div id="notificationContainer" class="notification-container"></div>
+    
 
-    <!-- Receipt Template -->
-    <div id="receiptTemplate" style="display: none;">
-        <div class="receipt">
-            <div class="receipt-header">
-                <h2 id="receiptCompany">Company Name</h2>
-                <p id="receiptAddress">Company Address</p>
-                <p id="receiptContact">Phone: | Email:</p>
-            </div>
-            <div class="receipt-info">
-                <p>Receipt #: <span id="receiptNumber"></span></p>
-                <p>Date: <span id="receiptDate"></span></p>
-                <p>Cashier: <span id="receiptCashier"></span></p>
-            </div>
-            <div class="receipt-items" id="receiptItems">
-                <!-- Items will be populated here -->
-            </div>
-            <div class="receipt-totals">
-                <div class="total-line">Subtotal: <span id="receiptSubtotal"></span></div>
-                <div class="total-line">Tax: <span id="receiptTax"></span></div>
-                <div class="total-line">Discount: <span id="receiptDiscount"></span></div>
-                <div class="total-line grand-total">Total: <span id="receiptTotal"></span></div>
-            </div>
-            <div class="receipt-footer">
-                <p>Thank you for your business!</p>
-                <p>Visit us again soon!</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- JavaScript -->
+    <!-- Enhanced JavaScript with all requested features -->
     <script>
-    // Consolidated Script - Core App State and Helpers
+    // Enhanced Script - Core App State and Helpers with UGX default
     const notify = (msg, type = 'info') => {
         const c = document.getElementById('notificationContainer');
         const n = document.createElement('div');
@@ -1760,9 +1519,9 @@
         setTimeout(()=> n.remove(), 3500);
     };
 
-    // Global State
+    // Global State with UGX default and new features
     const state = {
-        config: { companyName: 'Enhanced Business Management System', currency: 'USD', enableTax: false, taxRate: 18 },
+        config: { companyName: 'Enhanced Business Management System', currency: 'UGX', enableTax: true, taxRate: 18 },
         currentUser: null,
         permissions: {},
         items: [],
@@ -1770,21 +1529,29 @@
         suppliers: [],
         transactions: [],
         sales: [],
+        expenses: [],
+        deposits: [],
         cart: [],
         receiptCounter: 1000
     };
 
-    // Utility
+    // Enhanced Currency Utility with UGX support
     const fmt = (n, curr = state.config.currency) => {
         const num = Number(n||0);
-        const locales = curr==='UGX'?'en-UG':'en-US';
-        const minFrac = curr==='UGX'?0:2;
-        return `${curr} ${num.toLocaleString(locales,{minimumFractionDigits:minFrac, maximumFractionDigits:minFrac})}`;
+        if(curr === 'UGX') {
+            return `UGX ${num.toLocaleString('en-UG', {minimumFractionDigits:0, maximumFractionDigits:0})}`;
+        }
+        return `${curr} ${num.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}`;
     };
 
-    // App Init
+    // App Init with UGX default
     document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('loginCompanyDisplay').textContent = state.config.companyName;
+        // Set UGX as default in global currency selector
+        const gc = document.getElementById('globalCurrency');
+        if(gc) gc.value = 'UGX';
+        const cc = document.getElementById('companyCurrency');
+        if(cc) cc.value = 'UGX';
         initNavigation();
         initDefaults();
     });
@@ -1794,14 +1561,39 @@
         ['transactionFromDate','transactionToDate','salesFromDate','salesToDate','reportFromDate','reportToDate'].forEach(id=>{
             const el = document.getElementById(id); if(el) el.value = today;
         });
-        // Seed demo items
+        // Seed demo items with UGX prices
         state.items = [
-            {id:'ITM-1', code:'EL-001', name:'LED TV 42"', category:'electronics', cost:200, price:300, stock:10, unit:'pcs', min:2, status:'active'},
-            {id:'ITM-2', code:'FD-010', name:'Premium Coffee 1kg', category:'food', cost:6, price:12, stock:25, unit:'kg', min:5, status:'active'},
-            {id:'ITM-3', code:'CL-220', name:'Denim Jacket', category:'clothing', cost:18, price:39, stock:8, unit:'pcs', min:3, status:'active'}
+            {id:'ITM-1', code:'EL-001', name:'LED TV 42"', category:'electronics', cost:800000, price:1200000, stock:10, unit:'pcs', min:2, status:'active'},
+            {id:'ITM-2', code:'FD-010', name:'Premium Coffee 1kg', category:'food', cost:25000, price:45000, stock:25, unit:'kg', min:5, status:'active'},
+            {id:'ITM-3', code:'CL-220', name:'Denim Jacket', category:'clothing', cost:75000, price:150000, stock:8, unit:'pcs', min:3, status:'active'}
+        ];
+        // Seed demo customers
+        state.customers = [
+            {id:'CUS-1', type:'individual', firstName:'John', lastName:'Doe', email:'john@email.com', phone:'+256701234567', totalPurchases:0},
+            {id:'CUS-2', type:'business', firstName:'Jane', lastName:'Smith', email:'jane@business.com', phone:'+256707654321', totalPurchases:0}
         ];
         refreshInventoryTable();
+        refreshCustomersTable();
         refreshDashboard();
+        updateTaxDisplay();
+    }
+
+    // Currency change function
+    function changeCurrency(){
+        const newCurr = document.getElementById('globalCurrency').value;
+        state.config.currency = newCurr;
+        document.getElementById('footerCurrency').textContent = newCurr;
+        // Refresh all displays
+        refreshDashboard();
+        refreshInventoryTable();
+        updateCartSummary();
+        recalcAccounting();
+        notify(`Currency changed to ${newCurr}`, 'success');
+    }
+
+    function updateTaxDisplay(){
+        const taxEl = document.getElementById('taxPercent');
+        if(taxEl) taxEl.textContent = state.config.taxRate;
     }
 
     // Authentication
@@ -1820,11 +1612,12 @@
             document.getElementById('companyDisplay').textContent = state.config.companyName;
             document.getElementById('loginModal').style.display = 'none';
             document.getElementById('app').classList.remove('app-hidden');
-            notify('Login successful','success');
+            notify('Login successful - Welcome to SalesManager 7.0!','success');
         } else {
             notify('Invalid credentials','error');
         }
     }
+
     function logout(){
         state.currentUser = null;
         document.getElementById('app').classList.add('app-hidden');
@@ -1832,7 +1625,7 @@
         notify('Logged out','info');
     }
 
-    // Permissions: all except print are admin-gated
+    // Enhanced Permissions
     function can(action){
         if(!state.currentUser) return false;
         if(action==='print') return true; // printing allowed to all users
@@ -1853,93 +1646,413 @@
             document.querySelectorAll('.content-section').forEach(s=>s.classList.remove('active'));
             document.getElementById(section).classList.add('active');
             if(section==='accounting') recalcAccounting();
+            if(section==='sales') populateCustomerDropdown();
         }));
     }
 
-    // Dashboard
+    // Enhanced Dashboard
     function refreshDashboard(){
-        const todayTotal = state.sales.filter(s=>s.date===new Date().toISOString().split('T')[0]).reduce((sum,s)=>sum+(s.total||0),0);
+        const today = new Date().toISOString().split('T')[0];
+        const todayTotal = state.sales.filter(s=>s.date===today).reduce((sum,s)=>sum+(s.total||0),0);
         document.getElementById('todaySales').textContent = fmt(todayTotal);
+        
+        const totalRev = state.sales.reduce((s,sl)=> s + (sl.total||0), 0);
+        document.getElementById('monthlyProfit').textContent = fmt(totalRev);
+        
         document.getElementById('totalItems').textContent = state.items.length;
         const low = state.items.filter(i=>i.stock<= (i.min||0)).length;
-        const lowEl = document.getElementById('lowStockAlert'); if(lowEl) lowEl.textContent = `Low Stock: ${low}`;
+        const lowEl = document.getElementById('lowStockAlert'); 
+        if(lowEl) lowEl.textContent = `Low Stock: ${low}`;
         document.getElementById('notificationCount').textContent = String(low);
+        
+        document.getElementById('activeCustomers').textContent = state.customers.length;
     }
-    function showNotifications(){ notify('No new notifications','info'); }
-    function quickSale(){ document.querySelector('[data-section="sales"]').click(); openPOS(); }
+
+    function showNotifications(){ 
+        const low = state.items.filter(i=>i.stock<= (i.min||0));
+        if(low.length > 0){
+            notify(`${low.length} items are running low on stock`, 'warning');
+        } else {
+            notify('No new notifications','info'); 
+        }
+    }
+
+    function quickSale(){ document.querySelector('[data-section="sales"]').click(); newSale(); }
     function addInventory(){ document.querySelector('[data-section="inventory"]').click(); addNewItem(); }
     function newCustomer(){ document.querySelector('[data-section="customers"]').click(); addNewCustomer(); }
-    function viewReports(){ document.querySelector('[data-section="reports"]').click(); loadReportCategory('sales'); }
+    function recordExpense(){ document.querySelector('[data-section="transactions"]').click(); document.getElementById('transactionType').value = 'expense'; loadTransactionModule(); }
+    function receiveDeposit(){ document.querySelector('[data-section="transactions"]').click(); document.getElementById('transactionType').value = 'receive-deposit'; loadTransactionModule(); }
     function printDashboard(){ window.print(); }
 
-    // Transactions (simplified wiring)
-    function newTransaction(){ if(!can('create')) return notify('Admin only','error'); notify('New transaction form loaded','info'); }
+    // Enhanced Transactions with Expenses and Deposits
+    function newTransaction(){ 
+        if(!can('create')) return notify('Admin only','error'); 
+        const sel = document.getElementById('transactionType'); 
+        if(sel && !sel.value) { 
+            notify('Please select a transaction type','warning'); 
+            return; 
+        } 
+        loadTransactionModule(); 
+    }
+    
     function printTransactions(){ window.print(); }
-    function loadTransactionModule(){ notify('Transaction module loaded','info'); }
-    function filterTransactions(){ /* no-op for demo */ }
+    
+    function loadTransactionModule(){
+        const t = document.getElementById('transactionType').value;
+        const c = document.getElementById('transactionModule');
+        if(!t){ 
+            c.innerHTML = `<div class="empty-state"><i class='fas fa-clipboard-list'></i><h3>Select Transaction Type</h3><p>Choose a transaction type from the dropdown above to get started.</p></div>`; 
+            return; 
+        }
+        if(t==='receive-deposit') return renderReceiveDeposit(c);
+        if(t==='expense') return renderExpenseForm(c);
+        c.innerHTML = `<div class='card'><h3>${titleize(t)}</h3><p>Module functionality will be implemented here.</p></div>`;
+    }
 
-    // POS / Sales
-    function openPOS(){
+    // Receive Deposit Form
+    function renderReceiveDeposit(container){
+        container.innerHTML = `
+        <form onsubmit="saveDeposit(event)" class="card">
+            <h3><i class="fas fa-hand-holding-usd"></i> Receive Deposit</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Customer Name *</label>
+                    <input type="text" id="depCustomer" required>
+                </div>
+                <div class="form-group">
+                    <label>Item / Order Reference *</label>
+                    <input type="text" id="depItem" placeholder="Item code or Order #" required>
+                </div>
+                <div class="form-group">
+                    <label>Deposit Amount *</label>
+                    <input type="number" id="depAmount" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>Total Order Amount</label>
+                    <input type="number" id="depTotal" step="0.01" placeholder="Full order amount">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group full-width">
+                    <label>Notes</label>
+                    <textarea id="depNotes" rows="2" placeholder="Additional notes about the deposit"></textarea>
+                </div>
+            </div>
+            <div id="depositSummary" style="margin: 15px 0; padding: 15px; background: #f5f5f5; border-radius: 8px; display: none;">
+                <h4>Deposit Summary</h4>
+                <div><strong>Customer:</strong> <span id="sumCustomer"></span></div>
+                <div><strong>Item:</strong> <span id="sumItem"></span></div>
+                <div><strong>Deposit Amount:</strong> <span id="sumAmount"></span></div>
+                <div><strong>Remaining Balance:</strong> <span id="sumRemaining"></span></div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Receive Deposit</button>
+                <button type="button" class="btn btn-info print-allowed" onclick="printDepositReceipt()"><i class="fas fa-print"></i> Print Receipt</button>
+            </div>
+        </form>`;
+
+        // Add real-time calculation
+        ['depAmount', 'depTotal'].forEach(id => {
+            const el = document.getElementById(id);
+            if(el) el.addEventListener('input', updateDepositSummary);
+        });
+        ['depCustomer', 'depItem'].forEach(id => {
+            const el = document.getElementById(id);
+            if(el) el.addEventListener('input', updateDepositSummary);
+        });
+    }
+
+    function updateDepositSummary(){
+        const customer = document.getElementById('depCustomer').value.trim();
+        const item = document.getElementById('depItem').value.trim();
+        const amount = Number(document.getElementById('depAmount').value || 0);
+        const total = Number(document.getElementById('depTotal').value || 0);
+        
+        if(customer || item || amount > 0){
+            document.getElementById('depositSummary').style.display = 'block';
+            document.getElementById('sumCustomer').textContent = customer || 'Not specified';
+            document.getElementById('sumItem').textContent = item || 'Not specified';
+            document.getElementById('sumAmount').textContent = fmt(amount);
+            const remaining = total > amount ? total - amount : 0;
+            document.getElementById('sumRemaining').textContent = fmt(remaining);
+        } else {
+            document.getElementById('depositSummary').style.display = 'none';
+        }
+    }
+
+    function saveDeposit(ev){ 
+        ev.preventDefault(); 
         if(!can('create')) return notify('Admin only','error');
-        document.getElementById('posInterface').style.display='grid';
-        renderPOSItems(state.items);
+        const customer = document.getElementById('depCustomer').value.trim();
+        const item = document.getElementById('depItem').value.trim();
+        const amount = Number(document.getElementById('depAmount').value||0);
+        const total = Number(document.getElementById('depTotal').value||0);
+        if(!customer || !item || amount<=0) return notify('Please fill in all required fields','error');
+        const remaining = total>0 ? Math.max(0, total - amount) : 0;
+        const dep = { 
+            id:`DEP-${Date.now()}`, 
+            date:new Date().toISOString().split('T')[0], 
+            customer, 
+            item, 
+            amount, 
+            total, 
+            remaining, 
+            notes: document.getElementById('depNotes').value||'' 
+        };
+        state.deposits.push(dep);
+        state.transactions.push({
+            id:dep.id, 
+            type:'deposit', 
+            date:dep.date, 
+            party:customer, 
+            amount:amount, 
+            status:'completed'
+        });
+        refreshTransactionsTable();
+        recalcAccounting();
+        lastReceipt = buildDepositReceipt(dep);
+        notify(`Deposit of ${fmt(amount)} received from ${customer}`, 'success');
+    }
+
+    function printDepositReceipt(){ 
+        if(!lastReceipt) return notify('No recent receipt to print', 'warning');
+        window.print(); 
+    }
+
+    // Expense Form
+    function renderExpenseForm(container){
+        container.innerHTML = `
+        <form onsubmit="saveExpense(event)" class="card">
+            <h3><i class="fas fa-receipt"></i> Record Expense</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Expense Category *</label>
+                    <select id="expCategory" required>
+                        <option value="">Select Category</option>
+                        <option value="Utilities">Utilities</option>
+                        <option value="Rent">Rent</option>
+                        <option value="Salaries">Salaries & Wages</option>
+                        <option value="Transport">Transport</option>
+                        <option value="Maintenance">Maintenance</option>
+                        <option value="Marketing">Marketing & Advertising</option>
+                        <option value="Office Supplies">Office Supplies</option>
+                        <option value="Professional Services">Professional Services</option>
+                        <option value="Insurance">Insurance</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Vendor / Payee *</label>
+                    <input type="text" id="expVendor" required>
+                </div>
+                <div class="form-group">
+                    <label>Amount *</label>
+                    <input type="number" id="expAmount" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>Date *</label>
+                    <input type="date" id="expDate" value="${new Date().toISOString().split('T')[0]}" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group full-width">
+                    <label>Description</label>
+                    <textarea id="expDesc" rows="2" placeholder="Describe the expense"></textarea>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Record Expense</button>
+            </div>
+        </form>`;
+    }
+
+    function saveExpense(ev){ 
+        ev.preventDefault(); 
+        if(!can('create')) return notify('Admin only','error');
+        const amount = Number(document.getElementById('expAmount').value||0);
+        const category = document.getElementById('expCategory').value;
+        const vendor = document.getElementById('expVendor').value.trim();
+        const date = document.getElementById('expDate').value;
+        if(!category || !vendor || amount<=0) return notify('Please fill in all required fields','error');
+        const exp = { 
+            id:`EXP-${Date.now()}`, 
+            category, 
+            vendor, 
+            amount, 
+            date, 
+            description: document.getElementById('expDesc').value||'' 
+        };
+        state.expenses.push(exp);
+        state.transactions.push({
+            id:exp.id, 
+            type:'expense', 
+            date:exp.date, 
+            party:exp.vendor, 
+            amount:-amount, 
+            status:'completed'
+        });
+        refreshTransactionsTable();
+        recalcAccounting();
+        notify(`Expense of ${fmt(amount)} recorded for ${category}`, 'success');
+    }
+
+    function refreshTransactionsTable(){
+        const tbody = document.getElementById('transactionsTableBody');
+        if(!tbody) return;
+        if(state.transactions.length===0){ 
+            tbody.innerHTML = '<tr class="no-records"><td colspan="7">No transactions found. Create your first transaction above.</td></tr>'; 
+            return; 
+        }
+        tbody.innerHTML = state.transactions.map(t=>`<tr>
+            <td>${t.date}</td>
+            <td>${titleize(t.type)}</td>
+            <td>${t.id}</td>
+            <td>${t.party||'-'}</td>
+            <td class="${t.amount < 0 ? 'text-danger' : 'text-success'}">${fmt(Math.abs(t.amount))}</td>
+            <td><span class="badge ${t.status === 'completed' ? 'active' : 'secondary'}">${t.status||'completed'}</span></td>
+            <td><button class='btn btn-info btn-sm print-allowed' onclick="window.print()"><i class='fas fa-print'></i></button></td>
+        </tr>`).join('');
+    }
+
+    function filterTransactions(){ 
+        // Enhanced filtering can be implemented later
+        refreshTransactionsTable();
+    }
+
+    // Professional Sales System
+    function newSale(){ 
+        if(!can('create')) return notify('Admin only','error');
+        document.getElementById('salesInterface').style.display='grid';
+        populateCustomerDropdown();
+        renderSalesItems(state.items);
         renderCart();
     }
-    function newSale(){ openPOS(); }
+
+    function populateCustomerDropdown(){
+        const sel = document.getElementById('saleCustomer');
+        if(sel){
+            sel.innerHTML = '<option value="">Walk-in Customer</option>' + 
+                state.customers.map(c => `<option value="${c.id}">${c.firstName} ${c.lastName}</option>`).join('');
+        }
+    }
+
     function printSales(){ window.print(); }
+
     function searchItems(){
         const q = (document.getElementById('itemSearch').value||'').toLowerCase();
         const filtered = state.items.filter(i=> [i.code,i.name,i.category].some(v=>String(v).toLowerCase().includes(q)));
-        renderPOSItems(filtered);
+        renderSalesItems(filtered);
     }
+
     function filterByCategory(cat){
         document.querySelectorAll('.category-btn').forEach(b=>b.classList.remove('active'));
         event.target.classList.add('active');
-        renderPOSItems(cat==='all'? state.items : state.items.filter(i=>i.category===cat));
+        renderSalesItems(cat==='all'? state.items : state.items.filter(i=>i.category===cat));
     }
-    function renderPOSItems(list){
-        const c = document.getElementById('posItems'); c.innerHTML='';
+
+    function renderSalesItems(list){
+        const c = document.getElementById('salesItems'); c.innerHTML='';
         if(list.length===0){ c.innerHTML = '<p style="color:#666">No items found</p>'; return; }
-        const grid = document.createElement('div'); grid.style.display='grid'; grid.style.gridTemplateColumns='repeat(auto-fill,minmax(150px,1fr))'; grid.style.gap='10px';
+        const grid = document.createElement('div'); 
+        grid.style.display='grid'; 
+        grid.style.gridTemplateColumns='repeat(auto-fill,minmax(200px,1fr))'; 
+        grid.style.gap='12px';
         list.forEach(item=>{
             const d = document.createElement('div');
-            d.style.border='2px solid #e1e8ed'; d.style.borderRadius='10px'; d.style.padding='10px'; d.style.cursor='pointer';
-            d.innerHTML = `<div class="text-primary" style="font-weight:700;">${item.name}</div>
-                <div style="color:#607d8b">Stock: ${item.stock} ${item.unit||'pcs'}</div>
-                <div style="color:#2e7d32;font-weight:800;margin:6px 0;">${fmt(item.price)}</div>
-                <button class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Add</button>`;
+            d.style.border='2px solid #e1e8ed'; 
+            d.style.borderRadius='10px'; 
+            d.style.padding='12px'; 
+            d.style.cursor='pointer';
+            d.innerHTML = `
+                <div style="font-weight:700; color:#1a237e; margin-bottom: 8px;">${item.name}</div>
+                <div style="color:#607d8b; font-size: 12px;">Code: ${item.code}</div>
+                <div style="color:#607d8b; font-size: 12px;">Stock: ${item.stock} ${item.unit||'pcs'}</div>
+                <div style="color:#2e7d32; font-weight:800; margin:8px 0; font-size: 16px;">${fmt(item.price)}</div>
+                <button class="btn btn-primary btn-sm" style="width: 100%;"><i class="fas fa-plus"></i> Add to Cart</button>`;
             d.querySelector('button').onclick = ()=> addToCart(item.id);
             grid.appendChild(d);
         });
         c.appendChild(grid);
     }
+
     function addToCart(id){
         const item = state.items.find(i=>i.id===id); if(!item) return;
         if(item.stock<=0) return notify('Out of stock','warning');
         const existing = state.cart.find(c=>c.id===id);
-        if(existing){ if(existing.qty < item.stock){ existing.qty++; existing.total=existing.qty*existing.price; } }
-        else { state.cart.push({ id, name:item.name, price:item.price, qty:1, total:item.price }); }
+        if(existing){ 
+            if(existing.qty < item.stock){ 
+                existing.qty++; 
+                existing.total=existing.qty*existing.price; 
+            } else {
+                notify('Insufficient stock','warning');
+                return;
+            }
+        }
+        else { 
+            state.cart.push({ 
+                id, 
+                name:item.name, 
+                code: item.code,
+                price:item.price, 
+                qty:1, 
+                total:item.price,
+                unit: item.unit || 'pcs'
+            }); 
+        }
         renderCart();
+        notify(`${item.name} added to cart`, 'success');
     }
+
     function renderCart(){
         const c = document.getElementById('cartItems'); c.innerHTML='';
-        if(state.cart.length===0){ c.innerHTML = `<div class="empty-cart"><i class="fas fa-shopping-cart"></i><p>Cart is empty</p></div>`; updateCartSummary(); return; }
+        if(state.cart.length===0){ 
+            c.innerHTML = `<div class="empty-cart"><i class="fas fa-shopping-cart"></i><p>Cart is empty</p></div>`; 
+            updateCartSummary(); 
+            return; 
+        }
         state.cart.forEach((ci, idx)=>{
             const row = document.createElement('div'); row.className='cart-item';
-            row.innerHTML = `<div><strong>${ci.name}</strong><div style="color:#607d8b">${fmt(ci.price)} x ${ci.qty}</div></div>
-            <div style="display:flex;gap:6px;align-items:center;">
-                <button class="btn btn-warning btn-sm"><i class="fas fa-minus"></i></button>
-                <div style="min-width:86px;text-align:right;font-weight:700">${fmt(ci.total)}</div>
-                <button class="btn btn-primary btn-sm"><i class="fas fa-plus"></i></button>
-                <button class="btn btn-secondary btn-sm"><i class="fas fa-trash"></i></button>
-            </div>`;
-            row.children[1].children[0].onclick = ()=> { if(ci.qty>1){ ci.qty--; ci.total=ci.qty*ci.price;} else { state.cart.splice(idx,1);} renderCart(); };
-            row.children[1].children[2].onclick = ()=> { const item=state.items.find(i=>i.id===ci.id); if(ci.qty<item.stock){ ci.qty++; ci.total=ci.qty*ci.price; renderCart(); }};
-            row.children[1].children[3].onclick = ()=> { state.cart.splice(idx,1); renderCart(); };
+            row.innerHTML = `
+                <div>
+                    <strong>${ci.name}</strong>
+                    <div style="color:#607d8b; font-size: 12px;">Code: ${ci.code} | Unit: ${ci.unit}</div>
+                    <div style="color:#607d8b">${fmt(ci.price)} × ${ci.qty}</div>
+                </div>
+                <div style="display:flex;gap:6px;align-items:center;">
+                    <button class="btn btn-warning btn-sm"><i class="fas fa-minus"></i></button>
+                    <div style="min-width:100px;text-align:right;font-weight:700">${fmt(ci.total)}</div>
+                    <button class="btn btn-primary btn-sm"><i class="fas fa-plus"></i></button>
+                    <button class="btn btn-secondary btn-sm"><i class="fas fa-trash"></i></button>
+                </div>`;
+            const buttons = row.children[1].children;
+            buttons[0].onclick = ()=> { // Decrease
+                if(ci.qty>1){ 
+                    ci.qty--; 
+                    ci.total=ci.qty*ci.price;
+                } else { 
+                    state.cart.splice(idx,1);
+                } 
+                renderCart(); 
+            };
+            buttons[2].onclick = ()=> { // Increase
+                const item=state.items.find(i=>i.id===ci.id); 
+                if(ci.qty<item.stock){ 
+                    ci.qty++; 
+                    ci.total=ci.qty*ci.price; 
+                    renderCart(); 
+                } else {
+                    notify('Insufficient stock', 'warning');
+                }
+            };
+            buttons[3].onclick = ()=> { // Remove
+                state.cart.splice(idx,1); 
+                renderCart(); 
+            };
             c.appendChild(row);
         });
         updateCartSummary();
     }
+
     function updateCartSummary(){
         const sub = state.cart.reduce((s,c)=>s+c.total,0);
         const tax = state.config.enableTax? sub * (state.config.taxRate/100) : 0;
@@ -1951,130 +2064,927 @@
         document.getElementById('cartTotal').textContent = fmt(tot);
         return {sub, tax, disc, tot};
     }
-    function clearCart(){ state.cart = []; renderCart(); notify('Cart cleared','info'); }
-    function calculateChange(){ const { tot } = updateCartSummary(); const paid = Number(document.getElementById('amountPaid').value||0); const change = Math.max(0, paid-tot); document.getElementById('changeAmount').textContent = fmt(change); }
+
+    function clearCart(){ 
+        state.cart = []; 
+        renderCart(); 
+        notify('Cart cleared','info'); 
+    }
+
+    function calculateChange(){ 
+        const { tot } = updateCartSummary(); 
+        const paid = Number(document.getElementById('amountPaid').value||0); 
+        const change = Math.max(0, paid-tot); 
+        document.getElementById('changeAmount').textContent = fmt(change); 
+    }
+
     function processPayment(){
         if(!can('create')) return notify('Admin only','error');
         if(state.cart.length===0) return notify('Cart is empty','warning');
         const {sub,tax,disc,tot} = updateCartSummary();
-        const sale = { id:`POS-${Date.now()}`, date:new Date().toISOString().split('T')[0], items: JSON.parse(JSON.stringify(state.cart)), subtotal: sub, tax, discount: disc, total: tot, status:'completed', payment: document.getElementById('paymentMethod').value };
-        state.sales.push(sale); state.transactions.push({id:sale.id,type:'pos-sale',date:sale.date,amount:tot,status:'completed'});
-        // Reduce stock
-        sale.items.forEach(ci=>{ const it = state.items.find(i=>i.id===ci.id); if(it) it.stock = Math.max(0, it.stock - ci.qty); });
-        state.cart = []; renderCart(); refreshInventoryTable(); refreshDashboard();
+        const customerId = document.getElementById('saleCustomer').value;
+        const customerName = customerId ? 
+            state.customers.find(c => c.id === customerId)?.firstName + ' ' + state.customers.find(c => c.id === customerId)?.lastName :
+            'Walk-in Customer';
+        
+        const sale = { 
+            id:`SAL-${Date.now()}`, 
+            date:new Date().toISOString().split('T')[0], 
+            customer: customerName,
+            customerId: customerId || null,
+            items: JSON.parse(JSON.stringify(state.cart)), 
+            subtotal: sub, 
+            tax, 
+            discount: disc, 
+            total: tot, 
+            status:'completed', 
+            payment: document.getElementById('paymentMethod').value 
+        };
+        
+        state.sales.push(sale); 
+        state.transactions.push({
+            id:sale.id,
+            type:'sale',
+            date:sale.date,
+            party:customerName,
+            amount:tot,
+            status:'completed'
+        });
+        
+        // Reduce stock and update customer purchases
+        sale.items.forEach(ci=>{ 
+            const it = state.items.find(i=>i.id===ci.id); 
+            if(it) it.stock = Math.max(0, it.stock - ci.qty); 
+        });
+        
+        if(customerId){
+            const customer = state.customers.find(c => c.id === customerId);
+            if(customer) customer.totalPurchases = (customer.totalPurchases || 0) + tot;
+        }
+        
+        state.cart = []; 
+        renderCart(); 
+        refreshInventoryTable(); 
+        refreshCustomersTable();
+        refreshTransactionsTable();
+        refreshSalesTable();
+        refreshDashboard();
+        recalcAccounting();
+        
         lastReceipt = buildReceiptDataFromSale(sale);
-        notify('Payment processed','success');
+        notify(`Sale of ${fmt(tot)} completed successfully!`,'success');
     }
-    function printReceipt(){ window.print(); }
-    function filterSales(){ /* demo no-op */ }
 
-    // Inventory
-    function addNewItem(){ if(!can('create')) return notify('Admin only','error'); document.getElementById('inventoryForm').style.display='block'; }
-    function stockAdjustment(){ if(!can('edit')) return notify('Admin only','error'); notify('Open stock adjustment form','info'); }
+    function refreshSalesTable(){
+        const tbody = document.getElementById('salesTableBody');
+        if(!tbody) return;
+        if(state.sales.length===0){ 
+            tbody.innerHTML = '<tr class="no-records"><td colspan="11">No sales records found.</td></tr>'; 
+            return; 
+        }
+        let rows = '';
+        state.sales.forEach(sale => {
+            sale.items.forEach((item, itemIndex) => {
+                if(itemIndex === 0){
+                    // First item shows sale info
+                    rows += `<tr>
+                        <td rowspan="${sale.items.length}">${sale.date}</td>
+                        <td rowspan="${sale.items.length}">${sale.id}</td>
+                        <td rowspan="${sale.items.length}">${sale.customer}</td>
+                        <td>${item.name} (${item.code})</td>
+                        <td>${fmt(item.price)}</td>
+                        <td>${item.qty} ${item.unit}</td>
+                        <td>${fmt(item.total)}</td>
+                        <td rowspan="${sale.items.length}">${fmt(sale.total)}</td>
+                        <td rowspan="${sale.items.length}">${sale.payment}</td>
+                        <td rowspan="${sale.items.length}"><span class="badge active">${sale.status}</span></td>
+                        <td rowspan="${sale.items.length}"><button class='btn btn-info btn-sm print-allowed' onclick="window.print()"><i class='fas fa-print'></i></button></td>
+                    </tr>`;
+                } else {
+                    // Additional items just show item details
+                    rows += `<tr>
+                        <td>${item.name} (${item.code})</td>
+                        <td>${fmt(item.price)}</td>
+                        <td>${item.qty} ${item.unit}</td>
+                        <td>${fmt(item.total)}</td>
+                    </tr>`;
+                }
+            });
+        });
+        tbody.innerHTML = rows;
+    }
+
+    function printReceipt(){ 
+        if(!lastReceipt) return notify('No recent receipt to print', 'warning');
+        window.print(); 
+    }
+    function filterSales(){ refreshSalesTable(); }
+
+    // Inventory Management
+    function addNewItem(){ 
+        if(!can('create')) return notify('Admin only','error'); 
+        document.getElementById('inventoryForm').style.display='block'; 
+    }
+    function stockAdjustment(){ if(!can('edit')) return notify('Admin only','error'); notify('Stock adjustment feature coming soon','info'); }
     function importItems(){ if(!can('create')) return notify('Admin only','error'); notify('Import wizard not implemented in demo','info'); }
     function exportInventory(){
-        const header = 'Code,Name,Category,Stock,Cost,Price\n';
-        const rows = state.items.map(i=>[i.code,i.name,i.category,i.stock,i.cost,i.price].join(',')).join('\n');
+        const header = 'Code,Name,Category,Stock,Cost Price,Selling Price,Unit\n';
+        const rows = state.items.map(i=>[i.code,i.name,i.category,i.stock,i.cost,i.price,i.unit||'pcs'].join(',')).join('\n');
         downloadCSV('inventory_export.csv', header+rows);
         notify('Inventory exported','success');
     }
     function printInventory(){ window.print(); }
-    function saveInventoryItem(ev){ ev.preventDefault(); if(!can('create')) return notify('Admin only','error');
+
+    function saveInventoryItem(ev){ 
+        ev.preventDefault(); 
+        if(!can('create')) return notify('Admin only','error');
         const get = id => document.getElementById(id).value;
         const item = {
             id:`ITM-${Date.now()}`,
-            code:get('itemCode'), name:get('itemName'), category:get('itemCategory'), brand:get('itemBrand'), cost:Number(get('costPrice')||0), price:Number(get('sellingPrice')||0), unit:get('itemUnit'), stock:Number(get('initialStock')||0), min:Number(get('minStockLevel')||0), status:get('itemStatus')||'active'
+            code:get('itemCode'), 
+            name:get('itemName'), 
+            category:get('itemCategory'), 
+            brand:get('itemBrand'), 
+            cost:Number(get('costPrice')||0), 
+            price:Number(get('sellingPrice')||0), 
+            unit:get('itemUnit'), 
+            stock:Number(get('initialStock')||0), 
+            min:Number(get('minStockLevel')||0), 
+            status:'active',
+            location: get('itemLocation'),
+            description: get('itemDescription')
         };
-        if(!item.code || !item.name || !item.category) return notify('Please fill required fields','error');
-        state.items.push(item); refreshInventoryTable(); document.getElementById('inventoryForm').style.display='none'; ev.target.reset(); refreshDashboard(); notify('Item saved','success');
+        if(!item.code || !item.name || !item.category || item.cost < 0 || item.price < 0) return notify('Please fill required fields with valid values','error');
+        if(item.price <= item.cost) {
+            if(!confirm('Selling price is not higher than cost price. This will result in no profit. Continue?')) return;
+        }
+        state.items.push(item); 
+        refreshInventoryTable(); 
+        document.getElementById('inventoryForm').style.display='none'; 
+        ev.target.reset(); 
+        refreshDashboard(); 
+        recalcAccounting();
+        notify(`Item "${item.name}" added successfully`,'success');
     }
+
     function cancelItemForm(){ document.getElementById('inventoryForm').style.display='none'; }
     function clearItemForm(){ const form = document.querySelector('#inventoryForm form'); form && form.reset(); }
-    function filterInventory(){ const q=(document.getElementById('inventorySearch').value||'').toLowerCase(); const cat=document.getElementById('categoryFilter').value; const stock=document.getElementById('stockFilter').value; const status=document.getElementById('statusFilter').value; let list=[...state.items]; if(q) list=list.filter(i=>[i.code,i.name,i.category].some(v=>String(v).toLowerCase().includes(q))); if(cat) list=list.filter(i=>i.category===cat); if(status) list=list.filter(i=>i.status===status); if(stock==='in-stock') list=list.filter(i=>i.stock>0); if(stock==='low-stock') list=list.filter(i=>i.stock<= (i.min||0) && i.stock>0); if(stock==='out-of-stock') list=list.filter(i=>i.stock===0); refreshInventoryTable(list);
-    }
-    function refreshInventoryTable(list){ const data = list||state.items; const tbody = document.getElementById('inventoryTableBody'); if(!tbody) return; if(!data.length){ tbody.innerHTML = '<tr class="no-records"><td colspan="9">No inventory items found. Add your first item above.</td></tr>'; return; } tbody.innerHTML = data.map(i=>`<tr><td>${i.code}</td><td>${i.name}</td><td>${i.category}</td><td>${i.stock} ${i.unit||'pcs'}</td><td>${fmt(i.cost)}</td><td>${fmt(i.price)}</td><td>${((i.price-i.cost)/Math.max(1,i.cost)*100).toFixed(0)}%</td><td>${i.status}</td><td><button class="btn btn-primary btn-sm" onclick="editItem('${i.id}')"><i class='fas fa-edit'></i></button></td></tr>`).join(''); }
-    function editItem(id){ if(!can('edit')) return notify('Admin only','error'); notify('Edit item '+id,'info'); }
 
-    // Customers
-    function addNewCustomer(){ if(!can('create')) return notify('Admin only','error'); document.getElementById('customerForm').style.display='block'; }
-    function saveCustomer(ev){ ev.preventDefault(); if(!can('create')) return notify('Admin only','error'); notify('Customer saved','success'); document.getElementById('customerForm').style.display='none'; ev.target.reset(); }
+    function filterInventory(){ 
+        const q=(document.getElementById('inventorySearch').value||'').toLowerCase(); 
+        const cat=document.getElementById('categoryFilter').value; 
+        const stock=document.getElementById('stockFilter').value; 
+        const status=document.getElementById('statusFilter').value; 
+        let list=[...state.items]; 
+        if(q) list=list.filter(i=>[i.code,i.name,i.category].some(v=>String(v).toLowerCase().includes(q))); 
+        if(cat) list=list.filter(i=>i.category===cat); 
+        if(status) list=list.filter(i=>i.status===status); 
+        if(stock==='in-stock') list=list.filter(i=>i.stock>0); 
+        if(stock==='low-stock') list=list.filter(i=>i.stock<= (i.min||0) && i.stock>0); 
+        if(stock==='out-of-stock') list=list.filter(i=>i.stock===0); 
+        refreshInventoryTable(list);
+    }
+
+    function refreshInventoryTable(list){ 
+        const data = list||state.items; 
+        const tbody = document.getElementById('inventoryTableBody'); 
+        if(!tbody) return; 
+        if(!data.length){ 
+            tbody.innerHTML = '<tr class="no-records"><td colspan="9">No inventory items found. Add your first item above.</td></tr>'; 
+            return; 
+        } 
+        tbody.innerHTML = data.map(i=>{
+            const margin = i.cost > 0 ? ((i.price-i.cost)/i.cost*100).toFixed(1) : '0';
+            const stockStatus = i.stock <= (i.min||0) ? 'color: red; font-weight: bold;' : '';
+            return `<tr>
+                <td>${i.code}</td>
+                <td>${i.name}</td>
+                <td>${i.category}</td>
+                <td style="${stockStatus}">${i.stock} ${i.unit||'pcs'}</td>
+                <td>${fmt(i.cost)}</td>
+                <td>${fmt(i.price)}</td>
+                <td>${margin}%</td>
+                <td><span class="badge ${i.status==='active'?'active':'secondary'}">${i.status}</span></td>
+                <td>
+                    <button class="btn btn-primary btn-sm" onclick="editItem('${i.id}')"><i class='fas fa-edit'></i></button>
+                    <button class="btn btn-info btn-sm print-allowed" onclick="window.print()"><i class='fas fa-print'></i></button>
+                </td>
+            </tr>`;
+        }).join(''); 
+    }
+
+    function editItem(id){ if(!can('edit')) return notify('Admin only','error'); notify('Edit item feature coming soon','info'); }
+
+    // Customer Management
+    function addNewCustomer(){ 
+        if(!can('create')) return notify('Admin only','error'); 
+        // Generate customer ID
+        const customerId = `CUS-${Date.now()}`;
+        document.getElementById('customerId').value = customerId;
+        document.getElementById('customerForm').style.display='block'; 
+    }
+
+    function saveCustomer(ev){ 
+        ev.preventDefault(); 
+        if(!can('create')) return notify('Admin only','error'); 
+        const customer = {
+            id: document.getElementById('customerId').value,
+            type: document.getElementById('customerType').value,
+            firstName: document.getElementById('firstName').value,
+            lastName: document.getElementById('lastName').value,
+            companyName: document.getElementById('companyName').value,
+            email: document.getElementById('customerEmail').value,
+            phone: document.getElementById('customerPhone').value,
+            address: document.getElementById('customerAddress').value,
+            totalPurchases: 0,
+            dateAdded: new Date().toISOString().split('T')[0]
+        };
+        if(!customer.firstName || !customer.lastName || !customer.phone) {
+            return notify('Please fill in required fields','error');
+        }
+        state.customers.push(customer);
+        refreshCustomersTable();
+        document.getElementById('customerForm').style.display='none'; 
+        ev.target.reset(); 
+        refreshDashboard();
+        notify(`Customer "${customer.firstName} ${customer.lastName}" added successfully`,'success');
+    }
+
+    function refreshCustomersTable(){
+        const tbody = document.getElementById('customersTableBody');
+        if(!tbody) return;
+        if(state.customers.length===0){ 
+            tbody.innerHTML = '<tr class="no-records"><td colspan="7">No customers found. Add your first customer above.</td></tr>'; 
+            return; 
+        }
+        tbody.innerHTML = state.customers.map(c=>`<tr>
+            <td>${c.id}</td>
+            <td>${c.firstName} ${c.lastName}</td>
+            <td>${c.type}</td>
+            <td>${c.email||'-'}</td>
+            <td>${c.phone}</td>
+            <td>${fmt(c.totalPurchases||0)}</td>
+            <td>
+                <button class="btn btn-primary btn-sm" onclick="editCustomer('${c.id}')"><i class='fas fa-edit'></i></button>
+                <button class="btn btn-info btn-sm print-allowed" onclick="window.print()"><i class='fas fa-print'></i></button>
+            </td>
+        </tr>`).join('');
+    }
+
     function cancelCustomerForm(){ document.getElementById('customerForm').style.display='none'; }
     function clearCustomerForm(){ const f=document.querySelector('#customerForm form'); f && f.reset(); }
-    function importCustomers(){ if(!can('create')) return notify('Admin only','error'); notify('Import wizard not implemented in demo','info'); }
-    function exportCustomers(){ downloadCSV('customers_export.csv','ID,Name,Email,Phone\n'); notify('Customers exported','success'); }
+    function importCustomers(){ if(!can('create')) return notify('Admin only','error'); notify('Import wizard coming soon','info'); }
+    function exportCustomers(){ 
+        const header = 'ID,First Name,Last Name,Type,Email,Phone,Total Purchases\n';
+        const rows = state.customers.map(c=>[c.id,c.firstName,c.lastName,c.type,c.email||'',c.phone,c.totalPurchases||0].join(',')).join('\n');
+        downloadCSV('customers_export.csv', header+rows); 
+        notify('Customers exported','success'); 
+    }
     function printCustomers(){ window.print(); }
-    function filterCustomers(){ /* demo */ }
+    function filterCustomers(){ refreshCustomersTable(); }
+    function editCustomer(id){ if(!can('edit')) return notify('Admin only','error'); notify('Edit customer feature coming soon','info'); }
 
     // Suppliers
-    function addNewSupplier(){ if(!can('create')) return notify('Admin only','error'); notify('Add supplier form (demo)','info'); }
-    function importSuppliers(){ if(!can('create')) return notify('Admin only','error'); notify('Import suppliers (demo)','info'); }
-    function exportSuppliers(){ downloadCSV('suppliers_export.csv','ID,Company,Phone\n'); notify('Suppliers exported','success'); }
+    function addNewSupplier(){ if(!can('create')) return notify('Admin only','error'); notify('Add supplier feature coming soon','info'); }
     function printSuppliers(){ window.print(); }
 
-    // Accounting (summary only)
+    // Professional Accounting System with P&L Integration
     function recalcAccounting(){
-        const assets = state.items.reduce((s,i)=> s + i.stock * i.cost, 0);
-        const liabilities = 0;
-        const equity = assets + state.sales.reduce((s,sl)=> s + (sl.total||0), 0);
-        const profit = state.sales.reduce((s,sl)=> s + (sl.total||0), 0) - state.items.reduce((s,i)=> s + i.stock * i.cost * 0.0, 0);
-        setText('totalAssets', fmt(assets)); setText('totalLiabilities', fmt(liabilities)); setText('totalEquity', fmt(equity)); setText('netProfit', fmt(profit));
+        // Calculate comprehensive financial metrics
+        const revenue = state.sales.reduce((s,sl)=> s + (sl.total||0), 0);
+        
+        // Calculate Cost of Goods Sold based on actual sales
+        let cogs = 0;
+        state.sales.forEach(sl=>{
+            sl.items.forEach(it=>{
+                const inv = state.items.find(i=>i.id===it.id);
+                const cost = inv? inv.cost : 0;
+                cogs += (it.qty||0) * cost;
+            });
+        });
+        
+        const expenses = state.expenses.reduce((s,e)=> s + (e.amount||0), 0);
+        const grossProfit = revenue - cogs;
+        const netProfit = grossProfit - expenses;
+        
+        // Update display
+        document.getElementById('totalRevenue').textContent = fmt(revenue);
+        document.getElementById('totalCOGS').textContent = fmt(cogs);
+        document.getElementById('totalExpenses').textContent = fmt(expenses);
+        document.getElementById('netProfit').textContent = fmt(netProfit);
+        
+        // Update dashboard profit
+        document.getElementById('monthlyProfit').textContent = fmt(netProfit);
     }
-    function setText(id, v){ const el = document.getElementById(id); if(el) el.textContent = v; }
-    function openAccountingModule(k){ document.getElementById('accountingModuleContent').style.display='block'; document.getElementById('accountingModuleTitle').textContent = titleize(k); document.getElementById('accountingModuleBody').innerHTML = `<div class="empty-state"><i class='fas fa-cog'></i><h3>${titleize(k)} Module</h3><p>Content will appear here.</p></div>`; }
+
+    function openAccountingModule(k){ 
+        document.getElementById('accountingModuleContent').style.display='block'; 
+        document.getElementById('accountingModuleTitle').textContent = titleize(k); 
+        let content = '';
+        
+        if(k === 'chart-of-accounts'){
+            content = `
+                <div class='card'>
+                    <h3>Chart of Accounts</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr><th>Account Code</th><th>Account Name</th><th>Type</th><th>Balance</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>1000</td><td>Cash</td><td>Asset</td><td>${fmt(state.deposits.reduce((s,d)=>s+d.amount,0))}</td></tr>
+                                <tr><td>1100</td><td>Inventory</td><td>Asset</td><td>${fmt(state.items.reduce((s,i)=>s+i.stock*i.cost,0))}</td></tr>
+                                <tr><td>4000</td><td>Sales Revenue</td><td>Income</td><td>${fmt(state.sales.reduce((s,sl)=>s+sl.total,0))}</td></tr>
+                                <tr><td>5000</td><td>Cost of Goods Sold</td><td>Expense</td><td>${fmt(state.sales.reduce((s,sl)=>s+sl.items.reduce((is,it)=>{const inv=state.items.find(i=>i.id===it.id);return is+(it.qty*(inv?inv.cost:0))},0),0))}</td></tr>
+                                <tr><td>6000</td><td>Operating Expenses</td><td>Expense</td><td>${fmt(state.expenses.reduce((s,e)=>s+e.amount,0))}</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>`;
+        } else if(k === 'general-ledger'){
+            content = `
+                <div class='card'>
+                    <h3>General Ledger</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr><th>Date</th><th>Description</th><th>Reference</th><th>Debit</th><th>Credit</th><th>Balance</th></tr>
+                            </thead>
+                            <tbody>`;
+            let balance = 0;
+            state.transactions.forEach(t => {
+                if(t.amount > 0){
+                    balance += t.amount;
+                    content += `<tr><td>${t.date}</td><td>${titleize(t.type)}</td><td>${t.id}</td><td>${fmt(t.amount)}</td><td>-</td><td>${fmt(balance)}</td></tr>`;
+                } else {
+                    balance += t.amount;
+                    content += `<tr><td>${t.date}</td><td>${titleize(t.type)}</td><td>${t.id}</td><td>-</td><td>${fmt(Math.abs(t.amount))}</td><td>${fmt(balance)}</td></tr>`;
+                }
+            });
+            content += `</tbody></table></div></div>`;
+        } else {
+            content = `<div class='card'><h3>${titleize(k)} Module</h3><p>This module is under development and will provide comprehensive ${titleize(k)} functionality.</p></div>`;
+        }
+        
+        document.getElementById('accountingModuleBody').innerHTML = content;
+    }
+    
     function closeAccountingModule(){ document.getElementById('accountingModuleContent').style.display='none'; }
 
-    // Reports (skeleton)
-    function loadReportCategory(cat){ document.getElementById('reportContent').style.display='block'; document.getElementById('reportTitle').textContent = `${titleize(cat)} Reports`; document.getElementById('reportBody').innerHTML=''; }
-    function generateReport(){ document.getElementById('reportBody').innerHTML = `<div class='card'><h3>Generated Report</h3><p>Total Sales: ${fmt(state.sales.reduce((s,a)=>s+(a.total||0),0))}</p></div>`; notify('Report generated','success'); }
-    function exportReport(){ downloadCSV('report.csv','Metric,Value\nTotal Sales,'+ state.sales.reduce((s,a)=>s+(a.total||0),0)); notify('Report exported','success'); }
+    // Enhanced Reports with Profit & Loss
+    function loadReportCategory(cat){
+        document.getElementById('reportContent').style.display='block';
+        document.getElementById('reportTitle').textContent = `${titleize(cat)} Reports`;
+        const specific = document.getElementById('reportSpecificFilters');
+        specific.innerHTML = '';
+        if(cat==='profit-loss'){
+            specific.innerHTML = `
+                <div class="filter-group">
+                    <label>Group by:</label>
+                    <select id="plGroup">
+                        <option value="monthly">Monthly</option>
+                        <option value="daily">Daily</option>
+                        <option value="yearly">Yearly</option>
+                    </select>
+                </div>`;
+        }
+        document.getElementById('reportBody').innerHTML='';
+        document.getElementById('reportContent').dataset.report = cat;
+    }
+
+    function generateReport(){
+        const type = document.getElementById('reportContent').dataset.report;
+        if(type==='profit-loss') return generatePLReport();
+        
+        // Default reports
+        let content = `<div class='card'><h3>Generated Report - ${titleize(type)}</h3>`;
+        if(type === 'sales'){
+            content += `
+                <div><strong>Total Sales:</strong> ${fmt(state.sales.reduce((s,a)=>s+(a.total||0),0))}</div>
+                <div><strong>Number of Sales:</strong> ${state.sales.length}</div>
+                <div><strong>Average Sale:</strong> ${fmt(state.sales.length > 0 ? state.sales.reduce((s,a)=>s+(a.total||0),0) / state.sales.length : 0)}</div>`;
+        } else if(type === 'inventory'){
+            const totalValue = state.items.reduce((s,i)=>s+(i.stock*i.cost),0);
+            const lowStock = state.items.filter(i=>i.stock<=(i.min||0)).length;
+            content += `
+                <div><strong>Total Items:</strong> ${state.items.length}</div>
+                <div><strong>Total Inventory Value:</strong> ${fmt(totalValue)}</div>
+                <div><strong>Low Stock Items:</strong> ${lowStock}</div>`;
+        }
+        content += '</div>';
+        document.getElementById('reportBody').innerHTML = content;
+        notify('Report generated','success');
+    }
+
+    function generatePLReport(){
+        recalcAccounting();
+        const from = document.getElementById('reportFromDate').value || '0000-01-01';
+        const to = document.getElementById('reportToDate').value || '9999-12-31';
+        const inRange = (d)=> d>=from && d<=to;
+        
+        const sales = state.sales.filter(s=> inRange(s.date));
+        const revenue = sales.reduce((s,a)=> s + (a.total||0), 0);
+        
+        let cogs = 0; 
+        sales.forEach(sl=> sl.items.forEach(it=>{
+            const inv = state.items.find(i=>i.id===it.id); 
+            cogs += (it.qty||0) * (inv?inv.cost:0); 
+        }));
+        
+        const expenses = state.expenses.filter(e=> inRange(e.date)).reduce((s,e)=> s + (e.amount||0), 0);
+        const gross = revenue - cogs; 
+        const net = gross - expenses;
+        
+        // Expense breakdown
+        const expensesByCategory = {};
+        state.expenses.filter(e=> inRange(e.date)).forEach(e => {
+            expensesByCategory[e.category] = (expensesByCategory[e.category] || 0) + e.amount;
+        });
+        
+        let expenseBreakdown = '';
+        Object.entries(expensesByCategory).forEach(([cat, amount]) => {
+            expenseBreakdown += `<div style="margin-left: 20px;">• ${cat}: ${fmt(amount)}</div>`;
+        });
+        
+        document.getElementById('reportBody').innerHTML = `
+            <div class='card'>
+                <h3>Profit & Loss Statement</h3>
+                <div style="font-size: 14px; color: #666; margin-bottom: 20px;">Period: ${from} to ${to}</div>
+                
+                <div style="margin-bottom: 15px;">
+                    <div style="font-weight: bold; color: #2e7d32;">REVENUE</div>
+                    <div style="margin-left: 20px;">Sales Revenue: ${fmt(revenue)}</div>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <div style="font-weight: bold; color: #1976d2;">COST OF GOODS SOLD</div>
+                    <div style="margin-left: 20px;">Cost of Goods Sold: ${fmt(cogs)}</div>
+                </div>
+                
+                <div style="margin-bottom: 15px; padding-top: 10px; border-top: 2px solid #ddd;">
+                    <div style="font-weight: bold;">GROSS PROFIT: ${fmt(gross)}</div>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <div style="font-weight: bold; color: #d32f2f;">OPERATING EXPENSES</div>
+                    ${expenseBreakdown || '<div style="margin-left: 20px;">No expenses recorded</div>'}
+                    <div style="margin-left: 20px; font-weight: bold; margin-top: 10px;">Total Expenses: ${fmt(expenses)}</div>
+                </div>
+                
+                <div style="margin-bottom: 15px; padding-top: 15px; border-top: 3px solid #333;">
+                    <div style="font-weight: bold; font-size: 18px; color: ${net >= 0 ? '#2e7d32' : '#d32f2f'};">
+                        NET PROFIT: ${fmt(net)}
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #ddd; font-size: 12px; color: #666;">
+                    <div>Gross Profit Margin: ${revenue > 0 ? (gross/revenue*100).toFixed(2) : 0}%</div>
+                    <div>Net Profit Margin: ${revenue > 0 ? (net/revenue*100).toFixed(2) : 0}%</div>
+                </div>
+            </div>`;
+        notify('Profit & Loss statement generated','success');
+    }
+
+    function exportReport(){
+        const type = document.getElementById('reportContent').dataset.report;
+        if(type==='profit-loss'){
+            // Export P&L as CSV
+            const from = document.getElementById('reportFromDate').value || '0000-01-01';
+            const to = document.getElementById('reportToDate').value || '9999-12-31';
+            const inRange = (d)=> d>=from && d<=to;
+            
+            const sales = state.sales.filter(s=> inRange(s.date));
+            const revenue = sales.reduce((s,a)=> s + (a.total||0), 0);
+            
+            let cogs = 0; 
+            sales.forEach(sl=> sl.items.forEach(it=>{
+                const inv = state.items.find(i=>i.id===it.id); 
+                cogs += (it.qty||0) * (inv?inv.cost:0); 
+            }));
+            
+            const expenses = state.expenses.filter(e=> inRange(e.date)).reduce((s,e)=> s + (e.amount||0), 0);
+            const gross = revenue - cogs; 
+            const net = gross - expenses;
+            
+            const csv = `Profit & Loss Statement,${from} to ${to}\n\nMetric,Amount\nRevenue,${revenue}\nCost of Goods Sold,${cogs}\nGross Profit,${gross}\nTotal Expenses,${expenses}\nNet Profit,${net}`;
+            downloadCSV('profit_loss_statement.csv', csv);
+            notify('P&L exported successfully','success');
+            return;
+        }
+        
+        // Default export
+        downloadCSV(`${type}_report.csv`,'Metric,Value\nTotal Sales,'+ state.sales.reduce((s,a)=>s+(a.total||0),0));
+        notify('Report exported','success');
+    }
+
     function printReport(){ window.print(); }
     function closeReport(){ document.getElementById('reportContent').style.display='none'; }
+// SETTINGS: state holders
+if (!window.state) window.state = {};
+state.users = state.users || [{ username: 'admin', fullName: 'System Administrator', email: 'admin@system.com', role: 'admin', status: 'active', lastLogin: new Date().toISOString() }];
+state.permissions = state.permissions || {
+  // Defaults for non-admin roles; admin checked at runtime
+  'transactions-view': true, 'transactions-create': true, 'transactions-edit': true, 'transactions-delete': false,
+  'sales-view': true, 'sales-create': true,
+  'inventory-view': true, 'inventory-create': true, 'inventory-edit': true, 'inventory-delete': false,
+  'customers-view': true, 'customers-create': true, 'customers-edit': true,
+  'suppliers-view': true, 'suppliers-create': true, 'suppliers-edit': true,
+  'accounting-view': true, 'accounting-create': true, 'accounting-edit': true,
+  'reports-view': true, 'reports-export': true,
+  'settings-access': true, 'settings-modify': true
+};
+state.system = state.system || { theme: 'dark', dateFormat: 'DD/MM/YYYY', timeFormat: '24', autoSave: true, lowStockAlerts: true, emailNotifications: false, receiptHeader: 'Thank you for your business!', receiptFooter: 'Visit us again soon!', printLogo: false };
 
-    // Settings
-    function showSettingsTab(name){
-        document.querySelectorAll('.settings-tab').forEach(t=>t.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-        event.target.classList.add('active');
-        document.getElementById(name+'-settings').classList.add('active');
+// SETTINGS: UI helpers
+function showSettingsTab(name) {
+  document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById(name + '-settings').classList.add('active');
+}
+
+function refreshUsersTable() {
+  const tbody = document.getElementById('usersTableBody');
+  if (!tbody) return;
+  const rows = state.users.map(u => `
+    <tr>
+      <td>${u.username}</td>
+      <td>${u.fullName}</td>
+      <td>${u.email || '-'}</td>
+      <td><span class="badge ${u.role==='admin'?'admin':'active'}">${u.role==='admin'?'Administrator':u.role}</span></td>
+      <td><span class="badge ${u.status==='active'?'active':'secondary'}">${u.status==='active'?'Active':'Inactive'}</span></td>
+      <td>${u.lastLogin ? new Date(u.lastLogin).toLocaleString() : '-'}</td>
+      <td>
+        <button class="btn btn-sm btn-primary" onclick="editUser('${u.username}')"><i class="fas fa-edit"></i></button>
+      </td>
+    </tr>
+  `).join('');
+  tbody.innerHTML = rows;
+}
+
+// Company settings
+function saveCompanySettings(ev) {
+  ev.preventDefault();
+  if (!state.config) state.config = {};
+  state.config.companyName = document.getElementById('companyName').value || state.config.companyName || 'Company';
+  state.config.currency = document.getElementById('companyCurrency').value || state.config.currency || 'UGX';
+  state.config.enableTax = document.getElementById('enableTax').checked;
+  state.config.taxRate = Number(document.getElementById('taxRate').value || 18);
+  state.config.businessRegNo = document.getElementById('businessRegNo').value || '';
+  state.config.taxIdNumber = document.getElementById('taxIdNumber').value || '';
+  state.config.businessType = document.getElementById('businessType').value || 'retail';
+  state.config.companyPhone = document.getElementById('companyPhone').value || '';
+  state.config.companyEmail = document.getElementById('companyEmail').value || '';
+  state.config.companyWebsite = document.getElementById('companyWebsite').value || '';
+  state.config.companyAddress = document.getElementById('companyAddress').value || '';
+  state.config.fiscalYearStart = document.getElementById('fiscalYearStart').value || '01';
+
+  // Reflect immediately
+  const companyDisplay = document.getElementById('companyDisplay');
+  const loginCompanyDisplay = document.getElementById('loginCompanyDisplay');
+  if (companyDisplay) companyDisplay.textContent = state.config.companyName;
+  if (loginCompanyDisplay) loginCompanyDisplay.textContent = state.config.companyName;
+
+  // If you have a global currency selector, sync it
+  const gc = document.getElementById('globalCurrency');
+  if (gc) gc.value = state.config.currency;
+
+  // Recompute monetary UI
+  if (typeof refreshInventoryTable === 'function') refreshInventoryTable();
+  if (typeof updateCartSummary === 'function') updateCartSummary();
+  if (typeof recalcAccounting === 'function') recalcAccounting();
+  if (typeof refreshDashboard === 'function') refreshDashboard();
+
+  notify('Company settings saved', 'success');
+}
+
+// Users CRUD
+function openUserForm() {
+  if (typeof can === 'function' && !can('create')) return notify('Admin only', 'error');
+  document.getElementById('userModalTitle').textContent = 'Add User';
+  ['user_username','user_fullName','user_email','user_password','user_confirm'].forEach(id => { const el = document.getElementById(id); if (el) el.value=''; });
+  document.getElementById('user_role').value = 'staff';
+  document.getElementById('user_status').value = 'active';
+  document.getElementById('userModal').style.display = 'flex';
+}
+function closeUserForm(){ document.getElementById('userModal').style.display = 'none'; }
+
+function saveUser(ev) {
+  ev.preventDefault();
+  if (typeof can === 'function' && !can('create')) return notify('Admin only', 'error');
+  const username = document.getElementById('user_username').value.trim();
+  const fullName = document.getElementById('user_fullName').value.trim();
+  const email = document.getElementById('user_email').value.trim();
+  const role = document.getElementById('user_role').value;
+  const status = document.getElementById('user_status').value;
+  const pw = document.getElementById('user_password').value;
+  const cf = document.getElementById('user_confirm').value;
+  if (!username || !fullName || !pw || !cf) return notify('Please fill required fields', 'error');
+  if (pw !== cf) return notify('Passwords do not match', 'error');
+
+  const existing = state.users.find(u => u.username === username);
+  if (existing) {
+    // Edit existing
+    existing.fullName = fullName; existing.email = email; existing.role = role; existing.status = status;
+    notify('User updated', 'success');
+  } else {
+    state.users.push({ username, fullName, email, role, status, lastLogin: null });
+    notify('User added', 'success');
+  }
+  refreshUsersTable();
+  closeUserForm();
+}
+
+function editUser(username) {
+  if (typeof can === 'function' && !can('edit')) return notify('Admin only', 'error');
+  const u = state.users.find(x => x.username === username);
+  if (!u) return notify('User not found', 'error');
+  document.getElementById('userModalTitle').textContent = 'Edit User';
+  document.getElementById('user_username').value = u.username;
+  document.getElementById('user_fullName').value = u.fullName;
+  document.getElementById('user_email').value = u.email || '';
+  document.getElementById('user_role').value = u.role;
+  document.getElementById('user_status').value = u.status;
+  // For security, do not prefill password fields
+  document.getElementById('user_password').value = '';
+  document.getElementById('user_confirm').value = '';
+  document.getElementById('userModal').style.display = 'flex';
+}
+
+// Permissions
+function savePermissions() {
+  if (typeof can === 'function' && !can('edit')) return notify('Admin only', 'error');
+  const ids = [
+    'transactions-view','transactions-create','transactions-edit','transactions-delete',
+    'sales-view','sales-create',
+    'inventory-view','inventory-create','inventory-edit','inventory-delete',
+    'customers-view','customers-create','customers-edit',
+    'suppliers-view','suppliers-create','suppliers-edit',
+    'accounting-view','accounting-create','accounting-edit',
+    'reports-view','reports-export',
+    'settings-access','settings-modify'
+  ];
+  ids.forEach(k => {
+    const el = document.getElementById(`perm-${k}`);
+    if (el) state.permissions[k] = !!el.checked;
+  });
+  notify('Permissions saved', 'success');
+}
+
+function setDefaultPermissions() {
+  if (typeof can === 'function' && !can('edit')) return notify('Admin only', 'error');
+  // Default: all enabled for simplicity; admin already has full access at runtime
+  Object.keys(state.permissions).forEach(k => state.permissions[k] = true);
+  Object.keys(state.permissions).forEach(k => {
+    const el = document.getElementById(`perm-${k}`);
+    if (el && !el.disabled) el.checked = true;
+  });
+  notify('Permissions reset to default', 'info');
+}
+
+// You can use this to enforce permissions in navigation/actions for non-admin users
+function hasPermission(key) {
+  // Admin: full access to all pages and functionalities
+  if (state.currentUser && state.currentUser.role === 'admin') return true;
+  if (key === 'print') return true; // printing available to all users
+  return !!state.permissions[key];
+}
+
+// System settings
+function saveSystemSettings(ev) {
+  ev.preventDefault();
+  state.system.theme = document.getElementById('systemTheme').value;
+  state.system.dateFormat = document.getElementById('dateFormat').value;
+  state.system.timeFormat = document.getElementById('timeFormat').value;
+  state.system.autoSave = document.getElementById('autoSave').checked;
+  state.system.lowStockAlerts = document.getElementById('lowStockAlerts').checked;
+  state.system.emailNotifications = document.getElementById('emailNotifications').checked;
+  state.system.receiptHeader = document.getElementById('receiptHeader').value;
+  state.system.receiptFooter = document.getElementById('receiptFooter').value;
+  state.system.printLogo = document.getElementById('printLogo').checked;
+
+  applyTheme(state.system.theme);
+  notify('System settings saved', 'success');
+}
+
+function applyTheme(theme) {
+  const body = document.body;
+  body.dataset.theme = theme; // allow CSS to target [data-theme="dark"]
+  // Optional: simple background tweak
+  if (theme === 'dark') {
+    body.style.background = 'linear-gradient(135deg, #0d1117 0%, #1f2937 100%)';
+  } else if (theme === 'green') {
+    body.style.background = 'linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%)';
+  } else {
+    body.style.background = 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)';
+  }
+}
+
+// Backup & Export/Import
+function createBackup() {
+  const data = {
+    version: '7.0.1',
+    timestamp: new Date().toISOString(),
+    config: state.config,
+    system: state.system,
+    items: state.items,
+    customers: state.customers,
+    suppliers: state.suppliers,
+    users: state.users,
+    permissions: state.permissions,
+    transactions: state.transactions,
+    sales: state.sales,
+    expenses: state.expenses,
+    deposits: state.deposits
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  downloadBlob('salesmanager_backup.json', blob);
+  notify('Backup created', 'success');
+}
+
+function restoreBackup(ev) {
+  const file = ev.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const data = JSON.parse(reader.result);
+      // Basic merge (non-destructive if fields missing)
+      state.config = data.config || state.config;
+      state.system = data.system || state.system;
+      state.items = data.items || state.items;
+      state.customers = data.customers || state.customers;
+      state.suppliers = data.suppliers || state.suppliers;
+      state.users = data.users || state.users;
+      state.permissions = data.permissions || state.permissions;
+      state.transactions = data.transactions || state.transactions;
+      state.sales = data.sales || state.sales;
+      state.expenses = data.expenses || state.expenses;
+      state.deposits = data.deposits || state.deposits;
+
+      // Refresh UI
+      refreshUsersTable();
+      if (typeof refreshInventoryTable === 'function') refreshInventoryTable();
+      if (typeof refreshTransactionsTable === 'function') refreshTransactionsTable();
+      if (typeof refreshSalesTable === 'function') refreshSalesTable();
+      if (typeof recalcAccounting === 'function') recalcAccounting();
+      if (typeof refreshDashboard === 'function') refreshDashboard();
+      notify('Backup restored', 'success');
+    } catch (e) {
+      notify('Invalid backup file', 'error');
     }
-    function saveCompanySettings(ev){ ev.preventDefault(); state.config.companyName = document.getElementById('companyName').value || state.config.companyName; state.config.currency = document.getElementById('companyCurrency').value || state.config.currency; state.config.enableTax = document.getElementById('enableTax').checked; state.config.taxRate = Number(document.getElementById('taxRate').value||18); document.getElementById('companyDisplay').textContent = state.config.companyName; document.getElementById('loginCompanyDisplay').textContent = state.config.companyName; notify('Company settings saved','success'); }
-    function addNewUser(){ if(!can('create')) return notify('Admin only','error'); document.getElementById('userForm').style.display='block'; }
-    function saveUser(ev){ ev.preventDefault(); if(!can('create')) return notify('Admin only','error'); document.getElementById('userForm').style.display='none'; notify('User saved (demo)','success'); }
-    function cancelUserForm(){ document.getElementById('userForm').style.display='none'; }
-    function editUser(){ if(!can('edit')) return notify('Admin only','error'); notify('Edit user (demo)','info'); }
-    function savePermissions(){ if(!can('edit')) return notify('Admin only','error'); notify('Permissions saved','success'); }
-    function setDefaultPermissions(){ if(!can('edit')) return notify('Admin only','error'); notify('Permissions reset to default','info'); }
-    function saveSystemSettings(ev){ ev.preventDefault(); notify('System settings saved','success'); }
+  };
+  reader.readAsText(file);
+}
 
-    // Backup/Export/Import
-    function createBackup(){ const data = JSON.stringify(state); downloadBlob('salesmanager_backup.json', new Blob([data],{type:'application/json'})); notify('Backup created','success'); }
-    function restoreBackup(){ notify('Restore flow not implemented in demo','info'); }
-    function exportData(kind){ let csv=''; if(kind==='inventory'){ const header='Code,Name,Category,Stock,Cost,Price\n'; const rows = state.items.map(i=>[i.code,i.name,i.category,i.stock,i.cost,i.price].join(',')).join('\n'); csv = header+rows; downloadCSV('inventory.csv', csv); } else if(kind==='customers'){ downloadCSV('customers.csv',''); } else if(kind==='sales'){ const header='ID,Date,Items,Total\n'; const rows = state.sales.map(s=>[s.id,s.date,s.items.length,s.total].join(',')).join('\n'); csv = header+rows; downloadCSV('sales.csv', csv);} else if(kind==='transactions'){ const header='ID,Date,Type,Amount,Status\n'; const rows = state.transactions.map(t=>[t.id,t.date,t.type,t.amount,t.status].join(',')).join('\n'); csv = header+rows; downloadCSV('transactions.csv', csv);} notify('Export complete','success'); }
-    function importData(kind){ notify('Import flow not implemented in demo','info'); }
+function exportData(kind) {
+  let csv = '';
+  if (kind === 'inventory') {
+    const header = 'Code,Name,Category,Stock,Unit,Cost Price,Selling Price,Status\n';
+    const rows = state.items.map(i => [i.code, i.name, i.category, i.stock, i.unit||'pcs', i.cost, i.price, i.status||'active'].join(',')).join('\n');
+    csv = header + rows;
+    downloadCSV('inventory_export.csv', csv);
+  } else if (kind === 'customers') {
+    const header = 'ID,First Name,Last Name,Type,Email,Phone,Total Purchases\n';
+    const rows = state.customers.map(c => [c.id||'', c.firstName||'', c.lastName||'', c.type||'', c.email||'', c.phone||'', c.totalPurchases||0].join(',')).join('\n');
+    csv = header + rows;
+    downloadCSV('customers_export.csv', csv);
+  } else if (kind === 'sales') {
+    const header = 'Sale ID,Date,Customer,Items Count,Subtotal,Tax,Total,Payment Method\n';
+    const rows = state.sales.map(s => [s.id, s.date, s.customer||'', s.items.length, s.subtotal, s.tax, s.total, s.payment].join(',')).join('\n');
+    csv = header + rows;
+    downloadCSV('sales_export.csv', csv);
+  } else if (kind === 'transactions') {
+    const header = 'ID,Date,Type,Party,Amount,Status\n';
+    const rows = state.transactions.map(t => [t.id, t.date, t.type, t.party||'', t.amount, t.status||'completed'].join(',')).join('\n');
+    csv = header + rows;
+    downloadCSV('transactions_export.csv', csv);
+  }
+  notify(`${titleize(kind)} exported`, 'success');
+}
 
-    // Barcode (demo)
-    function generateBarcode(){ notify('Barcode generated (demo)','info'); }
+function importData(kind) {
+  const fileInput = document.getElementById(kind === 'inventory' ? 'inventoryFile' : 'customersFile');
+  const file = fileInput && fileInput.files && fileInput.files[0];
+  if (!file) return notify('Please select a CSV file to import', 'warning');
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const lines = reader.result.split(/\r?\n/).filter(Boolean);
+      if (lines.length <= 1) return notify('CSV has no data rows', 'warning');
+      const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+      const rows = lines.slice(1).map(line => {
+        const cols = line.split(',');
+        const obj = {};
+        headers.forEach((h, idx) => obj[h] = cols[idx]);
+        return obj;
+      });
+
+      if (kind === 'inventory') {
+        rows.forEach(r => {
+          if (!r.code || !r.name) return;
+          state.items.push({
+            id: `ITM-${Date.now()}-${Math.random().toString(36).slice(2,6)}`,
+            code: r.code, name: r.name,
+            category: r.category || 'other',
+            stock: Number(r.stock || 0),
+            unit: r.unit || 'pcs',
+            cost: Number(r['cost price'] || r.cost || 0),
+            price: Number(r['selling price'] || r.price || 0),
+            status: r.status || 'active',
+            min: 0
+          });
+        });
+        if (typeof refreshInventoryTable === 'function') refreshInventoryTable();
+      } else if (kind === 'customers') {
+        rows.forEach(r => {
+          state.customers.push({
+            id: r.id || `CUS-${Date.now()}-${Math.random().toString(36).slice(2,6)}`,
+            firstName: r['first name'] || r.firstname || '',
+            lastName: r['last name'] || r.lastname || '',
+            type: r.type || 'individual',
+            email: r.email || '',
+            phone: r.phone || '',
+            totalPurchases: Number(r['total purchases'] || 0)
+          });
+        });
+        if (typeof refreshCustomersTable === 'function') refreshCustomersTable();
+      }
+      if (typeof refreshDashboard === 'function') refreshDashboard();
+      notify(`${titleize(kind)} imported`, 'success');
+    } catch (e) {
+      notify('Failed to import CSV', 'error');
+    }
+  };
+  reader.readAsText(file);
+}
+
+// Init defaults on load if present
+(function initSettingsDefaults(){
+  try {
+    // Prefill forms from state
+    const cc = document.getElementById('companyCurrency'); if (cc) cc.value = state.config?.currency || 'UGX';
+    const cn = document.getElementById('companyName'); if (cn) cn.value = state.config?.companyName || 'Enhanced Business Management System';
+    const tr = document.getElementById('taxRate'); if (tr) tr.value = state.config?.taxRate ?? 18;
+    const et = document.getElementById('enableTax'); if (et) et.checked = !!state.config?.enableTax;
+
+    // System
+    const th = document.getElementById('systemTheme'); if (th) th.value = state.system?.theme || 'dark';
+    const df = document.getElementById('dateFormat'); if (df) df.value = state.system?.dateFormat || 'DD/MM/YYYY';
+    const tf = document.getElementById('timeFormat'); if (tf) tf.value = state.system?.timeFormat || '24';
+    const as = document.getElementById('autoSave'); if (as) as.checked = !!state.system?.autoSave;
+    const la = document.getElementById('lowStockAlerts'); if (la) la.checked = !!state.system?.lowStockAlerts;
+    const en = document.getElementById('emailNotifications'); if (en) en.checked = !!state.system?.emailNotifications;
+    const rh = document.getElementById('receiptHeader'); if (rh) rh.value = state.system?.receiptHeader || 'Thank you for your business!';
+    const rf = document.getElementById('receiptFooter'); if (rf) rf.value = state.system?.receiptFooter || 'Visit us again soon!';
+    const pl = document.getElementById('printLogo'); if (pl) pl.checked = !!state.system?.printLogo;
+
+    refreshUsersTable();
+  } catch {}
+})();
 
     // Receipts
     let lastReceipt = null;
     function buildReceiptDataFromSale(s){
         return {
+            type: 'sale',
             company: state.config.companyName,
             number: 'R'+ (++state.receiptCounter),
             date: new Date().toLocaleString(),
             cashier: state.currentUser?.fullName || 'USER',
+            customer: s.customer,
             items: s.items,
             subtotal: s.subtotal,
             tax: s.tax,
             discount: s.discount,
-            total: s.total
+            total: s.total,
+            payment: s.payment
+        };
+    }
+    
+    function buildDepositReceipt(d){
+        return {
+            type: 'deposit',
+            company: state.config.companyName,
+            number: 'R'+ (++state.receiptCounter),
+            date: new Date().toLocaleString(),
+            cashier: state.currentUser?.fullName || 'USER',
+            customer: d.customer,
+            items: [{ name:`Deposit for ${d.item}`, qty:1, price:d.amount, total:d.amount, unit:'deposit' }],
+            subtotal: d.amount,
+            tax: 0,
+            discount: 0,
+            total: d.amount,
+            extra: { item: d.item, totalOrderAmount: d.total, remaining: d.remaining, notes: d.notes }
         };
     }
 
-    // Helpers download
-    function downloadCSV(filename, content){ downloadBlob(filename, new Blob([content],{type:'text/csv'})); }
+    // Helpers
+    function downloadCSV(filename, content){ downloadBlob(filename, new Blob([content],{type:'text/csv;charset=utf-8'})); }
     function downloadBlob(filename, blob){ const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 0); }
     function titleize(s){ return String(s||'').replace(/-/g,' ').replace(/\b\w/g, c=>c.toUpperCase()); }
+    function setText(id, v){ const el = document.getElementById(id); if(el) el.textContent = v; }
     </script>
 </body>
 </html>
